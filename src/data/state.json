@@ -1,0 +1,43 @@
+{
+    "wled": {
+        "ctrl": [
+            {
+                "name": "Home",
+                "ip": "192.168.0.199"
+            },
+            {
+                "name": "Jimmy",
+                "ip": "192.168.1.173"
+            }
+        ]
+    },
+    "midi": {
+        "ctrl": [
+            {
+                "name": "SPD-SX"
+            },
+            {
+                "name": "Juno USB Midi"
+            }
+        ]
+    },
+    "actions": {
+        "midi|SPD-SX": [
+            {
+                "thing": "wled",
+                "action": "random-palette"
+            },
+            {
+                "thing": "midi|Digital Piano",
+                "action": "play-chord",
+                "chord": {
+                    "notes": [
+                        12,
+                        24,
+                        36
+                    ]
+                }
+            }
+        ]
+    }
+}
