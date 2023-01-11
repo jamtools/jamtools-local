@@ -1,3 +1,5 @@
+import easymidi from 'easymidi';
+
 import {INPUT_EXTENDED_TYPES, INPUT_TYPES, SPAMMY_MIDI_EVENT_TYPES} from './constants/easymidi_constants';
 
 export const sendNoteToPiano = (output) => {
@@ -8,10 +10,12 @@ export const sendNoteToPiano = (output) => {
     });
 }
 
-export const listenToAllMidiEvents = (midiInput) => {
-    INPUT_TYPES.concat(INPUT_EXTENDED_TYPES).forEach(type => {
-        midiInput.on(type, msg => {
-            if (Object.values(SPAMMY_MIDI_EVENT_TYPES).includes(type)) {
+type MidiMessage = easymidi.ControlChange | easymidi.Pitch | easymidi.Note;
+
+export const listenToAllMidiEvents = (midiInput: easymidi.Input) => {
+    inputEventTypes.forEach(type => {
+        midiInput.on(type as any, msg => {
+            if (isSpammyMidiEvent(type, msg as unknown as MidiMessage)) {
                 return;
             }
 
@@ -22,4 +26,20 @@ export const listenToAllMidiEvents = (midiInput) => {
             console.log(msg);
         });
     });
+}
+
+const inputEventTypes = INPUT_TYPES.concat(INPUT_EXTENDED_TYPES);
+const isSpammyMidiEvent = (type: string, msg: MidiMessage): boolean => {
+    if (Object.values(SPAMMY_MIDI_EVENT_TYPES).includes(type)) {
+        return true;
+    }
+
+    if (type === 'cc') {
+        const controlMessage = msg as easymidi.ControlChange;
+        if (controlMessage.controller === 22) {
+            return true;
+        }
+    }
+
+    return false;
 }

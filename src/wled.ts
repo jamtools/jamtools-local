@@ -2,7 +2,11 @@ import {WLEDClient} from 'wled-client';
 
 let paletteIndex = 0;
 let previousPalette = 0;
-export const setRandomColor = async (wled: WLEDClient) => {
+export const setRandomColor = async (wled: WLEDClient | undefined) => {
+    if (!wled) {
+        return;
+    }
+
     let palette = Math.floor(wled.palettes.length * Math.random());
     if (palette === previousPalette) {
         palette = (palette + 1) % wled.palettes.length;
@@ -23,7 +27,11 @@ export const setRandomColor = async (wled: WLEDClient) => {
 
 let effectIndex = 0;
 let previousEffect = 0;
-export const setRandomEffect = async (wled: WLEDClient) => {
+export const setRandomEffect = async (wled: WLEDClient | undefined) => {
+    if (!wled) {
+        return;
+    }
+
     let effect = Math.floor(wled.effects.length * Math.random());
     if (effect === previousEffect) {
         effect = (effect + 1) % wled.effects.length;

@@ -6,4 +6,6 @@ export enum MidiInstrumentName {
     KORG_MICRO_KEY = 'microKEY2-37 Air Bluetooth',
     KORG_NANO_KEY_STUDIO = 'nanoKEY Studio Bluetooth',
     // KORG_NANO_KEY_STUDIO = 'nanoKEY Studio KEYBOARD/CTRL',
+
+    IAC_DRIVER_BUS_1 = 'IAC Driver Bus 1',
 };
