@@ -7,7 +7,7 @@ const debounce = require('debounce');
 
 import {MidiInstrumentName} from './constants/midi_instrument_constants';
 
-import state from '../data/state.json';
+import config from '../data/config.json';
 import {listenToAllMidiEvents, sendNoteToPiano} from './midi';
 import {setRandomColor, setRandomEffect} from './wled';
 import App from './app';
@@ -16,10 +16,10 @@ import App from './app';
 
 let wled: WLEDClient | undefined = undefined;
 
-const app = new App(easymidi, wled);
+const app = new App(easymidi, config);
 
 setTimeout(() => {
-    getInputsMain();
+    // getInputsMain();
     // wledMain();
 
     // nanoKeyStudioMain();
@@ -42,7 +42,7 @@ type MidiOut = easymidi.Output;
 const outputs: Partial<Record<MidiInstrumentName, MidiOut>> = {};
 
 const wledMain = async () => {
-    const wledAddress = state.wled.ctrl[0].ip;
+    const wledAddress = config.wled.ctrl[0].ip;
     // const wledAddress = state.wled.ctrl[1].ip;
     wled = new WLEDClient(wledAddress);
     await wled.init();
@@ -62,7 +62,7 @@ const getInputsMain = () => {
 };
 
 const iacMain = () => {
-    app.assignKeyboardOutput(MidiInstrumentName.IAC_DRIVER_BUS_1);
+    // app.assignKeyboardOutput(MidiInstrumentName.IAC_DRIVER_BUS_1);
 };
 
 const nanoKeyStudioMain = () => {
@@ -150,23 +150,9 @@ const microKeyMain = () => {
 };
 
 const launchkeyMain = () => {
-    app.assignControlButtonTriggers(MidiInstrumentName.LAUNCHKEY_MINI, [
-        {channel: 9, note: 40},
-        {channel: 9, note: 41},
-        {channel: 9, note: 42},
-        {channel: 9, note: 43},
-        {channel: 9, note: 36},
-        {channel: 9, note: 37},
-        {channel: 9, note: 38},
-        {channel: 9, note: 39},
-    ]);
-
-    app.assignKeyboardTrigger(MidiInstrumentName.LAUNCHKEY_MINI, {
-        channel: 0,
-    });
-
     const input = new easymidi.Input(MidiInstrumentName.LAUNCHKEY_MINI);
     // listenToAllMidiEvents(input);
+    return;
 
     input.on('noteon', (msg) => {
         if (msg.velocity === 0) {

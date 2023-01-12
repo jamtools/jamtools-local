@@ -10,7 +10,8 @@ export const sendNoteToPiano = (output) => {
     });
 }
 
-type MidiMessage = easymidi.ControlChange | easymidi.Pitch | easymidi.Note;
+export type MidiMessage = easymidi.ControlChange | easymidi.Pitch | easymidi.Note;
+export type MidiMessageType = 'noteon' | 'noteoff' | 'cc';
 
 export const listenToAllMidiEvents = (midiInput: easymidi.Input) => {
     inputEventTypes.forEach(type => {
