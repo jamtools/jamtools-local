@@ -1,7 +1,6 @@
 import easymidi from 'easymidi';
 import {Subscription} from 'rxjs';
 import {CHORDS} from '../constants/chord_constants';
-import {MidiMessage, MidiMessageType} from '../midi';
 import ChordSupervisor from '../music/chord_supervisor';
 
 import MidiService, {MidiSubjectMessage} from '../services/midi_service';
@@ -27,7 +26,17 @@ const progressions: number[][][] = [
         CHORDS.eMajor7,
         CHORDS.gsMinor,
     ],
-]
+];
+
+const wledPresets = [
+    3,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+];
 
 export default class ProgressionModeManager implements ModeManager {
     private actions: Action[];
@@ -35,6 +44,7 @@ export default class ProgressionModeManager implements ModeManager {
     private currentProgression = 0;
     private currentChord = 0;
     private chordSupervisor: ChordSupervisor;
+    private currentPreset = 0;
 
     private subject: Subscription;
 
@@ -43,14 +53,15 @@ export default class ProgressionModeManager implements ModeManager {
         private wledService: WledService,
         private config: Config
     ) {
+        // SPD: 0 6 2 3
         this.actions = [
             this.playChord,
             this.noteOffAll,
-            this.nextProgression,
-            undefined,
-            this.changeLights,
-            undefined,
-            undefined,
+            this.nextProgressionAndPreset,
+            this.playChordAndChangePreset,
+            this.setRandomColor,
+            this.setRandomEffect,
+            this.playChordAndChangeColor,
             undefined,
         ];
 
@@ -81,11 +92,6 @@ export default class ProgressionModeManager implements ModeManager {
         this.chordSupervisor.playChord(chord);
         const name = Object.keys(CHORDS).find(key => CHORDS[key] === chord);
         console.log('playing chord ' + name);
-
-
-        // this.midiService.sendMessage('noteon', {
-        //     channel: 9, note: 40, velocity: 114
-        // })
     }
 
     private nextProgression = () => {
@@ -94,13 +100,38 @@ export default class ProgressionModeManager implements ModeManager {
         this.playChord();
     }
 
+    private nextProgressionAndPreset = () => {
+        this.nextProgression();
+        this.nextPreset();
+    }
+
+    private nextPreset = () => {
+        const presetIndex = (this.currentPreset + 1) % wledPresets.length;
+        this.currentPreset = presetIndex;
+        const preset = wledPresets[presetIndex];
+        this.wledService.setPreset(preset);
+    }
+
+    private playChordAndChangeColor = (msg: MidiSubjectMessage) => {
+        this.playChord();
+        this.setRandomColor();
+    }
+
+    private playChordAndChangePreset = (msg: MidiSubjectMessage) => {
+        this.playChord();
+        this.nextPreset();
+    }
+
     private noteOffAll = (msg: MidiSubjectMessage) => {
-        this.midiService.getOutputs().forEach(console.log)
         this.midiService.notesOffAll();
     }
 
-    private changeLights = (msg: MidiSubjectMessage) => {
-        console.log('changing lights');
+    private setRandomColor = () => {
+        this.wledService.setRandomColor();
+    }
+
+    private setRandomEffect = (msg: MidiSubjectMessage) => {
+        this.wledService.setRandomEffect();
     }
 
     handleControlKnob = (msg: MidiSubjectMessage) => {
@@ -149,6 +180,10 @@ export default class ProgressionModeManager implements ModeManager {
 }
 
 export const equalControlButton = (button: ControlButtonMapping, msg: MidiSubjectMessage) => {
+    if (!button) {
+        return false;
+    }
+
     const noteMsg = msg.msg as easymidi.Note;
     return button.channel === noteMsg.channel && button.note === noteMsg.note;
 };

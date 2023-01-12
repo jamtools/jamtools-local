@@ -9,7 +9,7 @@ export type KeyboardMapping = {
 export type ControlButtonMapping = {
     channel: number;
     note: number;
-}
+} | null;
 
 export type ControlKnobMapping = {
 

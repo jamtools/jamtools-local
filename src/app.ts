@@ -1,18 +1,13 @@
 import process from 'node:process';
 
-import easymidi from 'easymidi';
 import ProgressionModeManager from './application_mode_managers.ts/progression_mode_manager';
 
 import MidiService from './services/midi_service';
 import WledService from './services/wled_service';
 import {Config} from './types/config_types';
 import {EasyMidi} from './types/easy_midi_types';
-import {MidiInputMapper, ControlButtonMapping, KeyboardMapping, MidiTriggerMappings, MidiOutputMapper} from './types/trigger_types';
 
 export default class App {
-    private midiInputs: MidiInputMapper = {} as MidiInputMapper;
-    private midiOutputs: easymidi.Output[] = [];
-
     private progressionMode: ProgressionModeManager;
     private midiService: MidiService;
     private wledService: WledService;

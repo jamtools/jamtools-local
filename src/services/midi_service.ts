@@ -74,6 +74,10 @@ export default class MidiService {
         const input = new this.midi.Input(midiName);
 
         input.on('noteon', (msg) => {
+            if (msg.velocity === 0) {
+                return;
+            }
+
             this.subject.next({
                 name: midiName,
                 type: 'noteon',
