@@ -1,6 +1,8 @@
 import easymidi from 'easymidi';
 import {Subscription} from 'rxjs';
+import {CHORDS} from '../constants/chord_constants';
 import {MidiMessage, MidiMessageType} from '../midi';
+import ChordSupervisor from '../music/chord_supervisor';
 
 import MidiService, {MidiSubjectMessage} from '../services/midi_service';
 import WledService from '../services/wled_service';
@@ -11,9 +13,28 @@ import {ControlButtonMapping, KeyboardMapping} from '../types/trigger_types';
 
 type Action = ((msg: MidiSubjectMessage) => void) | undefined;
 
+const progressions: number[][][] = [
+    [
+        CHORDS.bMajor7,
+        CHORDS.eMajor7,
+    ],
+    [
+        CHORDS.gsMinor,
+        CHORDS.eMajor,
+        CHORDS.fsMajor,
+    ],
+    [
+        CHORDS.eMajor7,
+        CHORDS.gsMinor,
+    ],
+]
+
 export default class ProgressionModeManager implements ModeManager {
     private actions: Action[];
     private eventHandlers: {[eventName: string]: Action};
+    private currentProgression = 0;
+    private currentChord = 0;
+    private chordSupervisor: ChordSupervisor;
 
     private subject: Subscription;
 
@@ -24,8 +45,8 @@ export default class ProgressionModeManager implements ModeManager {
     ) {
         this.actions = [
             this.playChord,
-            undefined,
-            undefined,
+            this.noteOffAll,
+            this.nextProgression,
             undefined,
             this.changeLights,
             undefined,
@@ -45,15 +66,37 @@ export default class ProgressionModeManager implements ModeManager {
                 handler(msg);
             }
         });
+
+        this.chordSupervisor = new ChordSupervisor(midiService);
     }
 
     close = () => this.subject.unsubscribe();
 
-    private playChord = (msg: MidiSubjectMessage) => {
-        console.log('playing chord')
-        this.midiService.sendMessage('noteon', {
-            channel: 9, note: 40, velocity: 114
-        })
+    private playChord = () => {
+        const progression = progressions[this.currentProgression];
+
+        const chord = progression[this.currentChord];
+        this.currentChord = (this.currentChord + 1) % progression.length;
+
+        this.chordSupervisor.playChord(chord);
+        const name = Object.keys(CHORDS).find(key => CHORDS[key] === chord);
+        console.log('playing chord ' + name);
+
+
+        // this.midiService.sendMessage('noteon', {
+        //     channel: 9, note: 40, velocity: 114
+        // })
+    }
+
+    private nextProgression = () => {
+        this.currentProgression = (this.currentProgression + 1) % progressions.length;
+        this.currentChord = 0;
+        this.playChord();
+    }
+
+    private noteOffAll = (msg: MidiSubjectMessage) => {
+        this.midiService.getOutputs().forEach(console.log)
+        this.midiService.notesOffAll();
     }
 
     private changeLights = (msg: MidiSubjectMessage) => {
@@ -80,7 +123,7 @@ export default class ProgressionModeManager implements ModeManager {
                     return;
                 }
 
-                console.log(`Running action ${index}`);
+                // console.log(`Running action ${index}`);
                 action(msg);
                 return;
             }

@@ -25,7 +25,7 @@ setTimeout(() => {
     // nanoKeyStudioMain();
 
     // microKeyMain();
-    launchkeyMain();
+    // launchkeyMain();
     // junoMain();
     // spdMain();
 
@@ -68,6 +68,7 @@ const iacMain = () => {
 const nanoKeyStudioMain = () => {
     const input = new easymidi.Input(MidiInstrumentName.KORG_NANO_KEY_STUDIO);
     // listenToAllMidiEvents(input);
+    return;
 
     input.on('noteon', (msg: MidiEvent) => {
         if (msg.velocity === 0) {

@@ -46,9 +46,28 @@ export default class MidiService {
 
     close = () => {
         this.inputs.forEach(input => input.close());
-        this.outputs.forEach(output => output.close());
+        this.outputs.forEach(output => {
+            this.notesOff(output);
+            output.close();
+        });
     }
 
+    notesOff = (output: Output) => {
+        for (let i=0; i< 100; i++) {
+            const note = 24 + i;
+            output.send('noteoff', {
+                channel: 0,
+                note,
+                velocity: 0,
+            });
+        }
+    }
+
+    notesOffAll = () => {
+        this.outputs.forEach(this.notesOff);
+    }
+
+    getInputs = () => this.inputs;
     getOutputs = () => this.outputs;
 
     private registerInput = (midiName: MidiInstrumentName) => {

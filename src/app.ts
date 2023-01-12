@@ -3,7 +3,6 @@ import process from 'node:process';
 import easymidi from 'easymidi';
 import ProgressionModeManager from './application_mode_managers.ts/progression_mode_manager';
 
-import {MidiInstrumentName} from './constants/midi_instrument_constants';
 import MidiService from './services/midi_service';
 import WledService from './services/wled_service';
 import {Config} from './types/config_types';
@@ -50,6 +49,6 @@ export default class App {
         process.on('SIGUSR1', exitHandler.bind(null, {exit: true}));
         process.on('SIGUSR2', exitHandler.bind(null, {exit: true}));
 
-        process.on('uncaughtException', exitHandler.bind(null, {exit: true}));
+        // process.on('uncaughtException', exitHandler.bind(null, {exit: true}));
     }
 }
