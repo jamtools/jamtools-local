@@ -3,7 +3,7 @@ import {ReplaySubject, Subject} from 'rxjs';
 
 import {MidiInstrumentName} from '../constants/midi_instrument_constants';
 import {MidiMessage, MidiMessageType} from '../midi';
-import {Config} from '../types/config_types';
+import {Config} from '../types/config_types/config_types';
 import {EasyMidi} from '../types/easy_midi_types';
 
 export type MidiSubjectMessage = {

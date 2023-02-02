@@ -1,7 +1,3 @@
-import easymidi from 'easymidi';
-
-import {MidiInstrumentName} from '../constants/midi_instrument_constants';
-
 export type KeyboardMapping = {
     channel: number;
 }
@@ -20,4 +16,18 @@ export type MidiTriggerMappings = {
     keyboard?: KeyboardMapping;
     controlButtons?: ControlButtonMapping[];
     controlKnobs?: ControlKnobMapping[];
+}
+
+export type MidiInputConfig = {
+    name: string;
+    keyboard?: KeyboardMapping;
+    controlButtons?: ControlButtonMapping[];
+    controlKnobs?: ControlKnobMapping[];
+};
+
+export type MidiConfig = {
+    inputs: MidiInputConfig[];
+    outputs: {
+        name: string;
+    }[];
 }

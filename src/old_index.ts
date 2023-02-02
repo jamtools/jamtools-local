@@ -8,11 +8,9 @@ import {MidiInstrumentName} from './constants/midi_instrument_constants';
 import config from '../data/config.json';
 import {listenToAllMidiEvents, sendNoteToPiano} from './midi';
 import {setRandomColor, setRandomEffect} from './wled';
-import App from './app';
+// import App from './app';
 
 let wled: WLEDClient | undefined = undefined;
-
-const app = new App(easymidi, config);
 
 export const oldMain = () => {
     // getInputsMain();
@@ -32,8 +30,7 @@ type MidiOut = easymidi.Output;
 const outputs: Partial<Record<MidiInstrumentName, MidiOut>> = {};
 
 const wledMain = async () => {
-    const wledAddress = config.wled.ctrl[0].ip;
-    // const wledAddress = state.wled.ctrl[1].ip;
+    const wledAddress = config.wled.ctrls[0].ip;
     wled = new WLEDClient(wledAddress);
     await wled.init();
     // const s = require('../wled_states/fun color twinkles.json');

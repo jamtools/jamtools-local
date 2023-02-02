@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "npm run build",
     "start": "node dist/src/index.js",
-    "dev": "nodemon dist/src/index.js",
+    "dev": "nodemon dist/src/index.js --no-stdin",
     "build": "tsc -p .",
     "build:watch": "tsc -p . --watch",
     "test": "jest",
@@ -25,8 +25,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "audic": "^3.0.1",
     "debounce": "^1.2.1",
     "easymidi": "^3.0.1",
+    "node-global-key-listener": "^0.1.1",
     "rxjs": "^7.8.0",
     "wled-client": "^0.22.1"
   },
