@@ -1,0 +1,230 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$ref": "#/definitions/Config",
+    "definitions": {
+        "Config": {
+            "type": "object",
+            "properties": {
+                "wled": {
+                    "$ref": "#/definitions/WledConfig"
+                },
+                "midi": {
+                    "type": "object",
+                    "properties": {
+                        "inputs": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/MidiInputConfig"
+                            }
+                        },
+                        "outputs": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/MidiOutputConfig"
+                            }
+                        }
+                    },
+                    "required": [
+                        "inputs",
+                        "outputs"
+                    ],
+                    "additionalProperties": false
+                },
+                "actions": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/definitions/WledActionConfig"
+                                },
+                                {
+                                    "$ref": "#/definitions/MidiActionConfig"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "required": [
+                "wled",
+                "midi",
+                "actions"
+            ],
+            "additionalProperties": false
+        },
+        "WledConfig": {
+            "type": "object",
+            "properties": {
+                "ctrls": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WledController"
+                    }
+                }
+            },
+            "required": [
+                "ctrls"
+            ],
+            "additionalProperties": false
+        },
+        "WledController": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "ip": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "ip"
+            ],
+            "additionalProperties": false
+        },
+        "MidiInputConfig": {
+            "$ref": "#/definitions/MidiTriggerMappings"
+        },
+        "MidiTriggerMappings": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "alias": {
+                    "type": "string"
+                },
+                "keyboard": {
+                    "$ref": "#/definitions/KeyboardMapping"
+                },
+                "controlButtons": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/ControlButtonMapping"
+                            },
+                            {
+                                "not": {}
+                            }
+                        ]
+                    }
+                },
+                "controlKnobs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ControlKnobMapping"
+                    }
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "additionalProperties": false
+        },
+        "KeyboardMapping": {
+            "type": "object",
+            "properties": {
+                "channel": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "channel"
+            ],
+            "additionalProperties": false
+        },
+        "ControlButtonMapping": {
+            "anyOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "channel": {
+                            "type": "number"
+                        },
+                        "note": {
+                            "type": "number"
+                        }
+                    },
+                    "required": [
+                        "channel",
+                        "note"
+                    ],
+                    "additionalProperties": false
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        },
+        "ControlKnobMapping": {
+            "type": "object",
+            "additionalProperties": false
+        },
+        "MidiOutputConfig": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "alias": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "additionalProperties": false
+        },
+        "WledActionConfig": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "thing": {
+                    "type": "string"
+                },
+                "action": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "action",
+                "thing"
+            ]
+        },
+        "MidiActionConfig": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "thing": {
+                    "type": "string"
+                },
+                "action": {
+                    "type": "string"
+                },
+                "chord": {
+                    "type": "object",
+                    "properties": {
+                        "notes": {
+                            "type": "array",
+                            "items": {
+                                "type": "number"
+                            }
+                        }
+                    },
+                    "required": [
+                        "notes"
+                    ],
+                    "additionalProperties": false
+                }
+            },
+            "required": [
+                "action",
+                "thing"
+            ]
+        }
+    }
+}

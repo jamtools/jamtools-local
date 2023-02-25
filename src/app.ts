@@ -32,6 +32,7 @@ export default class App {
             if (options.cleanup) {
                 this.progressionMode.close();
                 this.midiService.close();
+                this.qwertyService.close();
             }
             if (options.exit) {
                 process.exit();

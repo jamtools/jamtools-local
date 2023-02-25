@@ -17,7 +17,8 @@ export type ControlKnobMapping = {
 
 export type MidiTriggerMappings = {
     name: string;
+    alias?: string;
     keyboard?: KeyboardMapping;
-    controlButtons?: ControlButtonMapping[];
+    controlButtons?: {[name: string]: ControlButtonMapping | undefined};
     controlKnobs?: ControlKnobMapping[];
 }

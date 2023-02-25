@@ -1,5 +1,6 @@
 import {WLEDClient} from 'wled-client';
-import {log} from './utils';
+
+const segments = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 let paletteIndex = 0;
 let previousPalette = 0;
@@ -14,7 +15,7 @@ export const setRandomColor = async (wled: WLEDClient | undefined) => {
     }
 
     previousPalette = palette;
-    await wled.setPalette(palette, {segmentId: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]});
+    await wled.setPalette(palette, {segmentId: segments});
 
     const speed = Math.floor(Math.random() * 255);
     // await wled.setEffectSpeed(speed);
@@ -22,7 +23,8 @@ export const setRandomColor = async (wled: WLEDClient | undefined) => {
     const name = wled.palettes[palette];
 
     paletteIndex++;
-    log(name);
+    console.log(name);
+    // console.log(i, name, speed);
 };
 
 let effectIndex = 0;
@@ -43,5 +45,6 @@ export const setRandomEffect = async (wled: WLEDClient | undefined) => {
     const name = wled.effects[effect];
 
     effectIndex++;
-    log(name);
+    console.log(name);
+    // console.log(i, name, speed);
 };

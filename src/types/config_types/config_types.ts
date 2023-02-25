@@ -17,14 +17,16 @@ export type MidiActionConfig = {
 } & ActionConfig;
 
 export type MidiInputConfig = MidiTriggerMappings;
+export type MidiOutputConfig = {
+    name: string;
+    alias?: string;
+}
 
 export type Config = {
     wled: WledConfig;
     midi: {
         inputs: MidiInputConfig[];
-        outputs: {
-            name: string;
-        }[];
+        outputs: MidiOutputConfig[];
     };
 
     actions: {

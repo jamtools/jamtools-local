@@ -13,7 +13,11 @@ import {setRandomColor, setRandomEffect} from './wled';
 let wled: WLEDClient | undefined = undefined;
 
 export const oldMain = () => {
-    // getInputsMain();
+    getInputsMain();
+
+    const input = new easymidi.Input(MidiInstrumentName.IAC_DRIVER_BUS_1);
+    listenToAllMidiEvents(input);
+
     // wledMain();
 
     // nanoKeyStudioMain();
@@ -175,7 +179,8 @@ const launchkeyMain = () => {
 const junoMain = () => {
     outputs[MidiInstrumentName.JUNO] = new easymidi.Output(MidiInstrumentName.JUNO);
 
-    // const input = new easymidi.Input(MidiInstrumentName.JUNO);
+    const input = new easymidi.Input(MidiInstrumentName.JUNO);
+    listenToAllMidiEvents(input);
     // input.on('noteon', (msg) => {
     //     if (msg.velocity === 0) {
     //         return;
