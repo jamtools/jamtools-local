@@ -5,34 +5,23 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/src/index.js",
-    "dev": "ts-node-dev src/index.ts",
+    "dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --ignore-watch node_modules --no-notify src/index.ts",
     "dev2": "nodemon dist/src/index.js --no-stdin",
     "build": "tsc -p .",
     "build:watch": "tsc -p . --watch",
     "test": "jest",
     "check": "eslint --ext .js,.jsx,.tsx,.ts ./src --quiet --cache && eslint --ext .js,.jsx,.tsx,.ts ./webapp/src --quiet --cache",
     "fix": "eslint --ext .js,.jsx,.tsx,.ts ./src --quiet --fix --cache && eslint --ext .js,.jsx,.tsx,.ts ./webapp/src --quiet --fix --cache",
-    "check-types": "tsc -b",
-    "erase_flash": "esptool.py --port /dev/tty.usbserial-0001 erase_flash",
-    "write_flash": "esptool.py --chip esp32 --port /dev/tty.usbserial-0001 write_flash -z 0x1000 esp32-20220618-v1.19.1.bin",
-    "screen": "screen /dev/tty.usbserial-0001 115200",
-    "screen_list": "screen -list",
-    "kill_screen": "screen -X -S 10184 quit",
-    "full_deploy": "ampy -p /dev/tty.usbserial-0001 put constants.py && ampy -p /dev/tty.usbserial-0001 put main.py",
-    "deploy": "ampy -p /dev/tty.usbserial-0001 put main.py"
+    "check-types": "tsc -b"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "audic": "^3.0.1",
     "cors": "^2.8.5",
-    "debounce": "^1.2.1",
     "easymidi": "^3.0.1",
     "express": "^4.18.2",
-    "node-global-key-listener": "^0.1.1",
-    "rxjs": "^7.8.0",
-    "wled-client": "^0.22.1"
+    "node-global-key-listener": "^0.1.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",
@@ -42,8 +31,6 @@
     "@typescript-eslint/parser": "^5.32.0",
     "eslint": "^8.21.0",
     "eslint-plugin-import": "^2.26.0",
-    "nodemon": "^2.0.19",
-    "parcel-bundler": "^1.12.5",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^4.7.4"

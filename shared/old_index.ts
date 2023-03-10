@@ -5,7 +5,7 @@ const debounce = require('debounce');
 
 import {MidiInstrumentName} from './constants/midi_instrument_constants';
 
-import config from '../data/config.json';
+import config from '../../data/config.json';
 import {listenToAllMidiEvents, sendNoteToPiano} from './midi';
 import {setRandomColor, setRandomEffect} from './wled';
 // import App from './app';

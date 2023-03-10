@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 
-import {ControlPanelActions, SerializedAction} from '../webapp/shared/control_panel_actions';
+import {ControlPanelActions, SerializedAction} from '../../webapp/shared/control_panel_actions';
 import type App from './app';
 
 export default function initServer(app: App) {
