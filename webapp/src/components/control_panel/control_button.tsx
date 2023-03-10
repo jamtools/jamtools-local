@@ -1,6 +1,6 @@
 import React, {CSSProperties, useEffect, useState} from 'react';
 
-import {ControlPanelActions, SerializedAction} from '../../../shared/control_panel_actions';
+import {ControlPanelActions, SerializedAction} from '@shared/actions/control_panel_actions';
 
 export type Props = {
     action: ControlPanelActions;

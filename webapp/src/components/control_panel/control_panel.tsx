@@ -1,5 +1,5 @@
 import React from 'react';
-import {ControlPanelActions} from '../../../shared/control_panel_actions';
+import {ControlPanelActions} from '@shared/actions/control_panel_actions';
 import ControlButton from './control_button';
 
 import {CHORDS} from '@shared/constants/chord_constants';
