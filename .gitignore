@@ -8,3 +8,4 @@ micropython
 node_modules
 .vscode
 .parcel-cache
+build

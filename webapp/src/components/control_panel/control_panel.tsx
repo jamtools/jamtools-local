@@ -1,6 +1,8 @@
 import React from 'react';
-import {ControlPanelActions} from '../../../shared/control_panel_actions';
+import {ControlPanelActions} from '@shared/actions/control_panel_actions';
 import ControlButton from './control_button';
+
+import {CHORDS} from '@shared/constants/chord_constants';
 
 import './control_panel.scss';
 
@@ -21,6 +23,7 @@ const rowsData: RowsData = Object.values(ControlPanelActions).reduce((accum: Row
 export default function ControlPanel() {
     return (
         <div>
+            I know {Object.keys(CHORDS).length} Chords!
             <table>
                 <tbody>
                     {rowsData.map((row, i) => (

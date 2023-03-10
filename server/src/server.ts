@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 
-import {ControlPanelActions, SerializedAction} from '../webapp/shared/control_panel_actions';
-import type App from './app';
+import {ControlPanelActions, SerializedAction} from '@shared/actions/control_panel_actions';
+import type App from '@shared/app';
 
 export default function initServer(app: App) {
     const server = express();
@@ -26,6 +26,7 @@ export default function initServer(app: App) {
     server.use(cors({
         origin: [
             'http://localhost:1234',
+            'http://localhost:2000',
             'http://jam.local',
             'http://localhost',
             '*',

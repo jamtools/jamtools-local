@@ -1,13 +1,20 @@
 import React, {CSSProperties, useEffect, useState} from 'react';
 
-import {ControlPanelActions, SerializedAction} from '../../../shared/control_panel_actions';
+import {ControlPanelActions, SerializedAction} from '@shared/actions/control_panel_actions';
 
 export type Props = {
     action: ControlPanelActions;
     color: string;
 }
 
-const host = ((process || {}) as any).API_HOST || 'http://jam.local:1337';
+type ImportMeta = {
+    env: {
+        API_HOST?: string;
+    }
+}
+
+let apiHost = (import.meta as unknown as ImportMeta).env.API_HOST;
+const host = apiHost || 'http://jam.local:1337';
 
 const submitAction = (actionName: ControlPanelActions) => {
     const action: SerializedAction = {

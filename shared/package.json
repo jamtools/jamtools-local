@@ -1,0 +1,31 @@
+{
+  "name": "jamtools",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p .",
+    "build:watch": "tsc -p . --watch",
+    "test": "jest",
+    "check": "eslint --ext .js,.jsx,.tsx,.ts ./src --quiet --cache && eslint --ext .js,.jsx,.tsx,.ts ./webapp/src --quiet --cache",
+    "fix": "eslint --ext .js,.jsx,.tsx,.ts ./src --quiet --fix --cache && eslint --ext .js,.jsx,.tsx,.ts ./webapp/src --quiet --fix --cache",
+    "check-types": "tsc -b"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "audic": "^3.0.1",
+    "debounce": "^1.2.1",
+    "easymidi": "^3.0.1",
+    "rxjs": "^7.8.0",
+    "wled-client": "^0.22.1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.32.0",
+    "@typescript-eslint/parser": "^5.32.0",
+    "eslint": "^8.21.0",
+    "eslint-plugin-import": "^2.26.0",
+    "typescript": "^4.7.4"
+  }
+}

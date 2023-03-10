@@ -1,10 +1,10 @@
 import easymidi from 'easymidi';
 
-import config from '../data/config.json';
-import App from './app';
+import config from '../../data/config.json';
+import App from '@shared/app';
 // import main from './drum_trigger_test/drum_trigger_test';
-import {oldMain} from './old_index';
-import {Config} from './types/config_types/config_types';
+import {oldMain} from '@shared/old_index';
+import {Config} from '@shared/types/config_types/config_types';
 
 // main();
 
