@@ -8,15 +8,19 @@ import {MidiInstrumentName} from './constants/midi_instrument_constants';
 import config from '../data/config.json';
 import {listenToAllMidiEvents, sendNoteToPiano} from './midi';
 import {setRandomColor, setRandomEffect} from './wled';
-import App from './app';
+// import App from './app';
 
 let wled: WLEDClient | undefined = undefined;
 
-const app = new App(easymidi, config);
-
 export const oldMain = () => {
-    // getInputsMain();
-    // wledMain();
+    getInputsMain();
+
+    // const input = new easymidi.Input(MidiInstrumentName.GRAND_PIANO);
+    // // const input = new easymidi.Input(MidiInstrumentName.DTX_DRUMS);
+    // // const input = new easymidi.Input(MidiInstrumentName.IAC_DRIVER_BUS_1);
+    // listenToAllMidiEvents(input);
+
+    wledMain();
 
     // nanoKeyStudioMain();
 
@@ -32,10 +36,12 @@ type MidiOut = easymidi.Output;
 const outputs: Partial<Record<MidiInstrumentName, MidiOut>> = {};
 
 const wledMain = async () => {
-    const wledAddress = config.wled.ctrl[0].ip;
-    // const wledAddress = state.wled.ctrl[1].ip;
-    wled = new WLEDClient(wledAddress);
-    await wled.init();
+    // const wledAddress = config.wled.ctrls[0].ip;
+    // wled = new WLEDClient(wledAddress);
+    // await wled.init();
+
+    // console.log(wled.palettes);
+
     // const s = require('../wled_states/fun color twinkles.json');
     // const {index} = require('../wled_states/index.json');
     // const newIndex = index + 1;
@@ -178,7 +184,8 @@ const launchkeyMain = () => {
 const junoMain = () => {
     outputs[MidiInstrumentName.JUNO] = new easymidi.Output(MidiInstrumentName.JUNO);
 
-    // const input = new easymidi.Input(MidiInstrumentName.JUNO);
+    const input = new easymidi.Input(MidiInstrumentName.JUNO);
+    listenToAllMidiEvents(input);
     // input.on('noteon', (msg) => {
     //     if (msg.velocity === 0) {
     //         return;

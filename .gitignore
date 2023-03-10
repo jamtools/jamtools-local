@@ -2,3 +2,9 @@ constants.py
 dist
 wled_states
 data
+micropython
+
+.cache
+node_modules
+.vscode
+.parcel-cache

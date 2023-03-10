@@ -1,32 +1,33 @@
 import easymidi from 'easymidi';
 import {Subscription} from 'rxjs';
 import {CHORDS} from '../constants/chord_constants';
+import {jimmySet1, jimmySet2, michaelSet1, set1, set2} from '../constants/progression_constants';
+import BluetoothRemoteDynamicMapping from '../dynamic_mappings/qwerty_dynamic_mappings';
 import ChordSupervisor from '../music/chord_supervisor';
 
 import MidiService, {MidiSubjectMessage} from '../services/midi_service';
+import QwertyService from '../services/qwerty_service';
 import WledService from '../services/wled_service';
-import {Config} from '../types/config_types';
+import {Config} from '../types/config_types/config_types';
 
 import {ModeManager} from '../types/mode_manager_types';
 import {ControlButtonMapping, KeyboardMapping} from '../types/trigger_types';
+import {log} from '../utils';
 
-type Action = ((msg: MidiSubjectMessage) => void) | undefined;
+import type App from '../app';
+import {MidiInstrumentName} from '../constants/midi_instrument_constants';
 
-const progressions: number[][][] = [
-    [
-        CHORDS.bMajor7,
-        CHORDS.eMajor7,
-    ],
-    [
-        CHORDS.gsMinor,
-        CHORDS.eMajor,
-        CHORDS.fsMajor,
-    ],
-    [
-        CHORDS.eMajor7,
-        CHORDS.gsMinor,
-    ],
-];
+type MidiEventHandler = ((msg: MidiSubjectMessage) => void) | undefined;
+
+const songs: number[][][][] = [
+    // set1,
+    // set2,
+    jimmySet1,
+    jimmySet2,
+    michaelSet1,
+]
+// const progressions = set2;
+// const progressions = set1;
 
 const wledPresets = [
     3,
@@ -38,125 +39,181 @@ const wledPresets = [
     10,
 ];
 
+const x = BigInt(98469083460984369843984938259824605984260948369034860943856093458);
+
 export default class ProgressionModeManager implements ModeManager {
-    private actions: Action[];
-    private eventHandlers: {[eventName: string]: Action};
+    private actions: MidiEventHandler[];
+    private midiEventHandlers: {[eventName: string]: MidiEventHandler};
     private currentProgression = 0;
     private currentChord = 0;
-    private chordSupervisor: ChordSupervisor;
-    private currentPreset = 0;
+    private currentSong = 0;
 
-    private subject: Subscription;
+    shouldDrumsChangeColor = true;
+    shouldDrumsChangeProgression = false;
+
+    private midiServiceSubject: Subscription;
+    // private qwertyServiceSubject: Subscription;
+
+    // private dynamicMapping: BluetoothRemoteDynamicMapping;
 
     constructor(
         private midiService: MidiService,
         private wledService: WledService,
-        private config: Config
+        // private qwertyService: QwertyService,
+        private config: Config,
+        private app: App,
     ) {
-        // SPD: 0 6 2 3
         this.actions = [
-            this.playChord,
-            this.noteOffAll,
-            this.nextProgressionAndPreset,
-            this.playChordAndChangePreset,
-            this.setRandomColor,
-            this.setRandomEffect,
+            this.app.toggleDrumsMusicAction,
+            this.app.noteOffAll,
+            this.app.setRandomColor,
+            this.app.nextPreset,
+            this.nextSong,
             this.playChordAndChangeColor,
-            undefined,
+            this.playChordAndChangePreset,
+            this.playChordAndChangePreset,
+            this.nextProgressionAndPreset,
+            this.app.setRandomEffect,
         ];
 
-        this.eventHandlers = {
+        this.midiEventHandlers = {
             'noteon': this.handleKeyboardNoteOn,
             'noteoff': this.handleKeyboardNoteOff,
             'cc': this.handleControlKnob,
         };
 
-        this.subject = midiService.subscribe(msg => {
-            const handler = this.eventHandlers[msg.type];
+        this.midiServiceSubject = midiService.subscribe(msg => {
+            const handler = this.midiEventHandlers[msg.type];
             if (handler) {
                 handler(msg);
             }
         });
 
-        this.chordSupervisor = new ChordSupervisor(midiService);
+        // this.qwertyServiceSubject = this.qwertyService.subscribe(key => {
+        //     this.handleQwertyEvent(key);
+        // });
+
+        // this.chordSupervisor = new ChordSupervisor(midiService);
+        // this.dynamicMapping = new BluetoothRemoteDynamicMapping([
+        //     {
+        //         name: 'play chord',
+        //         func: this.playChord,
+        //     },
+        //     {
+        //         name: 'play chord and change color',
+        //         func: this.playChordAndChangeColor,
+        //     },
+        //     {
+        //         name: 'play chord and change preset',
+        //         func: this.playChordAndChangePreset,
+        //     },
+        // ], {
+        //     name: 'change progression and change preset',
+        //     func: this.nextProgressionAndPreset,
+        // }, this.qwertyService);
     }
 
-    close = () => this.subject.unsubscribe();
+    close = () => {
+        this.midiServiceSubject.unsubscribe();
+        // this.qwertyServiceSubject.unsubscribe();
+        // this.dynamicMapping.close();
+    }
 
-    private playChord = () => {
-        const progression = progressions[this.currentProgression];
+    playChord = () => {
+        const progression = songs[this.currentSong][this.currentProgression];
+        // const progression = progressions[this.currentProgression];
 
         const chord = progression[this.currentChord];
         this.currentChord = (this.currentChord + 1) % progression.length;
 
-        this.chordSupervisor.playChord(chord);
-        const name = Object.keys(CHORDS).find(key => CHORDS[key] === chord);
-        console.log('playing chord ' + name);
+        this.app.playChord(chord);
     }
 
-    private nextProgression = () => {
+    nextSong = () => {
+        const progressions = songs[this.currentSong];
+        this.currentProgression = (this.currentProgression + 1) % progressions.length;
+        this.currentProgression = 0;
+        this.currentChord = 0;
+
+        this.currentSong = (this.currentSong + 1) % songs.length;
+    }
+
+    nextProgression = () => {
+        const progressions = songs[this.currentSong];
         this.currentProgression = (this.currentProgression + 1) % progressions.length;
         this.currentChord = 0;
         this.playChord();
     }
 
-    private nextProgressionAndPreset = () => {
+    nextProgressionAndPreset = () => {
         this.nextProgression();
-        this.nextPreset();
+        this.app.nextPreset();
     }
 
-    private nextPreset = () => {
-        const presetIndex = (this.currentPreset + 1) % wledPresets.length;
-        this.currentPreset = presetIndex;
-        const preset = wledPresets[presetIndex];
-        this.wledService.setPreset(preset);
-    }
-
-    private playChordAndChangeColor = (msg: MidiSubjectMessage) => {
+    playChordAndChangeColor = () => {
         this.playChord();
-        this.setRandomColor();
+        this.app.setRandomColor();
     }
 
-    private playChordAndChangePreset = (msg: MidiSubjectMessage) => {
+    playChordAndChangePreset = () => {
+        console.log(1000)
         this.playChord();
-        this.nextPreset();
-    }
-
-    private noteOffAll = (msg: MidiSubjectMessage) => {
-        this.midiService.notesOffAll();
-    }
-
-    private setRandomColor = () => {
-        this.wledService.setRandomColor();
-    }
-
-    private setRandomEffect = (msg: MidiSubjectMessage) => {
-        this.wledService.setRandomEffect();
+        this.app.nextPreset();
     }
 
     handleControlKnob = (msg: MidiSubjectMessage) => {
     }
 
+    lastTimeAction = {};
     handleKeyboardNoteOn = (msg: MidiSubjectMessage) => {
         const inputConfig = this.config.midi.inputs.find(i => i.name === msg.name);
         if (!inputConfig) {
             return;
         }
 
-        const controlButtons = inputConfig.controlButtons;
-        if (controlButtons?.length) {
-            const control = controlButtons.find(button => equalControlButton(button, msg));
-            if (control) {
-                const index = controlButtons.indexOf(control);
-                const action = this.actions[index];
-                if (!action) {
-                    console.warn(`Undefined action for control button ${JSON.stringify(control)}`)
+        // console.log(msg)
+
+        if (msg.name === MidiInstrumentName.IAC_DRIVER_BUS_1 || msg.name === MidiInstrumentName.DTX_DRUMS) {
+            if (this.shouldDrumsChangeColor) {
+                this.app.setRandomColor();
+            }
+
+            if (this.shouldDrumsChangeProgression) {
+                this.nextProgression();
+                this.shouldDrumsChangeProgression = false;
+            } else {
+                this.playChord();
+            }
+
+            return;
+        }
+
+        const controlButtonsDict = inputConfig.controlButtons;
+        if (controlButtonsDict) {
+            const controlButtons = Object.values(controlButtonsDict);
+            if (controlButtons?.length) {
+                const control = controlButtons.find(button => equalControlButton(button, msg));
+                if (control) {
+                    const index = controlButtons.indexOf(control);
+                    const action = this.actions[index];
+                    if (!action) {
+                        console.warn(`Undefined action for control button ${JSON.stringify(control)}`)
+                        return;
+                    }
+
+                    const now = new Date();
+                    if (this.lastTimeAction[index]) {
+                        if (now.getTime() - this.lastTimeAction[index] < 200) {
+                            return;
+                        }
+                    }
+
+                    this.lastTimeAction[index] = now;
+
+                    log(`Running action ${index}`);
+                    action(msg);
                     return;
                 }
-
-                // console.log(`Running action ${index}`);
-                action(msg);
-                return;
             }
         }
 
@@ -177,9 +234,30 @@ export default class ProgressionModeManager implements ModeManager {
             this.midiService.sendMessage(msg.type, msg.msg);
         }
     }
+
+    handleQwertyEvent = (key: string) => {
+        // console.log(key);
+
+        // const actions = {
+        //     u: this.setRandomColor,
+        //     h: this.setRandomEffect,
+        //     w: this.increaseWledSpeed,
+        //     x: this.decreaseWledSpeed,
+        //     p: this.playChord,
+
+        //     c: this.playChord,
+        //     m: this.nextProgression,
+        // };
+
+        // const action = actions[key];
+        // if (action) {
+        //     log('running action for ' + key);
+        //     action();
+        // }
+    }
 }
 
-export const equalControlButton = (button: ControlButtonMapping, msg: MidiSubjectMessage) => {
+export const equalControlButton = (button: ControlButtonMapping | undefined, msg: MidiSubjectMessage) => {
     if (!button) {
         return false;
     }

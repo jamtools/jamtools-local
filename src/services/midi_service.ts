@@ -3,7 +3,7 @@ import {ReplaySubject, Subject} from 'rxjs';
 
 import {MidiInstrumentName} from '../constants/midi_instrument_constants';
 import {MidiMessage, MidiMessageType} from '../midi';
-import {Config} from '../types/config_types';
+import {Config} from '../types/config_types/config_types';
 import {EasyMidi} from '../types/easy_midi_types';
 
 export type MidiSubjectMessage = {
@@ -47,7 +47,7 @@ export default class MidiService {
     close = () => {
         this.inputs.forEach(input => input.close());
         this.outputs.forEach(output => {
-            this.notesOff(output);
+            // this.notesOff(output);
             output.close();
         });
     }
@@ -75,6 +75,10 @@ export default class MidiService {
 
         input.on('noteon', (msg) => {
             if (msg.velocity === 0) {
+                return;
+            }
+
+            if (midiName === MidiInstrumentName.DTX_DRUMS && msg.velocity < 60) {
                 return;
             }
 

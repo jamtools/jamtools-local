@@ -1,4 +1,5 @@
-import {MidiTriggerMappings} from './trigger_types';
+import {MidiTriggerMappings} from '../trigger_types';
+import {WledConfig} from './wled_config';
 
 export type ActionConfig = {
     thing: string;
@@ -16,19 +17,16 @@ export type MidiActionConfig = {
 } & ActionConfig;
 
 export type MidiInputConfig = MidiTriggerMappings;
+export type MidiOutputConfig = {
+    name: string;
+    alias?: string;
+}
 
 export type Config = {
-    wled: {
-        ctrl: {
-            name: string;
-            ip: string;
-        }[];
-    };
+    wled: WledConfig;
     midi: {
         inputs: MidiInputConfig[];
-        outputs: {
-            name: string;
-        }[];
+        outputs: MidiOutputConfig[];
     };
 
     actions: {
