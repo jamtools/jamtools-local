@@ -22,7 +22,8 @@ export default function MidiView() {
             await WebMidi.enable();
             // setError(WebMidi.inputs);
             console.log(WebMidi.inputs);
-            const input = WebMidi.inputs.find(i => i.name.includes('Juno'));
+            const input = WebMidi.inputs[2];
+            // const input = WebMidi.inputs.find(i => i.name.includes('Juno'));
             if (!input) {
                 setError('Cant find juno midi input');
                 return;
@@ -101,8 +102,8 @@ export default function MidiView() {
             }} />
             <pre>
                 <ul>
-                    {heldDown.map(n => (
-                        <li key={n.number}>
+                    {heldDown.map((n, i) => (
+                        <li key={i}>
                             {n.name}{n.accidental} {n.number}
                         </li>
                     ))}

@@ -12,7 +12,7 @@ const app = new App(easymidi, process.stdin, config);
 
 import initServer from './server';
 const server = initServer(app);
-server.listen(80);
+server.listen(1337);
 
 oldMain();
 
