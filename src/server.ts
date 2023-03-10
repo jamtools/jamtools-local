@@ -26,6 +26,7 @@ export default function initServer(app: App) {
     server.use(cors({
         origin: [
             'http://localhost:1234',
+            'http://localhost:2000',
             'http://jam.local',
             'http://localhost',
             '*',

@@ -2,6 +2,8 @@ import React from 'react';
 import {ControlPanelActions} from '../../../shared/control_panel_actions';
 import ControlButton from './control_button';
 
+import SharedFunction from '@shared/validations/some_validation';
+
 import './control_panel.scss';
 
 type RowsData = ControlPanelActions[][];
@@ -21,6 +23,7 @@ const rowsData: RowsData = Object.values(ControlPanelActions).reduce((accum: Row
 export default function ControlPanel() {
     return (
         <div>
+            {SharedFunction()}
             <table>
                 <tbody>
                     {rowsData.map((row, i) => (

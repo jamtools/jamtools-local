@@ -7,7 +7,14 @@ export type Props = {
     color: string;
 }
 
-const host = ((process || {}) as any).API_HOST || 'http://jam.local:1337';
+type ImportMeta = {
+    env: {
+        API_HOST?: string;
+    }
+}
+
+let apiHost = (import.meta as unknown as ImportMeta).env.API_HOST;
+const host = apiHost || 'http://jam.local:1337';
 
 const submitAction = (actionName: ControlPanelActions) => {
     const action: SerializedAction = {
