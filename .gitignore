@@ -5,3 +5,6 @@ data
 micropython
 
 .cache
+node_modules
+.vscode
+.parcel-cache

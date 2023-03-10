@@ -8,4 +8,6 @@ export enum MidiInstrumentName {
     // KORG_NANO_KEY_STUDIO = 'nanoKEY Studio KEYBOARD/CTRL',
 
     IAC_DRIVER_BUS_1 = 'IAC Driver Bus 1',
+    DTX_DRUMS = 'DTX drums',
+    GRAND_PIANO = 'USB MIDI Interface',
 };

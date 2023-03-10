@@ -7,6 +7,10 @@ export default class ChordSupervisor {
 
     }
 
+    notesOffAll = () => {
+        this.heldDownNotes = [];
+    }
+
     playChord = (nextChord: number[]) => {
         // nextChord = nextChord.slice(0, 4);
 
@@ -26,7 +30,7 @@ export default class ChordSupervisor {
             this.midi.sendMessage('noteon', {
                 channel: 0,
                 note,
-                velocity: 120,
+                velocity: 100,
             });
         });
     }

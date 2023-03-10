@@ -53,13 +53,35 @@ export default class WledService {
         this.setPreset(rand);
     }
 
-    savePreset = () => {
+    savePreset = async () => {
         const client = this.getClient();
         if (!client) {
             return;
         }
 
-        const presetName = new Date().getTime();
+        const names = Object.values(client.presets).map(p => p.name);
+        for (let i = 0; i < 60; i++) {
+            const name = i.toString();
+
+            if (names.includes(name)) {
+                continue;
+            }
+
+            const id = names.length;
+
+            try {
+                await client.saveStateAsPreset(id, {
+                    name,
+                    includeBrightness: false,
+                    segmentBounds: true,
+                });
+            } catch (e) {
+                console.error(e);
+            }
+
+            break;
+        }
+        // console.log(newName);
         // client.saveStateAsPreset(presetName)
     }
 

@@ -9,10 +9,15 @@
     "outDir": "dist",
     "allowJs": true,
     "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@shared": ["webapp/shared/*.ts"]
+    }
   },
   "include": [
     "src/**/*.js",
     "src/**/*.ts",
     "src/**/*.json",
+    "webapp/shared/**/*.ts",
   ]
 }

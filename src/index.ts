@@ -10,6 +10,10 @@ import {Config} from './types/config_types/config_types';
 
 const app = new App(easymidi, process.stdin, config);
 
+import initServer from './server';
+const server = initServer(app);
+server.listen(80);
+
 oldMain();
 
 console.log('running');

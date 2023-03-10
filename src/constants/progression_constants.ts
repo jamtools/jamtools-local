@@ -43,3 +43,59 @@ export const set2: number[][][] = [
         CHORDS.cMajor,
     ],
 ];
+
+export const jimmySet1: number[][][] = [
+    [
+        CHORDS.gSharpMajor,
+        CHORDS.fSharpMajor,
+        CHORDS.cSharpMajor,
+    ],
+    [
+        CHORDS.fSharpMajor,
+        CHORDS.cSharpMajor,
+        CHORDS.eFlatMinor,
+        CHORDS.bFlatMinor,
+    ],
+    [
+        CHORDS.eFlatMinor,
+        CHORDS.fSharpMajor,
+        CHORDS.bFlatMinor,
+        CHORDS.cSharpMajor,
+    ],
+];
+
+export const jimmySet2: number[][][] = [
+    [
+        CHORDS.bFlatMinor,
+        CHORDS.gSharpMajor,
+        CHORDS.cSharpMajor,
+        CHORDS.eFlatMinor,
+    ],
+    [
+        CHORDS.cSharpMajor,
+        CHORDS.fSharpMajor,
+    ],
+];
+
+export const michaelSet1: number[][][] = [
+    [
+        CHORDS.bMinor,
+        CHORDS.aMajor,
+        CHORDS.gMajor7,
+    ],
+    [
+        CHORDS.dMajor,
+        CHORDS.eMinor,
+        CHORDS.gMajor7,
+    ],
+    [
+        CHORDS.bMinor,
+        CHORDS.aMajor,
+    ],
+    [
+        CHORDS.bMinor,
+        CHORDS.fSharpMinor,
+        CHORDS.cSharpMinor,
+        CHORDS.gSharpMinor,
+    ],
+];

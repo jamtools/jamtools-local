@@ -15,10 +15,12 @@ let wled: WLEDClient | undefined = undefined;
 export const oldMain = () => {
     getInputsMain();
 
-    const input = new easymidi.Input(MidiInstrumentName.IAC_DRIVER_BUS_1);
-    listenToAllMidiEvents(input);
+    // const input = new easymidi.Input(MidiInstrumentName.GRAND_PIANO);
+    // // const input = new easymidi.Input(MidiInstrumentName.DTX_DRUMS);
+    // // const input = new easymidi.Input(MidiInstrumentName.IAC_DRIVER_BUS_1);
+    // listenToAllMidiEvents(input);
 
-    // wledMain();
+    wledMain();
 
     // nanoKeyStudioMain();
 
@@ -34,9 +36,12 @@ type MidiOut = easymidi.Output;
 const outputs: Partial<Record<MidiInstrumentName, MidiOut>> = {};
 
 const wledMain = async () => {
-    const wledAddress = config.wled.ctrls[0].ip;
-    wled = new WLEDClient(wledAddress);
-    await wled.init();
+    // const wledAddress = config.wled.ctrls[0].ip;
+    // wled = new WLEDClient(wledAddress);
+    // await wled.init();
+
+    // console.log(wled.palettes);
+
     // const s = require('../wled_states/fun color twinkles.json');
     // const {index} = require('../wled_states/index.json');
     // const newIndex = index + 1;

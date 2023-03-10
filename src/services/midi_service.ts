@@ -47,7 +47,7 @@ export default class MidiService {
     close = () => {
         this.inputs.forEach(input => input.close());
         this.outputs.forEach(output => {
-            this.notesOff(output);
+            // this.notesOff(output);
             output.close();
         });
     }
@@ -75,6 +75,10 @@ export default class MidiService {
 
         input.on('noteon', (msg) => {
             if (msg.velocity === 0) {
+                return;
+            }
+
+            if (midiName === MidiInstrumentName.DTX_DRUMS && msg.velocity < 60) {
                 return;
             }
 

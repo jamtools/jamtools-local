@@ -26,4 +26,5 @@ export const INPUT_EXTENDED_TYPES = [
 export const SPAMMY_MIDI_EVENT_TYPES = {
     CLOCK: 'clock',
     PITCH: 'pitch',
+    ACTIVE_SENSE: 'activesense',
 }
