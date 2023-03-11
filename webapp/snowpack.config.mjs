@@ -1,7 +1,7 @@
 /** @type {import("snowpack").SnowpackUserConfig } */
 export default {
   env: {
-    API_HOST: process.env.API_HOST || 'http://jam.local:1337',
+    API_HOST: process.env.API_HOST,
   },
   exclude: [
     'server/**',

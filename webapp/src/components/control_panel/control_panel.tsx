@@ -1,10 +1,15 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {ControlPanelActions} from '@shared/actions/control_panel_actions';
 import ControlButton from './control_button';
 
 import {CHORDS} from '@shared/constants/chord_constants';
 
+import {submitControlPanelAction} from '../../actions/remote_actions';
+
 import './control_panel.scss';
+import {fetchGlobalState} from '../../actions/remote_actions';
+import {GlobalState} from '@shared/state/global_state';
+import {isErrorResponse} from '@shared/types/api_types';
 
 type RowsData = ControlPanelActions[][];
 const rowsData: RowsData = Object.values(ControlPanelActions).reduce((accum: RowsData, actionName, i) => {
@@ -20,7 +25,32 @@ const rowsData: RowsData = Object.values(ControlPanelActions).reduce((accum: Row
     return accum;
 }, []);
 
-export default function ControlPanel() {
+export type Props = {
+    globalState: GlobalState | null;
+    setGlobalState: (state: GlobalState) => void;
+}
+
+export default function ControlPanel(props: Props) {
+    const submitAction = (action: ControlPanelActions) => {
+        submitControlPanelAction(action).then(res => {
+            if (isErrorResponse(res)) {
+                alert(res.error);
+                return;
+            }
+
+            // props.setGlobalState(res.data);
+        });
+    }
+
+    const makeButton = (action: ControlPanelActions) => (
+        <ControlButton
+            action={action}
+            color={getColor(action)}
+            state={props.globalState}
+            submitControlPanelAction={submitAction}
+        />
+    );
+
     return (
         <div>
             I know {Object.keys(CHORDS).length} Chords!
@@ -28,14 +58,11 @@ export default function ControlPanel() {
                 <tbody>
                     {rowsData.map((row, i) => (
                         <tr key={i}>
-                            {row.map((col) =>
-                                <td key={col}>
-                                    <ControlButton
-                                        action={col}
-                                        color={getColor(col)}
-                                    />
+                            {row.map((action) => (
+                                <td key={action}>
+                                    {makeButton(action)}
                                 </td>
-                            )}
+                            ))}
                         </tr>
                     ))}
                 </tbody>
