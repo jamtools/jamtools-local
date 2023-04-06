@@ -1,4 +1,4 @@
-import easymidi from 'easymidi';
+import type easymidi from 'easymidi';
 
 import {INPUT_EXTENDED_TYPES, INPUT_TYPES, SPAMMY_MIDI_EVENT_TYPES} from './constants/easymidi_constants';
 
@@ -11,8 +11,10 @@ export const sendNoteToPiano = (output) => {
 }
 
 export type MidiMessage = easymidi.ControlChange | easymidi.Pitch | easymidi.Note;
-export type MidiMessageType = 'noteon' | 'noteoff' | 'cc';
+export type MidiMessageType = 'noteon' | 'noteoff' | 'cc' | 'clock';
 
+let clocks = [];
+let currentTime = (new Date().getTime());
 export const listenToAllMidiEvents = (midiInput: easymidi.Input) => {
     inputEventTypes.forEach(type => {
         midiInput.on(type as any, msg => {
@@ -24,7 +26,26 @@ export const listenToAllMidiEvents = (midiInput: easymidi.Input) => {
             //     return;
             // }
 
-            console.log(msg);
+            if (type !== 'clock') {
+                console.log(msg);
+                return;
+            }
+
+            if (type === 'clock') {
+                const base = 1679023437240;
+                const display = new Date().getTime() - base;
+
+                const now = (new Date().getTime());
+                const seconds = now - currentTime;
+                clocks.push(now)
+                if (clocks.length === 96) {
+                // }
+                // if (seconds > 100) {
+                    console.log(clocks.length);
+                    currentTime = now;
+                    clocks = [];
+                }
+            }
         });
     });
 }

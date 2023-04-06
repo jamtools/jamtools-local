@@ -21,4 +21,5 @@ export type MidiTriggerMappings = {
     keyboard?: KeyboardMapping;
     controlButtons?: {[name: string]: ControlButtonMapping | undefined};
     controlKnobs?: ControlKnobMapping[];
+    clock?: boolean;
 }
