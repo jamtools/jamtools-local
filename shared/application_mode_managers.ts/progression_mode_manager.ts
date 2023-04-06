@@ -1,21 +1,22 @@
 import easymidi from 'easymidi';
 import {Subscription} from 'rxjs';
-import {CHORDS} from '../constants/chord_constants';
-import {jimmySet1, jimmySet2, michaelSet1, set1, set2} from '../constants/progression_constants';
-import BluetoothRemoteDynamicMapping from '../dynamic_mappings/qwerty_dynamic_mappings';
-import ChordSupervisor from '../music/chord_supervisor';
+import {CHORDS} from '../../constants/chord_constants';
+import {jimmySet1, jimmySet2, michaelSet1, set1, set2} from '../../constants/progression_constants';
+import BluetoothRemoteDynamicMapping from '../../dynamic_mappings/qwerty_dynamic_mappings';
+import ChordSupervisor from '../../music/chord_supervisor';
 
-import MidiService, {MidiSubjectMessage} from '../services/midi_service';
-import QwertyService from '../services/qwerty_service';
-import WledService from '../services/wled_service';
-import {Config} from '../types/config_types/config_types';
+import MidiService, {MidiSubjectMessage} from '../../services/midi_service';
+import QwertyService from '../../services/qwerty_service';
+import WledService from '../../services/wled_service';
+import {Config} from '../../types/config_types/config_types';
 
-import {ModeManager} from '../types/mode_manager_types';
-import {ControlButtonMapping, KeyboardMapping} from '../types/trigger_types';
-import {log} from '../utils';
+import {ModeManager} from '../../types/mode_manager_types';
+import {ControlButtonMapping, KeyboardMapping} from '../../types/trigger_types';
+import {log} from '../../utils';
 
-import type App from '../app';
-import {MidiInstrumentName} from '../constants/midi_instrument_constants';
+import type App from '../../app';
+import {MidiInstrumentName} from '../../constants/midi_instrument_constants';
+import {ProgressionState} from '@shared/state/progression_state';
 
 type MidiEventHandler = ((msg: MidiSubjectMessage) => void) | undefined;
 
@@ -26,30 +27,17 @@ const songs: number[][][][] = [
     jimmySet2,
     michaelSet1,
 ]
-// const progressions = set2;
-// const progressions = set1;
-
-const wledPresets = [
-    3,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-];
-
-const x = BigInt(98469083460984369843984938259824605984260948369034860943856093458);
 
 export default class ProgressionModeManager implements ModeManager {
     private actions: MidiEventHandler[];
     private midiEventHandlers: {[eventName: string]: MidiEventHandler};
-    private currentProgression = 0;
-    private currentChord = 0;
-    private currentSong = 0;
-
-    shouldDrumsChangeColor = true;
-    shouldDrumsChangeProgression = false;
+    private progressionState: ProgressionState = {
+        currentChord: 0,
+        currentProgression: 0,
+        currentSong: 0,
+        shouldDrumsChangeColor: true,
+        shouldDrumsChangeProgression: false,
+    }
 
     private midiServiceSubject: Subscription;
     // private qwertyServiceSubject: Subscription;
@@ -64,16 +52,16 @@ export default class ProgressionModeManager implements ModeManager {
         private app: App,
     ) {
         this.actions = [
-            this.app.toggleDrumsMusicAction,
-            this.app.noteOffAll,
-            this.app.setRandomColor,
-            this.app.nextPreset,
+            this.app.actions.toggleDrumsMusicAction,
+            this.app.actions.noteOffAll,
+            this.app.actions.setRandomColor,
+            this.app.actions.nextPreset,
             this.nextSong,
             this.playChordAndChangeColor,
             this.playChordAndChangePreset,
             this.playChordAndChangePreset,
             this.nextProgressionAndPreset,
-            this.app.setRandomEffect,
+            this.app.actions.setRandomEffect,
         ];
 
         this.midiEventHandlers = {
@@ -113,6 +101,27 @@ export default class ProgressionModeManager implements ModeManager {
         // }, this.qwertyService);
     }
 
+    getState = (): ProgressionState => this.progressionState;
+
+    private setState = (partialState: Partial<ProgressionState>) => {
+        this.progressionState = {
+            ...this.progressionState,
+            ...partialState,
+        };
+    }
+
+    toggleDrumColorAction = () => {
+        this.setState({
+            shouldDrumsChangeColor: !this.progressionState.shouldDrumsChangeColor,
+        });
+    }
+
+    toggleDrumMusicAction = () => {
+        this.setState({
+            shouldDrumsChangeProgression: !this.progressionState.shouldDrumsChangeProgression,
+        });
+    }
+
     close = () => {
         this.midiServiceSubject.unsubscribe();
         // this.qwertyServiceSubject.unsubscribe();
@@ -120,45 +129,63 @@ export default class ProgressionModeManager implements ModeManager {
     }
 
     playChord = () => {
-        const progression = songs[this.currentSong][this.currentProgression];
+        const {currentSong, currentProgression, currentChord} = this.progressionState;
+        const {songs} = this.app.getUserData();
+
+        const progression = songs[currentSong][currentProgression];
         // const progression = progressions[this.currentProgression];
 
-        const chord = progression[this.currentChord];
-        this.currentChord = (this.currentChord + 1) % progression.length;
+        const chord = progression[currentChord];
+        const nextChord = (currentChord + 1) % progression.length;
+        this.setState({
+            currentChord: nextChord,
+        });
 
-        this.app.playChord(chord);
+        this.app.playSpecificChord(chord);
+
+        // this.dispatchProgressionEvent({
+        //     type: 'Played Chord',
+        //     chord,
+        //     state: this.progressionState,
+        // });
     }
 
     nextSong = () => {
-        const progressions = songs[this.currentSong];
-        this.currentProgression = (this.currentProgression + 1) % progressions.length;
-        this.currentProgression = 0;
-        this.currentChord = 0;
+        const {currentSong} = this.progressionState;
 
-        this.currentSong = (this.currentSong + 1) % songs.length;
+        this.setState({
+            currentProgression: 0,
+            currentChord: 0,
+            currentSong: (currentSong + 1) % songs.length,
+        });
     }
 
     nextProgression = () => {
-        const progressions = songs[this.currentSong];
-        this.currentProgression = (this.currentProgression + 1) % progressions.length;
-        this.currentChord = 0;
+        const {currentSong, currentProgression} = this.progressionState;
+
+        const progressions = songs[currentSong];
+        this.setState({
+            currentProgression: (currentProgression + 1) % progressions.length,
+            currentChord: 0,
+        });
+
         this.playChord();
     }
 
     nextProgressionAndPreset = () => {
         this.nextProgression();
-        this.app.nextPreset();
+        this.app.actions.nextPreset();
     }
 
     playChordAndChangeColor = () => {
         this.playChord();
-        this.app.setRandomColor();
+        this.app.actions.setRandomColor();
     }
 
     playChordAndChangePreset = () => {
         console.log(1000)
         this.playChord();
-        this.app.nextPreset();
+        this.app.actions.nextPreset();
     }
 
     handleControlKnob = (msg: MidiSubjectMessage) => {
@@ -166,6 +193,10 @@ export default class ProgressionModeManager implements ModeManager {
 
     lastTimeAction = {};
     handleKeyboardNoteOn = (msg: MidiSubjectMessage) => {
+        // console.log('on');
+
+        const {shouldDrumsChangeColor, shouldDrumsChangeProgression} = this.progressionState;
+
         const inputConfig = this.config.midi.inputs.find(i => i.name === msg.name);
         if (!inputConfig) {
             return;
@@ -174,13 +205,13 @@ export default class ProgressionModeManager implements ModeManager {
         // console.log(msg)
 
         if (msg.name === MidiInstrumentName.IAC_DRIVER_BUS_1 || msg.name === MidiInstrumentName.DTX_DRUMS) {
-            if (this.shouldDrumsChangeColor) {
-                this.app.setRandomColor();
+            if (shouldDrumsChangeColor) {
+                this.app.actions.setRandomColor();
             }
 
-            if (this.shouldDrumsChangeProgression) {
+            if (shouldDrumsChangeProgression) {
                 this.nextProgression();
-                this.shouldDrumsChangeProgression = false;
+                this.setState({shouldDrumsChangeProgression: false});
             } else {
                 this.playChord();
             }
@@ -219,11 +250,29 @@ export default class ProgressionModeManager implements ModeManager {
 
         const keyboard = inputConfig.keyboard;
         if (keyboard && equalKeyboard(keyboard, msg)) {
+            // this.processKeyboardNote(msg);
             this.midiService.sendMessage(msg.type, msg.msg);
         }
     }
 
+    // processKeyboardNote = ({msg, type}: MidiSubjectMessage) => {
+    //     if (type !== 'noteon') {
+    //         return;
+    //     }
+
+    //     if (!('note' in msg)) {
+    //         return;
+    //     }
+
+    //     console.log(msg.note)
+    //     if (msg.note < 32) {
+    //         this.app.actions.setRandomColor();
+    //     }
+    // }
+
     handleKeyboardNoteOff = (msg: MidiSubjectMessage) => {
+        // console.log('off');
+
         const inputConfig = this.config.midi.inputs.find(i => i.name === msg.name);
         if (!inputConfig) {
             return;

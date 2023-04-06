@@ -1,72 +1,30 @@
 import React, {CSSProperties, useEffect, useState} from 'react';
 
 import {ControlPanelActions, SerializedAction} from '@shared/actions/control_panel_actions';
+import {GlobalState} from '@shared/state/global_state';
 
 export type Props = {
     action: ControlPanelActions;
     color: string;
-}
-
-type ImportMeta = {
-    env: {
-        API_HOST?: string;
-    }
-}
-
-let apiHost = (import.meta as unknown as ImportMeta).env.API_HOST;
-const host = apiHost || 'http://jam.local:1337';
-
-const submitAction = (actionName: ControlPanelActions) => {
-    const action: SerializedAction = {
-        action: actionName,
-    };
-
-    return fetch(host + '/action', {
-        body: JSON.stringify(action),
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        }
-    });
+    state: GlobalState | null;
+    submitControlPanelAction: (action: ControlPanelActions) => void;
 }
 
 const isDrumColorAction = (action: string) => action === ControlPanelActions.TOGGLE_DRUM_COLOR_ACTION;
 const isDrumMusicAction = (action: string) => action === ControlPanelActions.TOGGLE_DRUM_MUSIC_ACTION;
 
 export default function ControlButton(props: Props) {
-    const [drumColorEnabled, setDrumColorEnabled] = useState(true);
-    const [drumMusicEnabled, setDrumMusicEnabled] = useState(true);
-
-    useEffect(() => {
-        if (!isDrumColorAction(props.action) && !isDrumMusicAction(props.action)) {
-            return;
-        }
-
-        fetch(host + '/drum_trigger_state', {
-            method: 'GET',
-        }).then(r => r.json()).then(({color, music}) => {
-            setDrumColorEnabled(color);
-            setDrumMusicEnabled(music);
-        });
-    }, []);
-
-    const onClick = () => {
-        submitAction(props.action).catch(console.error);
-        if (isDrumColorAction(props.action)) {
-            setDrumColorEnabled(!drumColorEnabled);
-        }
-        if (isDrumMusicAction(props.action)) {
-            setDrumMusicEnabled(!drumMusicEnabled);
-        }
+    const onClick = async () => {
+        props.submitControlPanelAction(props.action);
     };
 
     const style: CSSProperties = {backgroundColor: props.color};
 
-    if (isDrumColorAction(props.action) && drumColorEnabled) {
+    if (isDrumColorAction(props.action) && props.state?.progression.shouldDrumsChangeColor) {
         style.backgroundColor = 'green';
     }
 
-    if (isDrumMusicAction(props.action) && drumMusicEnabled) {
+    if (isDrumMusicAction(props.action) && props.state?.progression.shouldDrumsChangeProgression) {
         // style.backgroundColor = 'green';
     }
 

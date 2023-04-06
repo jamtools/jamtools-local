@@ -13,6 +13,7 @@
     "strictBindCallApply": true, /* Check that the arguments for 'bind', 'call', and 'apply' methods match the original function. */
     "skipLibCheck": true, /* Skip type checking all .d.ts files. */
     "baseUrl": "./", /* Specify the base directory to resolve non-relative module names. */
+    "resolveJsonModule": true,
     "paths": {
       "@shared/*": [
         "../shared/*"
@@ -22,5 +23,6 @@
   "include": [
     "src/*",
     "../shared/*",
+    "../data/*",
   ]
 }

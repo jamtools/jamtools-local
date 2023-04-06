@@ -1,7 +1,5 @@
 import {ReplaySubject, Subject} from 'rxjs';
 
-import {GlobalKeyboardListener} from 'node-global-key-listener';
-
 import {Config} from '../types/config_types/config_types';
 
 export type Stdin = Pick<

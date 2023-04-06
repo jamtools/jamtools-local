@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "snowpack dev --port 2000",
+    "start": "npm run dev",
+    "dev": "snowpack dev --port 2000",
+    "local": "LOCAL_MODE=true snowpack dev --port 2000",
     "build": "snowpack build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,6 +17,7 @@
     "@snowpack/plugin-sass": "^1.4.0",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
+    "@types/webmidi": "^2.0.7",
     "detect-port": "^1.5.1",
     "eslint": "^8.35.0",
     "eslint-plugin-react": "^7.32.2",
@@ -22,8 +25,11 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
+    "easymidi": "^3.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "rxjs": "^7.8.0",
+    "socket.io-client": "^4.6.1",
     "webmidi": "^3.1.4",
     "wled-client": "^0.22.1"
   }

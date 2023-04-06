@@ -1,7 +1,8 @@
 /** @type {import("snowpack").SnowpackUserConfig } */
 export default {
   env: {
-    API_HOST: process.env.API_HOST || 'http://jam.local:1337',
+    API_HOST: process.env.API_HOST,
+    LOCAL_MODE: process.env.LOCAL_MODE,
   },
   exclude: [
     'server/**',
@@ -14,6 +15,7 @@ export default {
   },
   mount: {
     /* ... */
+
   },
   plugins: [
     // ["tsconfig-paths-snowpack-plugin", {/* See Options */}],
@@ -28,6 +30,7 @@ export default {
     // "bundle": true,
   },
   packageOptions: {
+    polyfillNode: true,
     /* ... */
   },
   devOptions: {

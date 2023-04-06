@@ -100,6 +100,9 @@
                 "keyboard": {
                     "$ref": "#/definitions/KeyboardMapping"
                 },
+                "clock": {
+                    "type": "boolean"
+                },
                 "controlButtons": {
                     "type": "object",
                     "additionalProperties": {

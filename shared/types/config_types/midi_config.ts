@@ -23,6 +23,7 @@ export type MidiInputConfig = {
     keyboard?: KeyboardMapping;
     controlButtons?: ControlButtonMapping[];
     controlKnobs?: ControlKnobMapping[];
+    clock?: boolean;
 };
 
 export type MidiConfig = {

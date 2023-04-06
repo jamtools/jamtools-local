@@ -1,6 +1,6 @@
 export enum MidiInstrumentName {
     JUNO = 'Juno USB Midi',
-    YAMAHA_PIANO = 'Digial Piano',
+    YAMAHA_PIANO = 'Digital Piano',
     SPD_SX = 'SPD-SX',
     LAUNCHKEY_MINI = 'Launchkey Mini MK3 MIDI Port',
     KORG_MICRO_KEY = 'microKEY2-37 Air Bluetooth',
@@ -10,4 +10,5 @@ export enum MidiInstrumentName {
     IAC_DRIVER_BUS_1 = 'IAC Driver Bus 1',
     DTX_DRUMS = 'DTX drums',
     GRAND_PIANO = 'USB MIDI Interface',
+    VI49 = 'VI49 Out'
 };
