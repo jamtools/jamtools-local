@@ -6,7 +6,8 @@ import io from 'socket.io-client'
 // import { WEBSOCKET_CONNECT_STRING } from '../config';
 
 export type WebsocketMessage<T> = {
-    type: string,
+    type: string;
+    flash?: boolean;
 } & ({
     data: T;
 } | {
@@ -15,21 +16,32 @@ export type WebsocketMessage<T> = {
 
 const WEBSOCKET_CONNECT_STRING = `http://${window.location.hostname}:1337`;
 
-const socket = io(WEBSOCKET_CONNECT_STRING);
+let socket: io;
 
 const websocketMessageSubject: Subject<WebsocketMessage<any>> = new ReplaySubject();
 
 export const sendMessage = <T>(message: WebsocketMessage<T>) => {
-    if (socket) {
-        socket.send(message)
+    if (!socket) {
+        initSocket();
     }
+
+    socket.send(message)
 };
 
-socket.on('message', (message: WebsocketMessage<any>) => {
-    websocketMessageSubject.next(message);
-});
+const initSocket = () => {
+    socket = io(WEBSOCKET_CONNECT_STRING);
+    socket.on('message', (message: WebsocketMessage<any>) => {
+        websocketMessageSubject.next(message);
+    });
+}
 
-export const subscribeToMessages = (callback: (msg: WebsocketMessage<any>) => void) => websocketMessageSubject.subscribe(callback);
+export const subscribeToMessages = (callback: (msg: WebsocketMessage<any>) => void) => {
+    if (!socket) {
+        initSocket();
+    }
+
+    websocketMessageSubject.subscribe(callback);
+}
 
 subscribeToMessages(console.log);
 

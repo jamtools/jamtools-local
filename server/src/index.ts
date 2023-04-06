@@ -12,6 +12,7 @@ const conf: Config = config;
 import initServer from './server';
 import {CHORDS} from '@shared/constants/chord_constants';
 import {jimmySet1, jimmySet2, michaelSet1} from '@shared/constants/progression_constants';
+import {exitHandler} from './exit_handler';
 
 const songs: number[][][][] = [
     // set1,
@@ -31,6 +32,8 @@ const userData: UserDataState = {
 const app = new App(easymidi, process.stdin, config, userData);
 
 (async () => {
+    exitHandler(app);
+
     const server = await initServer(app);
     server.listen(1337);
 

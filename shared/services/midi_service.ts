@@ -1,5 +1,6 @@
 import {Input, Output} from 'easymidi';
 import {ReplaySubject, Subject} from 'rxjs';
+import {MidiTriggerMappings} from '../types/trigger_types';
 
 import {MidiInstrumentName} from '../constants/midi_instrument_constants';
 import {MidiMessage, MidiMessageType} from '../midi';
@@ -13,20 +14,33 @@ export type MidiSubjectMessage = {
 }
 
 export default class MidiService {
-    private subject: Subject<MidiSubjectMessage> = new ReplaySubject();
+    private noteOnSubject: Subject<MidiSubjectMessage> = new ReplaySubject();
     private inputs: Input[] = [];
     private outputs: Output[] = [];
 
     constructor(private midi: EasyMidi, private config: Config) {
-        const allInputs = midi.getInputs();
-        for (const configInput of config.midi.inputs) {
-            if (allInputs.find(midiName => midiName === configInput.name)) {
-                this.registerInput(configInput.name as MidiInstrumentName);
+        this.setupMidi();
+    }
+
+    setupMidi = async () => {
+        const maybeEnable = this.midi as unknown as {enable?: () => Promise<void>};
+        if (maybeEnable.enable) {
+            try {
+                await maybeEnable.enable();
+            } catch (e) {
+                alert(e)
             }
         }
 
-        const allOutputs = midi.getOutputs();
-        for (const configOutput of config.midi.outputs) {
+        const allInputs = this.midi.getInputs();
+        for (const configInput of this.config.midi.inputs) {
+            if (allInputs.find(midiName => midiName === configInput.name)) {
+                this.registerInput(configInput.name as MidiInstrumentName, configInput);
+            }
+        }
+
+        const allOutputs = this.midi.getOutputs();
+        for (const configOutput of this.config.midi.outputs) {
             if (allOutputs.find(midiName => midiName === configOutput.name)) {
                 this.registerOutput(configOutput.name as MidiInstrumentName);
             }
@@ -41,7 +55,7 @@ export default class MidiService {
     }
 
     subscribe = (callback: (subjectMessage: MidiSubjectMessage) => void) => {
-        return this.subject.subscribe(callback);
+        return this.noteOnSubject.subscribe(callback);
     }
 
     close = () => {
@@ -53,7 +67,7 @@ export default class MidiService {
     }
 
     notesOff = (output: Output) => {
-        for (let i=0; i< 100; i++) {
+        for (let i = 0; i < 100; i++) {
             const note = 24 + i;
             output.send('noteoff', {
                 channel: 0,
@@ -70,11 +84,17 @@ export default class MidiService {
     getInputs = () => this.inputs;
     getOutputs = () => this.outputs;
 
-    private registerInput = (midiName: MidiInstrumentName) => {
+    private registerInput = (midiName: MidiInstrumentName, inputConfig: MidiTriggerMappings) => {
         const input = new this.midi.Input(midiName);
 
         input.on('noteon', (msg) => {
+            // console.log('onnyy')
             if (msg.velocity === 0) {
+                this.noteOnSubject.next({
+                    name: midiName,
+                    type: 'noteoff',
+                    msg,
+                });
                 return;
             }
 
@@ -82,7 +102,7 @@ export default class MidiService {
                 return;
             }
 
-            this.subject.next({
+            this.noteOnSubject.next({
                 name: midiName,
                 type: 'noteon',
                 msg,
@@ -90,7 +110,8 @@ export default class MidiService {
         });
 
         input.on('noteoff', (msg) => {
-            this.subject.next({
+            // console.log('offyy')
+            this.noteOnSubject.next({
                 name: midiName,
                 type: 'noteoff',
                 msg,
@@ -98,12 +119,22 @@ export default class MidiService {
         });
 
         input.on('cc', (msg) => {
-            this.subject.next({
+            this.noteOnSubject.next({
                 name: midiName,
                 type: 'cc',
                 msg,
             });
         });
+
+        if (inputConfig.clock) {
+            input.on('clock', (msg) => {
+                this.noteOnSubject.next({
+                    name: midiName,
+                    type: 'clock',
+                    msg,
+                });
+            });
+        }
 
         this.inputs.push(input);
     }

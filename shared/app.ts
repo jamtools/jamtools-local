@@ -1,8 +1,6 @@
-import process from 'node:process';
-
 import {ReplaySubject, Subject} from 'rxjs';
 
-import ProgressionModeManager from './application_mode_managers.ts/progression_mode_manager';
+import ProgressionModeManager from './application_mode_managers.ts/adhoc_chord_mode/progression_mode_manager';
 import {CHORDS} from './constants/chord_constants';
 import ChordSupervisor from './music/chord_supervisor';
 
@@ -37,8 +35,18 @@ export default class App {
 
         this.progressionMode = new ProgressionModeManager(this.midiService, this.wledService, config, this);
         // this.progressionMode = new ProgressionModeManager(this.midiService, this.wledService, this.qwertyService, config, this);
+    }
 
-        this.setExitHandler();
+    deps = {
+        midi: this.midi,
+        stdin: this.stdin,
+        config: this.config,
+        userData: this.userData,
+    }
+
+    services = {
+        midi: this.midiService,
+        userData: this.userData,
     }
 
     getUserData = () => this.userData;
@@ -90,6 +98,10 @@ export default class App {
         nextPreset: () => {
             this.wledService.setRandomPreset();
         },
+
+        testMidiNote: () => {
+
+        }
     }
 
     playSpecificChord = (chord: number[]) => {
@@ -97,34 +109,12 @@ export default class App {
 
         this.chordSupervisor.playChord(chord);
         const name = Object.keys(CHORDS).find(key => CHORDS[key] === chord);
-        setTimeout(() => console.log('playing chord ' + name), );
+        setTimeout(() => console.log('playing chord ' + name),);
     }
 
-    private setExitHandler = () => {
-        // so the program will not close instantly
-        this.stdin.resume();
-
-        const exitHandler = (options, exitCode) => {
-            if (options.cleanup) {
-                this.progressionMode.close();
-                this.midiService.close();
-                this.qwertyService.close();
-            }
-            if (options.exit) {
-                process.exit();
-            }
-        }
-
-        // always runs after other handlers
-        process.on('exit', exitHandler.bind(null, {cleanup: true}));
-
-        // catches ctrl+c event
-        process.on('SIGINT', exitHandler.bind(null, {exit: true}));
-
-        // catches "kill pid" (for example: nodemon restart)
-        process.on('SIGUSR1', exitHandler.bind(null, {exit: true}));
-        process.on('SIGUSR2', exitHandler.bind(null, {exit: true}));
-
-        // process.on('uncaughtException', exitHandler.bind(null, {exit: true}));
+    close = () => {
+        this.progressionMode.close();
+        this.midiService.close();
+        this.qwertyService.close();
     }
 }

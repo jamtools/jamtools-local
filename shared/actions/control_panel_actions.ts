@@ -9,6 +9,7 @@ export enum ControlPanelActions {
     CHANGE_PRESET = 'Change Preset',
     TOGGLE_DRUM_COLOR_ACTION = 'Toggle Drum Color Action',
     TOGGLE_DRUM_MUSIC_ACTION = 'Toggle Drum Chord/Progression Action',
+    TEST_MIDI_NOTE = 'Test Midi Note',
     // LIGHTS_OFF = 'Lights Off',
     // SAVE_PRESET = 'Save Preset',
 }
@@ -29,6 +30,7 @@ export const getActionMap = ({actions}: App): ActionMap => ({
     [ControlPanelActions.TOGGLE_DRUM_MUSIC_ACTION]: actions.toggleDrumsMusicAction,
     [ControlPanelActions.SOUND_OFF]: actions.noteOffAll,
     [ControlPanelActions.NEXT_SONG]: actions.nextSong,
+    [ControlPanelActions.TEST_MIDI_NOTE]: actions.testMidiNote,
     // [ControlPanelActions.LIGHTS_OFF]: app.setRandomColor,
     // [ControlPanelActions.RAINBOW]: app.setRandomColor,
     // [ControlPanelActions.SAVE_PRESET]: app.savePreset,

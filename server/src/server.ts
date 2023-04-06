@@ -20,6 +20,7 @@ export default async function initServer(app: App): Promise<http.Server> {
             'http://localhost:1234',
             'http://localhost:2000',
             'http://192.168.0.137:2000',
+            'http://192.168.1.142:2000',
             'http://jam.local',
             'http://localhost',
             '*',
