@@ -103,6 +103,9 @@
                 "clock": {
                     "type": "boolean"
                 },
+                "sustainPedal": {
+                    "type": "boolean"
+                },
                 "controlButtons": {
                     "type": "object",
                     "additionalProperties": {

@@ -1,6 +1,6 @@
 import MidiService from '../services/midi_service';
 
-export default class ChordSupervisor {
+export class OutputChordSupervisor {
     heldDownNotes: number[] = [];
 
     constructor(private midi: MidiService) {

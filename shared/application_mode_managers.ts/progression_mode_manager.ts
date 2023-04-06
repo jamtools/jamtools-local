@@ -1,21 +1,21 @@
 import easymidi from 'easymidi';
 import {Subscription} from 'rxjs';
-import {CHORDS} from '../../constants/chord_constants';
-import {jimmySet1, jimmySet2, michaelSet1, set1, set2} from '../../constants/progression_constants';
-import BluetoothRemoteDynamicMapping from '../../dynamic_mappings/qwerty_dynamic_mappings';
-import ChordSupervisor from '../../music/chord_supervisor';
+import {CHORDS} from '../constants/chord_constants';
+import {jimmySet1, jimmySet2, michaelSet1, set1, set2} from '../constants/progression_constants';
+import BluetoothRemoteDynamicMapping from '../dynamic_mappings/qwerty_dynamic_mappings';
+import {OutputChordSupervisor} from '../music/output_chord_supervisor';
 
-import MidiService, {MidiSubjectMessage} from '../../services/midi_service';
-import QwertyService from '../../services/qwerty_service';
-import WledService from '../../services/wled_service';
-import {Config} from '../../types/config_types/config_types';
+import MidiService, {MidiSubjectMessage} from '../services/midi_service';
+import QwertyService from '../services/qwerty_service';
+import WledService from '../services/wled_service';
+import {Config} from '../types/config_types/config_types';
 
-import {ModeManager} from '../../types/mode_manager_types';
-import {ControlButtonMapping, KeyboardMapping} from '../../types/trigger_types';
-import {log} from '../../utils';
+import {ModeManager} from '../types/mode_manager_types';
+import {ControlButtonMapping, KeyboardMapping} from '../types/trigger_types';
+import {log} from '../utils';
 
-import type App from '../../app';
-import {MidiInstrumentName} from '../../constants/midi_instrument_constants';
+import type App from '../app';
+import {MidiInstrumentName} from '../constants/midi_instrument_constants';
 import {ProgressionState} from '@shared/state/progression_state';
 
 type MidiEventHandler = ((msg: MidiSubjectMessage) => void) | undefined;

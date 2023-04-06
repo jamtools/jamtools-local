@@ -1,8 +1,8 @@
 import {ReplaySubject, Subject} from 'rxjs';
 
-import ProgressionModeManager from './application_mode_managers.ts/adhoc_chord_mode/progression_mode_manager';
+import ProgressionModeManager from './application_mode_managers.ts/progression_mode_manager';
 import {CHORDS} from './constants/chord_constants';
-import ChordSupervisor from './music/chord_supervisor';
+import {OutputChordSupervisor} from './music/output_chord_supervisor';
 
 import MidiService from './services/midi_service';
 import QwertyService, {Stdin} from './services/qwerty_service';
@@ -18,7 +18,7 @@ export default class App {
     private midiService: MidiService;
     private wledService: WledService;
     private qwertyService: QwertyService;
-    private chordSupervisor: ChordSupervisor;
+    private chordSupervisor: OutputChordSupervisor;
 
     private globalStateSubject: Subject<GlobalState> = new ReplaySubject();
 
@@ -31,7 +31,7 @@ export default class App {
         this.midiService = new MidiService(midi, config);
         this.wledService = new WledService(config);
         this.qwertyService = new QwertyService(stdin, config);
-        this.chordSupervisor = new ChordSupervisor(this.midiService);
+        this.chordSupervisor = new OutputChordSupervisor(this.midiService);
 
         this.progressionMode = new ProgressionModeManager(this.midiService, this.wledService, config, this);
         // this.progressionMode = new ProgressionModeManager(this.midiService, this.wledService, this.qwertyService, config, this);

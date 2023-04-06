@@ -1,4 +1,7 @@
+import {MidiInstrumentName} from 'constants/midi_instrument_constants';
 import type easymidi from 'easymidi';
+
+import {ControlButtonMapping, KeyboardMapping} from 'types/trigger_types';
 
 import {INPUT_EXTENDED_TYPES, INPUT_TYPES, SPAMMY_MIDI_EVENT_TYPES} from './constants/easymidi_constants';
 
@@ -12,6 +15,10 @@ export const sendNoteToPiano = (output) => {
 
 export type MidiMessage = easymidi.ControlChange | easymidi.Pitch | easymidi.Note;
 export type MidiMessageType = 'noteon' | 'noteoff' | 'cc' | 'clock';
+
+export type NoteOnEvent = easymidi.Note;
+export type NoteOffEvent = easymidi.Note;
+export type ControlChangeEvent = easymidi.ControlChange;
 
 let clocks = [];
 let currentTime = (new Date().getTime());
@@ -64,4 +71,35 @@ const isSpammyMidiEvent = (type: string, msg: MidiMessage): boolean => {
     }
 
     return false;
+}
+
+export const equalControlButton = (button: ControlButtonMapping | undefined, msg: MidiSubjectMessage) => {
+    if (!button) {
+        return false;
+    }
+
+    const noteMsg = msg.msg as easymidi.Note;
+    return button.channel === noteMsg.channel && button.note === noteMsg.note;
+};
+
+export const equalKeyboard = (keyboard: KeyboardMapping, msg: MidiSubjectMessage) => {
+    const noteMsg = msg.msg as easymidi.Note;
+    return keyboard.channel === noteMsg.channel;
+};
+
+export const isNoteOnEvent = (msg: MidiSubjectMessage): msg is MidiSubjectMessage<NoteOnEvent> => {
+    return msg.type === 'noteon';
+}
+
+export const isNoteOffEvent = (msg: MidiSubjectMessage): msg is MidiSubjectMessage<NoteOffEvent> => {
+    return msg.type === 'noteoff';
+}
+export const isControlChangeEvent = (msg: MidiSubjectMessage): msg is MidiSubjectMessage<ControlChangeEvent> => {
+    return msg.type === 'cc';
+}
+
+export type MidiSubjectMessage<T extends MidiMessage = MidiMessage> = {
+    name: MidiInstrumentName;
+    type: MidiMessageType
+    msg: T;
 }

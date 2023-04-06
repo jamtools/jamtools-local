@@ -22,4 +22,5 @@ export type MidiTriggerMappings = {
     controlButtons?: {[name: string]: ControlButtonMapping | undefined};
     controlKnobs?: ControlKnobMapping[];
     clock?: boolean;
+    sustainPedal?: boolean;
 }

@@ -3,18 +3,14 @@ import {ReplaySubject, Subject} from 'rxjs';
 import {MidiTriggerMappings} from '../types/trigger_types';
 
 import {MidiInstrumentName} from '../constants/midi_instrument_constants';
-import {MidiMessage, MidiMessageType} from '../midi';
+import {ControlChangeEvent, isControlChangeEvent, MidiMessage, MidiMessageType, MidiSubjectMessage, NoteOffEvent, NoteOnEvent} from '../midi';
 import {Config} from '../types/config_types/config_types';
 import {EasyMidi} from '../types/easy_midi_types';
 
-export type MidiSubjectMessage = {
-    name: MidiInstrumentName;
-    type: MidiMessageType;
-    msg: MidiMessage;
-}
+export {MidiSubjectMessage} from '../midi';
 
 export default class MidiService {
-    private noteOnSubject: Subject<MidiSubjectMessage> = new ReplaySubject();
+    private midiEventSubject: Subject<MidiSubjectMessage> = new ReplaySubject();
     private inputs: Input[] = [];
     private outputs: Output[] = [];
 
@@ -55,7 +51,37 @@ export default class MidiService {
     }
 
     subscribe = (callback: (subjectMessage: MidiSubjectMessage) => void) => {
-        return this.noteOnSubject.subscribe(callback);
+        return this.midiEventSubject.subscribe(callback);
+    }
+
+    subscribeToSustainPedal = (
+        onPress: (subjectMessage: MidiSubjectMessage<ControlChangeEvent>) => void,
+        onRelease: (subjectMessage: MidiSubjectMessage<ControlChangeEvent>) => void,
+    ) => {
+        return this.midiEventSubject.subscribe((event) => {
+            if (!isControlChangeEvent(event)) {
+                return;
+            }
+
+            if (!this.isSustainPedalEvent(event)) {
+                return;
+            }
+
+            if (event.msg.value === 127) {
+                onPress(event);
+            } else {
+                onRelease(event);
+            }
+        });
+    }
+
+    private isSustainPedalEvent = (event: MidiSubjectMessage<ControlChangeEvent>): boolean => {
+        const inputConfig = this.config.midi.inputs.find(i => isControlChangeEvent.name === event.name);
+        if (!inputConfig) {
+            return false;
+        }
+
+        return Boolean(inputConfig.sustainPedal);
     }
 
     close = () => {
@@ -90,7 +116,7 @@ export default class MidiService {
         input.on('noteon', (msg) => {
             // console.log('onnyy')
             if (msg.velocity === 0) {
-                this.noteOnSubject.next({
+                this.midiEventSubject.next({
                     name: midiName,
                     type: 'noteoff',
                     msg,
@@ -102,7 +128,7 @@ export default class MidiService {
                 return;
             }
 
-            this.noteOnSubject.next({
+            this.midiEventSubject.next({
                 name: midiName,
                 type: 'noteon',
                 msg,
@@ -111,7 +137,7 @@ export default class MidiService {
 
         input.on('noteoff', (msg) => {
             // console.log('offyy')
-            this.noteOnSubject.next({
+            this.midiEventSubject.next({
                 name: midiName,
                 type: 'noteoff',
                 msg,
@@ -119,7 +145,7 @@ export default class MidiService {
         });
 
         input.on('cc', (msg) => {
-            this.noteOnSubject.next({
+            this.midiEventSubject.next({
                 name: midiName,
                 type: 'cc',
                 msg,
@@ -128,7 +154,7 @@ export default class MidiService {
 
         if (inputConfig.clock) {
             input.on('clock', (msg) => {
-                this.noteOnSubject.next({
+                this.midiEventSubject.next({
                     name: midiName,
                     type: 'clock',
                     msg,
