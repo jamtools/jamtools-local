@@ -106,6 +106,9 @@
                 "sustainPedal": {
                     "type": "boolean"
                 },
+                "mainTrigger": {
+                    "$ref": "#/definitions/ControlButtonMapping"
+                },
                 "controlButtons": {
                     "type": "object",
                     "additionalProperties": {

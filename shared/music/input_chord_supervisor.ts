@@ -21,17 +21,17 @@ export default class InputChordSupervisor {
     private midiEventHandlers: {[eventName: string]: MidiEventHandler | undefined};
 
     constructor(private midi: MidiService) {
+        this.midiEventHandlers = {
+            noteon: this.handleNoteOn,
+            noteoff: this.handleNoteOff,
+        }
+
         this.midiServiceSubject = midi.subscribeToMusicalKeyboard(msg => {
             const handler = this.midiEventHandlers[msg.type];
             if (handler) {
                 handler(msg);
             }
         });
-
-        this.midiEventHandlers = {
-            noteon: this.handleNoteOn,
-            noteoff: this.handleNoteOff,
-        }
     }
 
     close = () => {

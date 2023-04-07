@@ -1,5 +1,6 @@
 import {MidiInstrumentName} from 'constants/midi_instrument_constants';
 import type easymidi from 'easymidi';
+import type {Note} from 'easymidi';
 
 import {ControlButtonMapping, KeyboardMapping} from 'types/trigger_types';
 
@@ -98,8 +99,26 @@ export const isNoteOnEvent = (msg: MidiSubjectMessage): msg is MidiSubjectMessag
 export const isNoteOffEvent = (msg: MidiSubjectMessage): msg is MidiSubjectMessage<NoteOffEvent> => {
     return msg.type === 'noteoff';
 }
+
 export const isControlChangeEvent = (msg: MidiSubjectMessage): msg is MidiSubjectMessage<ControlChangeEvent> => {
     return msg.type === 'cc';
+}
+
+export const equalChords = (chord1: Note[], chord2: Note[]) => {
+    const set1 = new Set(chord1);
+    const set2 = new Set(chord2);
+
+    if (set1.size !== set2.size) {
+        return false;
+    }
+
+    for (const c of set1.values()) {
+        if (!set2.has(c)) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 export type MidiSubjectMessage<T extends MidiMessage = MidiMessage> = {

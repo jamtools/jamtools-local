@@ -20,6 +20,7 @@ export const oldMain = () => {
     // // const input = new easymidi.Input(MidiInstrumentName.DTX_DRUMS);
     // const input = new easymidi.Input(MidiInstrumentName.IAC_DRIVER_BUS_1);
     // const input = new easymidi.Input(MidiInstrumentName.YAMAHA_PIANO);
+    const input = new easymidi.Input(MidiInstrumentName.LAUNCHKEY_MINI);
     // listenToAllMidiEvents(input);
 
     // wledMain();

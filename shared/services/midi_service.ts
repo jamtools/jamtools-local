@@ -3,7 +3,7 @@ import {ReplaySubject, Subject} from 'rxjs';
 import {MidiTriggerMappings} from '../types/trigger_types';
 
 import {MidiInstrumentName} from '../constants/midi_instrument_constants';
-import {ControlChangeEvent, equalKeyboard, isControlChangeEvent, isNoteOffEvent, isNoteOnEvent, MidiMessage, MidiMessageType, MidiSubjectMessage, NoteOffEvent, NoteOnEvent} from '../midi';
+import {ControlChangeEvent, equalControlButton, equalKeyboard, isControlChangeEvent, isNoteOffEvent, isNoteOnEvent, MidiMessage, MidiMessageType, MidiSubjectMessage, NoteOffEvent, NoteOnEvent} from '../midi';
 import {Config} from '../types/config_types/config_types';
 import {EasyMidi} from '../types/easy_midi_types';
 
@@ -103,7 +103,11 @@ export default class MidiService {
         }
 
         const input = this.getInputConfig(event.name);
-        return Boolean(input?.mainTrigger);
+        if (!input?.mainTrigger) {
+            return false;
+        }
+
+        return equalControlButton(input.mainTrigger, event);
     }
 
     subscribeToMusicalKeyboard = (

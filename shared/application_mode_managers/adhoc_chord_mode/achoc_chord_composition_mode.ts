@@ -10,8 +10,9 @@ import type App from '../../app';
 import {MidiInstrumentName} from '../../constants/midi_instrument_constants';
 import {AdhocProgressionState, ProgressionState} from '../../state/progression_state';
 import InputChordSupervisor from '../../music/input_chord_supervisor';
-import {ControlChangeEvent, isNoteOnEvent, NoteOffEvent, NoteOnEvent} from '../../midi';
+import {ControlChangeEvent, equalChords, isNoteOnEvent, NoteOffEvent, NoteOnEvent} from '../../midi';
 import type {Note} from 'easymidi';
+import AdhocChordPlaybackMode from './achoc_chord_playback_mode';
 
 export default class AdhocChordCompositionMode implements ApplicationModeManager<AdhocProgressionState> {
     private state: AdhocProgressionState = {};
@@ -19,17 +20,27 @@ export default class AdhocChordCompositionMode implements ApplicationModeManager
     private sustainPedalSubscription: Subscription;
     private mainTriggerSubscription: Subscription;
     private musicalKeyboardSubscription: Subscription;
-    private inputChordSupervisor = new InputChordSupervisor(this.midiService);
+
+    storedChords: Note[][] = [];
 
     constructor(
         private midiService: MidiService,
         private config: Config,
         private app: App,
-    ) {
-        // this.inputChordSupervisor = new InputChordSupervisor(midiService);
-        this.sustainPedalSubscription = midiService.subscribeToSustainPedal(this.handleSustainPedalPress, this.handleSustainPedalRelease);
-        this.mainTriggerSubscription = midiService.subscribeToMainTrigger(this.handleMainTrigger);
-        this.musicalKeyboardSubscription = midiService.subscribeToMusicalKeyboard(this.handleMusicalKeyboardNote);
+        ) {
+            // this.inputChordSupervisor = new InputChordSupervisor(midiService);
+            this.mainTriggerSubscription = midiService.subscribeToMainTrigger(this.handleMainTrigger);
+            this.musicalKeyboardSubscription = midiService.subscribeToMusicalKeyboard(this.handleMusicalKeyboardNote);
+            this.sustainPedalSubscription = midiService.subscribeToSustainPedal(this.handleSustainPedalPress, this.handleSustainPedalRelease);
+        }
+
+    private inputChordSupervisor = new InputChordSupervisor(this.midiService);
+
+    public close = () => {
+        this.mainTriggerSubscription.unsubscribe();
+        this.musicalKeyboardSubscription.unsubscribe();
+        this.sustainPedalSubscription.unsubscribe();
+        this.inputChordSupervisor.close();
     }
 
     getState = (): AdhocProgressionState => this.state;
@@ -49,14 +60,18 @@ export default class AdhocChordCompositionMode implements ApplicationModeManager
 
     // slim down current config. make a new config file but also keep old one
 
-    public close = () => {
-        this.mainTriggerSubscription.unsubscribe();
-        this.musicalKeyboardSubscription.unsubscribe();
-        this.sustainPedalSubscription.unsubscribe();
+    private handleFinalConfirm = () => {
+        // DO THIS NEXT
+        console.log('final confirm');
+        this.close();
+        this.app.changeModeAdhocPlayback(this.storedChords);
+
+        // this should instantiate a AdhocChordPlaybackMode object and send it to App from an exposed method
+        // this.close(); // maybe do this in App instead?
     }
 
     private handleMainTrigger = (event: MidiSubjectMessage<NoteOnEvent>) => {
-        // TODO
+        // Nothing to do in this mode
     }
 
     private handleMusicalKeyboardNote = (event: MidiSubjectMessage<NoteOnEvent | NoteOffEvent>) => {
@@ -72,13 +87,28 @@ export default class AdhocChordCompositionMode implements ApplicationModeManager
     private currentSustainedNotes: Note[] = [];
     private handleSustainPedalPress = (event: MidiSubjectMessage<ControlChangeEvent>) => {
         this.sustainIsPressed = true;
+
+        const currentNotes = this.inputChordSupervisor.getCurrentlyHeldDownNotes();
+        if (!currentNotes.length) {
+            return;
+        }
+
+        const previousChord = this.storedChords[this.storedChords.length - 1];
+
+        if (previousChord && equalChords(previousChord, currentNotes)) {
+            this.handleFinalConfirm();
+            return;
+        }
+
+        console.log('add chord')
+        this.storedChords.push(currentNotes);
     }
 
     private handleSustainPedalRelease = (event: MidiSubjectMessage<ControlChangeEvent>) => {
+        this.sustainIsPressed = false;
+
         const currentNotes = this.inputChordSupervisor.getCurrentlyHeldDownNotes();
         this.midiService.notesOffExceptFor(currentNotes);
-
-        this.sustainIsPressed = false;
     }
 
     handleMusicalKeyboardNoteOn = (msg: MidiSubjectMessage<NoteOnEvent>) => {
@@ -86,8 +116,6 @@ export default class AdhocChordCompositionMode implements ApplicationModeManager
             this.currentSustainedNotes.push(msg.msg);
         }
 
-        // always send a note on, even if it's already being held down by the instrument via sustain
-        // this way, juno doesn't stop playing that one at 6 count limit
         this.midiService.sendMessage(msg.type, msg.msg);
     }
 

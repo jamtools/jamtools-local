@@ -1,4 +1,5 @@
 import {ReplaySubject, Subject} from 'rxjs';
+import type {Note} from 'easymidi';
 
 import ProgressionModeManager from './application_mode_managers/progression_mode_manager';
 import {CHORDS} from './constants/chord_constants';
@@ -16,6 +17,7 @@ import {ProgressionState} from 'state/progression_state';
 
 import {ApplicationModeManager} from './application_mode_managers/application_mode_manager';
 import AdhocChordCompositionMode from './application_mode_managers/adhoc_chord_mode/achoc_chord_composition_mode';
+import AdhocChordPlaybackMode from './application_mode_managers/adhoc_chord_mode/achoc_chord_playback_mode';
 
 export default class App {
     private globalStateSubject: Subject<GlobalState> = new ReplaySubject();
@@ -38,9 +40,9 @@ export default class App {
     // progressionMode = new ProgressionModeManager(this.midiService, this.wledService, this.config, this);
 
     // adhocCompositionMode?: AdhocChordCompositionMode;
-    adhocCompositionMode = new AdhocChordCompositionMode(this.midiService, this.config, this);
+    adhocCompositionMode?: AdhocChordCompositionMode = new AdhocChordCompositionMode(this.midiService, this.config, this);
 
-    private activeMode: ApplicationModeManager = this.adhocCompositionMode;
+    private activeMode: ApplicationModeManager = this.adhocCompositionMode!;
 
     chordSupervisor = new OutputChordSupervisor(this.midiService);
 
@@ -109,6 +111,13 @@ export default class App {
         testMidiNote: () => {
 
         }
+    }
+
+    changeModeAdhocPlayback = (chords: Note[][]) => {
+        this.adhocCompositionMode = undefined;
+
+        const playbackMode = new AdhocChordPlaybackMode(chords, this.midiService, this.config, this);
+        this.activeMode = playbackMode;
     }
 
     playSpecificChord = (chord: number[]) => {

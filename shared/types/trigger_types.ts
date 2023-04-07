@@ -21,5 +21,5 @@ export type MidiTriggerMappings = {
 
     // these should be changed to be ControlButtonMapping to be more configurable
     sustainPedal?: boolean;
-    mainTrigger?: boolean;
+    mainTrigger?: ControlButtonMapping;
 }

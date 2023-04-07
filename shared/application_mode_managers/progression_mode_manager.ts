@@ -17,6 +17,7 @@ import {log} from '../utils';
 import type App from '../app';
 import {MidiInstrumentName} from '../constants/midi_instrument_constants';
 import {ProgressionState} from '../state/progression_state';
+import {equalControlButton, equalKeyboard} from '../midi';
 
 type MidiEventHandler = ((msg: MidiSubjectMessage) => void) | undefined;
 
@@ -305,17 +306,3 @@ export default class ProgressionModeManager implements ApplicationModeManager<Pr
         // }
     }
 }
-
-export const equalControlButton = (button: ControlButtonMapping | undefined, msg: MidiSubjectMessage) => {
-    if (!button) {
-        return false;
-    }
-
-    const noteMsg = msg.msg as easymidi.Note;
-    return button.channel === noteMsg.channel && button.note === noteMsg.note;
-};
-
-export const equalKeyboard = (keyboard: KeyboardMapping, msg: MidiSubjectMessage) => {
-    const noteMsg = msg.msg as easymidi.Note;
-    return keyboard.channel === noteMsg.channel;
-};
