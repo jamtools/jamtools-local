@@ -3,7 +3,7 @@ import MidiService from '../services/midi_service';
 import {Subscription} from 'rxjs';
 
 import {MidiInstrumentName} from '../constants/midi_instrument_constants';
-import {isNoteOnEvent, MidiMessage, MidiMessageType, NoteOnEvent} from '../midi';
+import {isNoteOffEvent, isNoteOnEvent, MidiMessage, MidiMessageType, NoteOnEvent} from '../midi';
 
 export type MidiSubjectMessage = {
     name: MidiInstrumentName;
@@ -18,18 +18,20 @@ export default class InputChordSupervisor {
 
     private heldDownNotes: NoteOnEvent[] = [];
 
-    private midiEventHandlers: {[eventName: string]: MidiEventHandler | undefined} = {
-        noteon: () => this.handleNoteOn,
-        noteoff: () => this.handleNoteOff,
-    }
+    private midiEventHandlers: {[eventName: string]: MidiEventHandler | undefined};
 
     constructor(private midi: MidiService) {
-        this.midiServiceSubject = midi.subscribe(msg => {
+        this.midiServiceSubject = midi.subscribeToMusicalKeyboard(msg => {
             const handler = this.midiEventHandlers[msg.type];
             if (handler) {
                 handler(msg);
             }
         });
+
+        this.midiEventHandlers = {
+            noteon: this.handleNoteOn,
+            noteoff: this.handleNoteOff,
+        }
     }
 
     close = () => {
@@ -38,14 +40,6 @@ export default class InputChordSupervisor {
 
     handleNoteOn: MidiEventHandler = (event) => {
         if (!isNoteOnEvent(event)) {
-            return;
-        }
-
-        if (event.msg.velocity === 0) {
-            this.handleNoteOff({
-                ...event,
-                type: 'noteoff',
-            });
             return;
         }
 
@@ -70,14 +64,13 @@ export default class InputChordSupervisor {
     }
 
     handleNoteOff: MidiEventHandler = (event) => {
-        const msg = event.msg
-        if (!isNoteOffEvent(event.type, msg)) {
+        if (!isNoteOffEvent(event)) {
             return;
         }
 
         const current = this.getCurrentlyHeldDownNotes();
 
-        const index = current.findIndex(n => n.note === msg.note)
+        const index = current.findIndex(n => n.note === event.msg.note);
         if (index !== -1) {
             this.heldDownNotes = [
                 ...current.slice(0, index),
@@ -88,29 +81,5 @@ export default class InputChordSupervisor {
 
     getCurrentlyHeldDownNotes = (): NoteOnEvent[] => {
         return this.heldDownNotes;
-    }
-
-    playChord = (nextChord: number[]) => {
-        // nextChord = nextChord.slice(0, 4);
-
-        const toRelease = this.heldDownNotes.filter(note => !nextChord.includes(note));
-        const toPress = nextChord.filter(note => !this.heldDownNotes.includes(note));
-        this.heldDownNotes = nextChord;
-
-        toRelease.forEach(note => {
-            this.midi.sendMessage('noteoff', {
-                channel: 0,
-                note,
-                velocity: 0,
-            });
-        });
-
-        toPress.forEach(note => {
-            this.midi.sendMessage('noteon', {
-                channel: 0,
-                note,
-                velocity: 100,
-            });
-        });
     }
 }

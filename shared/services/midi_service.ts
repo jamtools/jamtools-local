@@ -1,4 +1,4 @@
-import {Input, Note, Output} from 'easymidi';
+import type  {Input, Note, Output} from 'easymidi';
 import {ReplaySubject, Subject} from 'rxjs';
 import {MidiTriggerMappings} from '../types/trigger_types';
 
@@ -157,7 +157,7 @@ export default class MidiService {
     notesOffExceptFor = (keepHolding: Note[]) => {
         for (let i = 0; i < 100; i++) {
             const note = 24 + i;
-            if (keepHolding.includes(note)) {
+            if (keepHolding.find(n => n.note === note)) {
                 continue;
             }
 

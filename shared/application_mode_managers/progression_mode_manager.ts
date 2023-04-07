@@ -1,4 +1,4 @@
-import easymidi from 'easymidi';
+import type easymidi from 'easymidi';
 import {Subscription} from 'rxjs';
 import {CHORDS} from '../constants/chord_constants';
 import {jimmySet1, jimmySet2, michaelSet1, set1, set2} from '../constants/progression_constants';

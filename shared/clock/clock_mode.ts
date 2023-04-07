@@ -1,4 +1,4 @@
-import {ControlChange} from 'easymidi';
+import type {ControlChange} from 'easymidi';
 import {Subscription} from 'rxjs';
 import MidiService, {MidiSubjectMessage} from '../services/midi_service';
 

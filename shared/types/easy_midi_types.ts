@@ -1,4 +1,4 @@
-import easymidi from 'easymidi';
+import type easymidi from 'easymidi';
 
 export interface InputConstructor {
     new(name: string, virtual?: boolean | undefined): easymidi.Input;

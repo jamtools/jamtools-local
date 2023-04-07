@@ -11,7 +11,7 @@ import {MidiInstrumentName} from '../../constants/midi_instrument_constants';
 import {AdhocProgressionState, ProgressionState} from '../../state/progression_state';
 import InputChordSupervisor from '../../music/input_chord_supervisor';
 import {ControlChangeEvent, isNoteOnEvent, NoteOffEvent, NoteOnEvent} from '../../midi';
-import {Note} from 'easymidi';
+import type {Note} from 'easymidi';
 
 export default class AdhocChordCompositionMode implements ApplicationModeManager<AdhocProgressionState> {
     private state: AdhocProgressionState = {};
@@ -26,7 +26,7 @@ export default class AdhocChordCompositionMode implements ApplicationModeManager
         private config: Config,
         private app: App,
     ) {
-        this.inputChordSupervisor = new InputChordSupervisor(midiService);
+        // this.inputChordSupervisor = new InputChordSupervisor(midiService);
         this.sustainPedalSubscription = midiService.subscribeToSustainPedal(this.handleSustainPedalPress, this.handleSustainPedalRelease);
         this.mainTriggerSubscription = midiService.subscribeToMainTrigger(this.handleMainTrigger);
         this.musicalKeyboardSubscription = midiService.subscribeToMusicalKeyboard(this.handleMusicalKeyboardNote);
