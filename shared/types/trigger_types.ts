@@ -1,7 +1,3 @@
-import easymidi from 'easymidi';
-
-import {MidiInstrumentName} from '../constants/midi_instrument_constants';
-
 export type KeyboardMapping = {
     channel: number;
 }
@@ -22,5 +18,8 @@ export type MidiTriggerMappings = {
     controlButtons?: {[name: string]: ControlButtonMapping | undefined};
     controlKnobs?: ControlKnobMapping[];
     clock?: boolean;
+
+    // these should be changed to be ControlButtonMapping to be more configurable
     sustainPedal?: boolean;
+    mainTrigger?: boolean;
 }

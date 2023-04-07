@@ -20,7 +20,7 @@ export type NoteOnEvent = easymidi.Note;
 export type NoteOffEvent = easymidi.Note;
 export type ControlChangeEvent = easymidi.ControlChange;
 
-let clocks = [];
+let clocks: number[] = [];
 let currentTime = (new Date().getTime());
 export const listenToAllMidiEvents = (midiInput: easymidi.Input) => {
     inputEventTypes.forEach(type => {
@@ -82,7 +82,11 @@ export const equalControlButton = (button: ControlButtonMapping | undefined, msg
     return button.channel === noteMsg.channel && button.note === noteMsg.note;
 };
 
-export const equalKeyboard = (keyboard: KeyboardMapping, msg: MidiSubjectMessage) => {
+export const equalKeyboard = (keyboard: KeyboardMapping | undefined, msg: MidiSubjectMessage) => {
+    if (!keyboard) {
+        return false;
+    }
+
     const noteMsg = msg.msg as easymidi.Note;
     return keyboard.channel === noteMsg.channel;
 };

@@ -1,13 +1,13 @@
-import {Input, Output} from 'easymidi';
+import {Input, Note, Output} from 'easymidi';
 import {ReplaySubject, Subject} from 'rxjs';
 import {MidiTriggerMappings} from '../types/trigger_types';
 
 import {MidiInstrumentName} from '../constants/midi_instrument_constants';
-import {ControlChangeEvent, isControlChangeEvent, MidiMessage, MidiMessageType, MidiSubjectMessage, NoteOffEvent, NoteOnEvent} from '../midi';
+import {ControlChangeEvent, equalKeyboard, isControlChangeEvent, isNoteOffEvent, isNoteOnEvent, MidiMessage, MidiMessageType, MidiSubjectMessage, NoteOffEvent, NoteOnEvent} from '../midi';
 import {Config} from '../types/config_types/config_types';
 import {EasyMidi} from '../types/easy_midi_types';
 
-export {MidiSubjectMessage} from '../midi';
+export type {MidiSubjectMessage} from '../midi';
 
 export default class MidiService {
     private midiEventSubject: Subject<MidiSubjectMessage> = new ReplaySubject();
@@ -25,6 +25,7 @@ export default class MidiService {
                 await maybeEnable.enable();
             } catch (e) {
                 alert(e)
+                return;
             }
         }
 
@@ -75,13 +76,63 @@ export default class MidiService {
         });
     }
 
-    private isSustainPedalEvent = (event: MidiSubjectMessage<ControlChangeEvent>): boolean => {
-        const inputConfig = this.config.midi.inputs.find(i => isControlChangeEvent.name === event.name);
-        if (!inputConfig) {
+    private isSustainPedalEvent = (event: MidiSubjectMessage): event is MidiSubjectMessage<ControlChangeEvent> => {
+        if (!isControlChangeEvent(event)) {
             return false;
         }
 
-        return Boolean(inputConfig.sustainPedal);
+        const input = this.getInputConfig(event.name);
+        return Boolean(input?.sustainPedal);
+    }
+
+    subscribeToMainTrigger = (
+        callback: (subjectMessage: MidiSubjectMessage<NoteOnEvent>) => void,
+    ) => {
+        return this.midiEventSubject.subscribe((event) => {
+            if (!this.isMainTriggerEvent(event)) {
+                return;
+            }
+
+            callback(event);
+        });
+    }
+
+    private isMainTriggerEvent = (event: MidiSubjectMessage): event is MidiSubjectMessage<NoteOnEvent> => {
+        if (!isNoteOnEvent(event)) {
+            return false;
+        }
+
+        const input = this.getInputConfig(event.name);
+        return Boolean(input?.mainTrigger);
+    }
+
+    subscribeToMusicalKeyboard = (
+        callback: (subjectMessage: MidiSubjectMessage<NoteOnEvent | NoteOffEvent>) => void,
+    ) => {
+        return this.midiEventSubject.subscribe((event) => {
+            if (!this.isMusicalKeyboardEvent(event)) {
+                return;
+            }
+
+            callback(event);
+        });
+    }
+
+    private isMusicalKeyboardEvent = (event: MidiSubjectMessage): event is MidiSubjectMessage<NoteOnEvent | NoteOffEvent> => {
+        if (!isNoteOnEvent(event) && !isNoteOffEvent(event)) {
+            return false;
+        }
+
+        const input = this.getInputConfig(event.name);
+        if (!input?.keyboard) {
+            return false;
+        }
+
+        return equalKeyboard(input.keyboard, event);
+    }
+
+    private getInputConfig = (instrumentName: string): MidiTriggerMappings | undefined => {
+        return this.config.midi.inputs.find(input => input.name === instrumentName);
     }
 
     close = () => {
@@ -100,6 +151,23 @@ export default class MidiService {
                 note,
                 velocity: 0,
             });
+        }
+    }
+
+    notesOffExceptFor = (keepHolding: Note[]) => {
+        for (let i = 0; i < 100; i++) {
+            const note = 24 + i;
+            if (keepHolding.includes(note)) {
+                continue;
+            }
+
+            for (const output of this.outputs) {
+                output.send('noteoff', {
+                    channel: 0,
+                    note,
+                    velocity: 0,
+                });
+            }
         }
     }
 

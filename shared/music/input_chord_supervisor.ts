@@ -3,8 +3,7 @@ import MidiService from '../services/midi_service';
 import {Subscription} from 'rxjs';
 
 import {MidiInstrumentName} from '../constants/midi_instrument_constants';
-import {MidiMessage, MidiMessageType, NoteOnEvent} from '../midi';
-import {isNoteOffEvent, isNoteOnEvent} from 'midi/midi_utils';
+import {isNoteOnEvent, MidiMessage, MidiMessageType, NoteOnEvent} from '../midi';
 
 export type MidiSubjectMessage = {
     name: MidiInstrumentName;
@@ -38,12 +37,11 @@ export default class InputChordSupervisor {
     }
 
     handleNoteOn: MidiEventHandler = (event) => {
-        const msg = event.msg
-        if (!isNoteOnEvent(event.type, msg)) {
+        if (!isNoteOnEvent(event)) {
             return;
         }
 
-        if (msg.velocity === 0) {
+        if (event.msg.velocity === 0) {
             this.handleNoteOff({
                 ...event,
                 type: 'noteoff',
@@ -54,17 +52,17 @@ export default class InputChordSupervisor {
         const current = this.getCurrentlyHeldDownNotes();
         let next: NoteOnEvent[];
 
-        const index = current.findIndex(n => n.note === msg.note)
+        const index = current.findIndex(n => n.note === event.msg.note)
         if (index !== -1) {
             next = [
                 ...current.slice(0, index),
                 ...current.slice(index + 1),
-                msg,
+                event.msg,
             ];
         } else {
             next = [
                 ...current,
-                msg,
+                event.msg,
             ]
         }
 

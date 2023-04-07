@@ -4,6 +4,6 @@ import {UserDataState} from './user_data_state';
 
 export type GlobalState = {
     config: ConfigState;
-    progression: ProgressionState;
+    progression?: ProgressionState;
     userData: UserDataState;
 }

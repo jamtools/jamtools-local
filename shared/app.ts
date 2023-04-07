@@ -1,6 +1,6 @@
 import {ReplaySubject, Subject} from 'rxjs';
 
-import ProgressionModeManager from './application_mode_managers.ts/progression_mode_manager';
+import ProgressionModeManager from './application_mode_managers/progression_mode_manager';
 import {CHORDS} from './constants/chord_constants';
 import {OutputChordSupervisor} from './music/output_chord_supervisor';
 
@@ -12,14 +12,12 @@ import {EasyMidi} from './types/easy_midi_types';
 
 import {GlobalState} from './state/global_state';
 import {UserDataState} from './state/user_data_state';
+import {ProgressionState} from 'state/progression_state';
+
+import {ApplicationModeManager} from './application_mode_managers/application_mode_manager';
+import AdhocChordCompositionMode from './application_mode_managers/adhoc_chord_mode/achoc_chord_composition_mode';
 
 export default class App {
-    progressionMode: ProgressionModeManager;
-    private midiService: MidiService;
-    private wledService: WledService;
-    private qwertyService: QwertyService;
-    private chordSupervisor: OutputChordSupervisor;
-
     private globalStateSubject: Subject<GlobalState> = new ReplaySubject();
 
     constructor(
@@ -28,14 +26,23 @@ export default class App {
         private config: Config,
         private userData: UserDataState,
     ) {
-        this.midiService = new MidiService(midi, config);
-        this.wledService = new WledService(config);
-        this.qwertyService = new QwertyService(stdin, config);
-        this.chordSupervisor = new OutputChordSupervisor(this.midiService);
-
-        this.progressionMode = new ProgressionModeManager(this.midiService, this.wledService, config, this);
-        // this.progressionMode = new ProgressionModeManager(this.midiService, this.wledService, this.qwertyService, config, this);
     }
+
+    qwertyService = new QwertyService(this.stdin, this.config);
+
+    midiService = new MidiService(this.midi, this.config);
+    wledService = new WledService(this.config);
+
+
+    progressionMode?: ProgressionModeManager;
+    // progressionMode = new ProgressionModeManager(this.midiService, this.wledService, this.config, this);
+
+    // adhocCompositionMode?: AdhocChordCompositionMode;
+    adhocCompositionMode = new AdhocChordCompositionMode(this.midiService, this.config, this);
+
+    private activeMode: ApplicationModeManager = this.adhocCompositionMode;
+
+    chordSupervisor = new OutputChordSupervisor(this.midiService);
 
     deps = {
         midi: this.midi,
@@ -51,7 +58,7 @@ export default class App {
 
     getUserData = () => this.userData;
     getConfig = () => this.config;
-    getProgressionState = () => this.progressionMode.getState();
+    getProgressionState: () => ProgressionState | undefined = () => this.progressionMode?.getState();
 
     getState = (): GlobalState => {
         return {
@@ -70,8 +77,8 @@ export default class App {
     }
 
     actions = {
-        toggleDrumsColorAction: () => this.progressionMode.toggleDrumColorAction(),
-        toggleDrumsMusicAction: () => this.progressionMode.toggleDrumMusicAction(),
+        toggleDrumsColorAction: () => this.progressionMode?.toggleDrumColorAction(),
+        toggleDrumsMusicAction: () => this.progressionMode?.toggleDrumMusicAction(),
         setRandomColor: () => this.wledService.setRandomColor(),
         setRandomEffect: () => this.wledService.setRandomEffect(),
         noteOffAll: () => {
@@ -91,9 +98,9 @@ export default class App {
             this.wledService.decreaseSpeed();
         },
 
-        playNextChord: () => this.progressionMode.playChord(),
-        nextProgression: () => this.progressionMode.nextProgression(),
-        nextSong: () => this.progressionMode.nextSong(),
+        playNextChord: () => this.progressionMode?.playChord(),
+        nextProgression: () => this.progressionMode?.nextProgression(),
+        nextSong: () => this.progressionMode?.nextSong(),
 
         nextPreset: () => {
             this.wledService.setRandomPreset();
@@ -113,7 +120,8 @@ export default class App {
     }
 
     close = () => {
-        this.progressionMode.close();
+        this.progressionMode?.close();
+        this.adhocCompositionMode?.close();
         this.midiService.close();
         this.qwertyService.close();
     }

@@ -10,13 +10,13 @@ import QwertyService from '../services/qwerty_service';
 import WledService from '../services/wled_service';
 import {Config} from '../types/config_types/config_types';
 
-import {ModeManager} from '../types/mode_manager_types';
+import {ApplicationModeManager} from './application_mode_manager';
 import {ControlButtonMapping, KeyboardMapping} from '../types/trigger_types';
 import {log} from '../utils';
 
 import type App from '../app';
 import {MidiInstrumentName} from '../constants/midi_instrument_constants';
-import {ProgressionState} from '@shared/state/progression_state';
+import {ProgressionState} from '../state/progression_state';
 
 type MidiEventHandler = ((msg: MidiSubjectMessage) => void) | undefined;
 
@@ -28,7 +28,7 @@ const songs: number[][][][] = [
     michaelSet1,
 ]
 
-export default class ProgressionModeManager implements ModeManager {
+export default class ProgressionModeManager implements ApplicationModeManager<ProgressionState> {
     private actions: MidiEventHandler[];
     private midiEventHandlers: {[eventName: string]: MidiEventHandler};
     private progressionState: ProgressionState = {

@@ -62,7 +62,7 @@ export default function ControlPanel(props: Props) {
     );
 
     let content: React.ReactNode | undefined;
-    if (props.globalState) {
+    if (props.globalState && props.globalState.progression) {
         const {progression: {currentChord, currentProgression, currentSong}, userData: {chords, songs}} = props.globalState;
         const prog = songs[currentSong][currentProgression]
         const chord = [currentChord];

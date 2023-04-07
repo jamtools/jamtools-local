@@ -1,5 +1,4 @@
 import {ControlChange} from 'easymidi';
-import {MidiMessageType} from 'midi';
 import {Subscription} from 'rxjs';
 import MidiService, {MidiSubjectMessage} from '../services/midi_service';
 
