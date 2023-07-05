@@ -1,3 +1,5 @@
+import {Chords} from '../types/adhoc_chord_mode_types';
+
 export type ProgressionState = {
     currentProgression: number;
     currentChord: number;
@@ -7,9 +9,7 @@ export type ProgressionState = {
 }
 
 export type AdhocProgressionState = {
-    // currentProgression: number;
-    // currentChord: number;
-    // currentSong: number;
-    // shouldDrumsChangeColor: boolean;
-    // shouldDrumsChangeProgression: boolean;
+    chords: Chords;
+    currentIndex: number;
+    mode: 'composition' | 'playback';
 }

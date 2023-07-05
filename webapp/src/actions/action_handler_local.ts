@@ -194,7 +194,7 @@ export class LocalActionHandler implements ActionHandler {
         }
 
         const state = app.getState();
-        app.broadcastState(state);
+        app.broadcastState();
 
         return {
             data: state,

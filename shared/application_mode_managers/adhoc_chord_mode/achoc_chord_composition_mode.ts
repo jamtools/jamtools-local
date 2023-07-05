@@ -15,7 +15,11 @@ import type {Note} from 'easymidi';
 import AdhocChordPlaybackMode from './achoc_chord_playback_mode';
 
 export default class AdhocChordCompositionMode implements ApplicationModeManager<AdhocProgressionState> {
-    private state: AdhocProgressionState = {};
+    private state: AdhocProgressionState = {
+        chords: [],
+        currentIndex: -1,
+        mode: 'composition',
+    };
 
     private sustainPedalSubscription: Subscription;
     private mainTriggerSubscription: Subscription;
@@ -25,7 +29,6 @@ export default class AdhocChordCompositionMode implements ApplicationModeManager
 
     constructor(
         private midiService: MidiService,
-        private config: Config,
         private app: App,
         ) {
             // this.inputChordSupervisor = new InputChordSupervisor(midiService);
@@ -50,6 +53,8 @@ export default class AdhocChordCompositionMode implements ApplicationModeManager
             ...this.state,
             ...partialState,
         };
+
+        this.app.broadcastState();
     }
 
     // add config settings to midi configs:
@@ -61,17 +66,13 @@ export default class AdhocChordCompositionMode implements ApplicationModeManager
     // slim down current config. make a new config file but also keep old one
 
     private handleFinalConfirm = () => {
-        // DO THIS NEXT
         console.log('final confirm');
-        this.close();
-        this.app.changeModeAdhocPlayback(this.storedChords);
-
-        // this should instantiate a AdhocChordPlaybackMode object and send it to App from an exposed method
-        // this.close(); // maybe do this in App instead?
+        this.app.changeModeAdhocPlayback(this.state);
     }
 
     private handleMainTrigger = (event: MidiSubjectMessage<NoteOnEvent>) => {
         // Nothing to do in this mode
+        console.log('no-op main trigger', event);
     }
 
     private handleMusicalKeyboardNote = (event: MidiSubjectMessage<NoteOnEvent | NoteOffEvent>) => {
@@ -93,7 +94,7 @@ export default class AdhocChordCompositionMode implements ApplicationModeManager
             return;
         }
 
-        const previousChord = this.storedChords[this.storedChords.length - 1];
+        const previousChord = this.state.chords[this.state.chords.length - 1];
 
         if (previousChord && equalChords(previousChord, currentNotes)) {
             this.handleFinalConfirm();
@@ -101,7 +102,11 @@ export default class AdhocChordCompositionMode implements ApplicationModeManager
         }
 
         console.log('add chord')
-        this.storedChords.push(currentNotes);
+        const newChords = [...this.state.chords, currentNotes];
+        this.setState({
+            chords: newChords,
+            currentIndex: this.state.chords.length - 1,
+        });
     }
 
     private handleSustainPedalRelease = (event: MidiSubjectMessage<ControlChangeEvent>) => {

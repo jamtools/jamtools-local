@@ -1,5 +1,5 @@
-import type  {Input, Note, Output} from 'easymidi';
-import {ReplaySubject, Subject} from 'rxjs';
+import type {Input, Note, Output} from 'easymidi';
+import {BehaviorSubject, Subject} from 'rxjs';
 import {MidiTriggerMappings} from '../types/trigger_types';
 
 import {MidiInstrumentName} from '../constants/midi_instrument_constants';
@@ -10,11 +10,12 @@ import {EasyMidi} from '../types/easy_midi_types';
 export type {MidiSubjectMessage} from '../midi';
 
 export default class MidiService {
-    private midiEventSubject: Subject<MidiSubjectMessage> = new ReplaySubject();
+    private midiEventSubject: Subject<MidiSubjectMessage>;
     private inputs: Input[] = [];
     private outputs: Output[] = [];
 
     constructor(private midi: EasyMidi, private config: Config) {
+        this.midiEventSubject = new BehaviorSubject({} as any);
         this.setupMidi();
     }
 
@@ -53,6 +54,37 @@ export default class MidiService {
 
     subscribe = (callback: (subjectMessage: MidiSubjectMessage) => void) => {
         return this.midiEventSubject.subscribe(callback);
+    }
+
+    subscribeToControlButtons = (callback: (actionIndex: number) => void) => {
+        return this.midiEventSubject.subscribe((event) => {
+            if (event.type !== 'noteon') {
+                return;
+            }
+
+            const inputConfig = this.getInputConfig(event.name);
+            if (!inputConfig) {
+                return;
+            }
+
+            const controlButtonsDict = inputConfig.controlButtons;
+            if (!controlButtonsDict) {
+                return;
+            }
+
+            const controlButtons = Object.values(controlButtonsDict);
+            if (!controlButtons?.length) {
+                return;
+            }
+
+            const control = controlButtons.find(button => equalControlButton(button, event));
+            if (!control) {
+                return;
+            }
+
+            const index = controlButtons.indexOf(control);
+            callback(index);
+        });
     }
 
     subscribeToSustainPedal = (
@@ -104,6 +136,10 @@ export default class MidiService {
 
         const input = this.getInputConfig(event.name);
         if (!input?.mainTrigger) {
+            return false;
+        }
+
+        if (input.name === MidiInstrumentName.DTX_DRUMS && event.msg.velocity < 66) {
             return false;
         }
 

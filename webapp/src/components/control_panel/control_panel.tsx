@@ -43,8 +43,6 @@ export default function ControlPanel(props: Props) {
                 alert(res.error);
                 return;
             }
-
-            // props.setGlobalState(res.data);
         });
     }
 
