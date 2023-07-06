@@ -1,22 +1,23 @@
-import easymidi from 'easymidi';
+import type easymidi from 'easymidi';
 import {Subscription} from 'rxjs';
-import {CHORDS} from '../../constants/chord_constants';
-import {jimmySet1, jimmySet2, michaelSet1, set1, set2} from '../../constants/progression_constants';
-import BluetoothRemoteDynamicMapping from '../../dynamic_mappings/qwerty_dynamic_mappings';
-import ChordSupervisor from '../../music/chord_supervisor';
+import {CHORDS} from '../constants/chord_constants';
+import {jimmySet1, jimmySet2, michaelSet1, set1, set2} from '../constants/progression_constants';
+import BluetoothRemoteDynamicMapping from '../dynamic_mappings/qwerty_dynamic_mappings';
+import {OutputChordSupervisor} from '../music/output_chord_supervisor';
 
-import MidiService, {MidiSubjectMessage} from '../../services/midi_service';
-import QwertyService from '../../services/qwerty_service';
-import WledService from '../../services/wled_service';
-import {Config} from '../../types/config_types/config_types';
+import MidiService, {MidiSubjectMessage} from '../services/midi_service';
+import QwertyService from '../services/qwerty_service';
+import WledService from '../services/wled_service';
+import {Config} from '../types/config_types/config_types';
 
-import {ModeManager} from '../../types/mode_manager_types';
-import {ControlButtonMapping, KeyboardMapping} from '../../types/trigger_types';
-import {log} from '../../utils';
+import {ApplicationModeManager} from './application_mode_manager';
+import {ControlButtonMapping, KeyboardMapping} from '../types/trigger_types';
+import {log} from '../utils';
 
-import type App from '../../app';
-import {MidiInstrumentName} from '../../constants/midi_instrument_constants';
-import {ProgressionState} from '@shared/state/progression_state';
+import type App from '../app';
+import {MidiInstrumentName} from '../constants/midi_instrument_constants';
+import {ProgressionState} from '../state/progression_state';
+import {equalControlButton, equalKeyboard} from '../midi';
 
 type MidiEventHandler = ((msg: MidiSubjectMessage) => void) | undefined;
 
@@ -28,7 +29,7 @@ const songs: number[][][][] = [
     michaelSet1,
 ]
 
-export default class ProgressionModeManager implements ModeManager {
+export default class ProgressionModeManager implements ApplicationModeManager<ProgressionState> {
     private actions: MidiEventHandler[];
     private midiEventHandlers: {[eventName: string]: MidiEventHandler};
     private progressionState: ProgressionState = {
@@ -305,17 +306,3 @@ export default class ProgressionModeManager implements ModeManager {
         // }
     }
 }
-
-export const equalControlButton = (button: ControlButtonMapping | undefined, msg: MidiSubjectMessage) => {
-    if (!button) {
-        return false;
-    }
-
-    const noteMsg = msg.msg as easymidi.Note;
-    return button.channel === noteMsg.channel && button.note === noteMsg.note;
-};
-
-export const equalKeyboard = (keyboard: KeyboardMapping, msg: MidiSubjectMessage) => {
-    const noteMsg = msg.msg as easymidi.Note;
-    return keyboard.channel === noteMsg.channel;
-};

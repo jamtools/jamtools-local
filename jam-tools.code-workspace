@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"name": "jam-tools",
+			"path": "."
+		},
+		{
+			"name": "shared",
+			"path": "shared"
+		},
+		{
+			"name": "server",
+			"path": "server"
+		},
+		{
+			"name": "webapp",
+			"path": "webapp"
+		}
+	],
+	"settings": {}
+}

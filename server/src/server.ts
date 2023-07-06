@@ -22,6 +22,8 @@ export default async function initServer(app: App): Promise<http.Server> {
             'http://192.168.0.137:2000',
             'http://192.168.1.142:2000',
             'http://jam.local',
+            'http://jam.local:1337',
+            'http://jam.local:2000',
             'http://localhost',
             '*',
         ],
@@ -53,7 +55,7 @@ export default async function initServer(app: App): Promise<http.Server> {
         }
 
         const state = app.getState();
-        app.broadcastState(state);
+        app.broadcastState();
 
         res.json({
             data: state,

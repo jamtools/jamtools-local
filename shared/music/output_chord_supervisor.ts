@@ -1,6 +1,6 @@
 import MidiService from '../services/midi_service';
 
-export default class ChordSupervisor {
+export class OutputChordSupervisor {
     heldDownNotes: number[] = [];
 
     constructor(private midi: MidiService) {
@@ -15,7 +15,8 @@ export default class ChordSupervisor {
         // nextChord = nextChord.slice(0, 4);
 
         const toRelease = this.heldDownNotes.filter(note => !nextChord.includes(note));
-        const toPress = nextChord.filter(note => !this.heldDownNotes.includes(note));
+        const toPress = nextChord;
+        // const toPress = nextChord.filter(note => !this.heldDownNotes.includes(note));
         this.heldDownNotes = nextChord;
 
         toRelease.forEach(note => {

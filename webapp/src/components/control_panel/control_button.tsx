@@ -20,11 +20,11 @@ export default function ControlButton(props: Props) {
 
     const style: CSSProperties = {backgroundColor: props.color};
 
-    if (isDrumColorAction(props.action) && props.state?.progression.shouldDrumsChangeColor) {
+    if (isDrumColorAction(props.action) && props.state?.progression?.shouldDrumsChangeColor) {
         style.backgroundColor = 'green';
     }
 
-    if (isDrumMusicAction(props.action) && props.state?.progression.shouldDrumsChangeProgression) {
+    if (isDrumMusicAction(props.action) && props.state?.progression?.shouldDrumsChangeProgression) {
         // style.backgroundColor = 'green';
     }
 
