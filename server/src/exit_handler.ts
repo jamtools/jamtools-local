@@ -6,14 +6,14 @@ export const exitHandler = (app: App) => {
     // so the program will not close instantly
     app.deps.stdin.resume();
 
-    const handle = (options, exitCode) => {
+    const handle = (options) => {
         if (options.cleanup) {
             app.close();
         }
         if (options.exit) {
             process.exit();
         }
-    }
+    };
 
     // always runs after other handlers
     process.on('exit', handle.bind(null, {cleanup: true}));
@@ -26,4 +26,4 @@ export const exitHandler = (app: App) => {
     process.on('SIGUSR2', handle.bind(null, {exit: true}));
 
     // process.on('uncaughtException', handle.bind(null, {exit: true}));
-}
+};

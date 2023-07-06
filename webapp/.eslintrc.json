@@ -460,18 +460,6 @@
     "no-undefined": 0,
     "no-use-before-define": 0,
     "react/jsx-filename-extension": 0,
-    "no-restricted-imports": [
-      "error",
-      {
-        "paths": [
-          {
-            "name": "react-bootstrap",
-            "importNames": ["OverlayTrigger"],
-            "message": "Please use OverlayTrigger from '/components/overlay_trigger' instead"
-          }
-        ]
-      }
-    ],
     "max-lines": [
       "warn",
       {
