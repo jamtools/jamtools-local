@@ -132,6 +132,35 @@ export default class App {
         this.broadcastState();
     };
 
+    changeModeAdhocPlayback = (state: AdhocProgressionState) => {
+        if (this.adhocPlaybackMode) {
+            return;
+        }
+
+        this.adhocCompositionMode?.close();
+        this.adhocCompositionMode = undefined;
+
+        const newState: AdhocProgressionState = {...state, mode: 'playback'};
+        this.adhocPlaybackMode = new AdhocChordPlaybackMode(newState, this.midiService, this);
+        this.activeMode = this.adhocPlaybackMode;
+
+        this.broadcastState();
+    }
+
+    changeModeAdhocComposition = () => {
+        this.adhocPlaybackMode?.close();
+        this.adhocPlaybackMode = undefined;
+        this.adhocCompositionMode?.close();
+        this.adhocCompositionMode = undefined;
+
+        this.midiService.notesOffAll();
+
+        this.adhocCompositionMode = new AdhocChordCompositionMode(this.midiService, this);
+        this.activeMode = this.adhocCompositionMode;
+
+        this.broadcastState();
+    }
+
     actions = {
         toggleDrumsColorAction: () => this.progressionMode?.toggleDrumColorAction(),
         toggleDrumsMusicAction: () => this.progressionMode?.toggleDrumMusicAction(),
