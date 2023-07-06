@@ -1,6 +1,7 @@
 import {ReplaySubject, Subject} from 'rxjs';
 
-import io from 'socket.io-client'
+import io from 'socket.io-client';
+
 // import {Action, Thunk, thunk} from 'easy-peasy'
 // import { IGlobalStore, IHandleMessageActions } from './store-types'
 // import { WEBSOCKET_CONNECT_STRING } from '../config';
@@ -18,41 +19,40 @@ const WEBSOCKET_CONNECT_STRING = `http://${window.location.hostname}:1337`;
 
 let socket: io;
 
-const websocketMessageSubject: Subject<WebsocketMessage<any>> = new ReplaySubject();
+const websocketMessageSubject: Subject<WebsocketMessage<unknown>> = new ReplaySubject();
 
 export const sendMessage = <T>(message: WebsocketMessage<T>) => {
     if (!socket) {
         initSocket();
     }
 
-    socket.send(message)
+    socket.send(message);
 };
 
 const initSocket = () => {
     socket = io(WEBSOCKET_CONNECT_STRING);
-    socket.on('message', (message: WebsocketMessage<any>) => {
+    socket.on('message', (message: WebsocketMessage<unknown>) => {
         websocketMessageSubject.next(message);
     });
-}
+};
 
-export const subscribeToMessages = (callback: (msg: WebsocketMessage<any>) => void) => {
+export const subscribeToMessages = (callback: (msg: WebsocketMessage<unknown>) => void) => {
     if (!socket) {
         initSocket();
     }
 
     websocketMessageSubject.subscribe(callback);
-}
+};
 
 subscribeToMessages(console.log);
 
-    // const actions = {
-    //   updateProgressions: dispatch.progressions.updateProgressionsFromMessage,
-    // } as IHandleMessageActions
+// const actions = {
+//   updateProgressions: dispatch.progressions.updateProgressionsFromMessage,
+// } as IHandleMessageActions
 
-    // const action = actions[message.type]
-    // action(message)
+// const action = actions[message.type]
+// action(message)
 // };
-
 
 // export interface IWebsocketStore {
 //     socket?: SocketIOClient.Socket,

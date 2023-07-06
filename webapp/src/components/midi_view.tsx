@@ -3,16 +3,17 @@ import React, {useState, useRef, useEffect} from 'react';
 import * as webmidi from 'webmidi';
 const WebMidi = webmidi.WebMidi;
 
-import {WLEDClient as WLEDClient2} from 'wled-client';
-import {setRandomColor} from '../wled';
+// import {WLEDClient as WLEDClient2} from 'wled-client';
 
-const WLEDClient = WLEDClient2.WLEDClient as unknown as WLEDClient2;
+// import {setRandomColor} from '../wled';
+
+// const WLEDClient = WLEDClient2.WLEDClient as unknown as WLEDClient2;
 
 export default function MidiView() {
     const midiInput = useRef<webmidi.Input | null>(null);
     const [heldDown, setHeldDown] = useState<webmidi.Note[]>([]);
 
-    const savedChords = useState<webmidi.Note[][]>([]);
+    // const savedChords = useState<webmidi.Note[][]>([]);
     const [chordName, setChordName] = useState('');
 
     const [error, setError] = useState('');
@@ -20,9 +21,11 @@ export default function MidiView() {
     useEffect(() => {
         (async () => {
             await WebMidi.enable();
+
             // setError(WebMidi.inputs);
             console.log(WebMidi.inputs);
             const input = WebMidi.inputs[2];
+
             // const input = WebMidi.inputs.find(i => i.name.includes('Juno'));
             if (!input) {
                 setError('Cant find juno midi input');
@@ -30,23 +33,24 @@ export default function MidiView() {
             }
             midiInput.current = input;
             initializeJuno(input);
+
             // console.log(webmidi)
         })();
     }, []);
 
     const initializeJuno = (juno: webmidi.Input) => {
-        console.log('init juno')
+        console.log('init juno');
         juno.addListener('noteon', (msg) => {
             if (msg.message.channel === 2) {
                 return;
             }
 
-            setHeldDown(heldDown => {
+            setHeldDown((heldDown) => {
                 console.log('note on ' + msg.note);
 
                 const newHeldDown = heldDown.concat([msg.note]);
                 return newHeldDown;
-            })
+            });
         });
 
         juno.addListener('noteoff', (msg) => {
@@ -59,7 +63,7 @@ export default function MidiView() {
             setHeldDown((heldDown) => {
                 console.log('note off ' + msg.note);
 
-                const index = heldDown.findIndex(note => note.number === msg.note.number);
+                const index = heldDown.findIndex((note) => note.number === msg.note.number);
                 if (index === -1) {
                     console.log('couldnt find held down note for "noteff" event');
                     return heldDown;
@@ -80,7 +84,7 @@ export default function MidiView() {
         //     })),
         // };
 
-        const newChord = heldDown.map(n => n.number);
+        const newChord = heldDown.map((n) => n.number);
         const s = JSON.stringify(newChord, null, 2);
         setError(s);
 
@@ -97,12 +101,16 @@ export default function MidiView() {
                     Save Chord
                 </button>
             </div>
-            <input value={chordName} onChange={(e) => {
-                setChordName(e.target.value);
-            }} />
+            <input
+                value={chordName}
+                onChange={(e) => {
+                    setChordName(e.target.value);
+                }}
+            />
             <pre>
                 <ul>
                     {heldDown.map((n, i) => (
+                        // eslint-disable-next-line react/no-array-index-key
                         <li key={i}>
                             {n.name}{n.accidental} {n.number}
                         </li>
@@ -113,5 +121,5 @@ export default function MidiView() {
                 Change color
             </button> */}
         </div>
-    )
+    );
 }

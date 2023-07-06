@@ -1,9 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-import * as webmidi from 'webmidi';
-const WebMidi = webmidi.WebMidi;
-
 import {ActionHandler} from './actions/app_actions';
 import {LocalActionHandler} from './actions/action_handler_local';
 import {RemoteActionHandler} from './actions/action_handler_remote';
@@ -13,7 +10,7 @@ import Main from './components/main';
 type ImportMeta = {
     env: {
         LOCAL_MODE?: string;
-    }
+    };
 }
 
 let actionHandler: ActionHandler;
@@ -30,7 +27,7 @@ window.addEventListener('load', () => {
     const element = (
         <Main
             actionHandler={actionHandler}
-            localMode={localMode}
+            // localMode={localMode}
         />
     );
 

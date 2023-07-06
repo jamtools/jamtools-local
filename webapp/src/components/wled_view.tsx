@@ -1,6 +1,7 @@
 import React, {useState, useRef, useEffect} from 'react';
 
 import {WLEDClient as WLEDClient2} from 'wled-client';
+
 import {setRandomColor} from '../wled';
 
 const WLEDClient = WLEDClient2.WLEDClient as unknown as WLEDClient2;
@@ -18,7 +19,7 @@ export default function WledView() {
                 await client.init();
                 wledClient.current = client;
             } catch (e) {
-                setError(e + '');
+                setError(String(e));
             }
         })();
     }, []);
@@ -41,5 +42,5 @@ export default function WledView() {
                 Change color
             </button>
         </div>
-    )
+    );
 }

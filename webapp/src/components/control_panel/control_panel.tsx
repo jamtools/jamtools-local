@@ -1,12 +1,13 @@
 import React from 'react';
 import {ControlPanelActions} from '@shared/actions/control_panel_actions';
-import ControlButton from './control_button';
+
+import {GlobalState} from '@shared/state/global_state';
+import {isErrorResponse} from '@shared/types/api_types';
 
 import {ActionHandler} from '../../actions/app_actions';
 
+import ControlButton from './control_button';
 import './control_panel.scss';
-import {GlobalState} from '@shared/state/global_state';
-import {isErrorResponse} from '@shared/types/api_types';
 
 type RowsData = ControlPanelActions[][];
 const rowsData: RowsData = Object.values(ControlPanelActions).reduce((accum: RowsData, actionName, i) => {
@@ -22,33 +23,25 @@ const rowsData: RowsData = Object.values(ControlPanelActions).reduce((accum: Row
     return accum;
 }, []);
 
-type SpecialFunction = (thatThang: string) => void;
-
 export type Props = {
     globalState: GlobalState | null;
-    setGlobalState: (state: GlobalState) => void;
     actionHandler: ActionHandler;
 }
 
-const arraysAreEqual = (arr1: any[], arr2: any[]): boolean => {
-    return arr1.length === arr2.length && arr1.reduce((accum, current, index) => {
-        return accum && current === arr2[index];
-    }, true);
-}
+// const arraysAreEqual = (arr1: number[], arr2: number[]): boolean => {
+//     return arr1.length === arr2.length && arr1.reduce((accum, current, index) => {
+//         return accum && current === arr2[index];
+//     }, true);
+// };
 
 export default function ControlPanel(props: Props) {
     const submitAction = (action: ControlPanelActions) => {
-        props.actionHandler.submitControlPanelAction(action).then(res => {
+        props.actionHandler.submitControlPanelAction(action).then((res) => {
             if (isErrorResponse(res)) {
                 alert(res.error);
-                return;
             }
         });
-    }
-
-    const myFunc: SpecialFunction = (thatThang9hg98uh) => {
-
-    }
+    };
 
     const makeButton = (action: ControlPanelActions) => (
         <ControlButton
@@ -60,42 +53,45 @@ export default function ControlPanel(props: Props) {
     );
 
     let content: React.ReactNode | undefined;
-    if (props.globalState && props.globalState.progression) {
-        const {progression: {currentChord, currentProgression, currentSong}, userData: {chords, songs}} = props.globalState;
-        const prog = songs[currentSong][currentProgression]
-        const chord = [currentChord];
-        const getChordName = (chord: number[]) => Object.keys(chords).find(chordName => arraysAreEqual(chords[chordName], chord));
-        const getColor = (i: number) => {
-            if (i === currentChord) {
-                return 'blue';
-            }
 
-            if ((currentChord + prog.length - 1) % prog.length === i) {
-                return 'green';
-            }
+    // if (props.globalState && props.globalState.progression) {
+    //     const {progression: {currentChord, currentProgression, currentSong}, userData: {chords, songs}} = props.globalState;
+    //     const prog = songs[currentSong][currentProgression];
+    //     const chord = [currentChord];
+    //     const getChordName = (chord: number[]) => Object.keys(chords).find((chordName) => arraysAreEqual(chords[chordName], chord));
+    //     const getColor = (i: number) => {
+    //         if (i === currentChord) {
+    //             return 'blue';
+    //         }
 
-            return 'white';
-        }
+    //         if ((currentChord + prog.length - 1) % prog.length === i) {
+    //             return 'green';
+    //         }
 
-        content = (
-            <div>
-                <h1>
-                    {getChordName(chord)}
-                </h1>
-                <ul>
-                    {prog.map((nums, i) => (
-                        <li key={i}>
-                            <span style={{
-                                backgroundColor: getColor(i),
-                            }}>
-                                {getChordName(nums)}
-                            </span>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        );
-    }
+    //         return 'white';
+    //     };
+
+    //     content = (
+    //         <div>
+    //             <h1>
+    //                 {getChordName(chord)}
+    //             </h1>
+    //             <ul>
+    //                 {prog.map((nums, i) => (
+    //                     <li key={i}>
+    //                         <span
+    //                             style={{
+    //                                 backgroundColor: getColor(i),
+    //                             }}
+    //                         >
+    //                             {getChordName(nums)}
+    //                         </span>
+    //                     </li>
+    //                 ))}
+    //             </ul>
+    //         </div>
+    //     );
+    // }
 
     return (
         <div>
@@ -103,6 +99,7 @@ export default function ControlPanel(props: Props) {
             <table>
                 <tbody>
                     {rowsData.map((row, i) => (
+                        // eslint-disable-next-line react/no-array-index-key
                         <tr key={i}>
                             {row.map((action) => (
                                 <td key={action}>
@@ -114,7 +111,7 @@ export default function ControlPanel(props: Props) {
                 </tbody>
             </table>
         </div>
-    )
+    );
 }
 
 const Colors = {
@@ -146,8 +143,8 @@ const buttonColors: Record<string, ControlPanelActions[]> = {
         ControlPanelActions.TOGGLE_DRUM_COLOR_ACTION,
         ControlPanelActions.TOGGLE_DRUM_MUSIC_ACTION,
     ],
-}
+};
 
 const getColor = (actionName: ControlPanelActions): string => {
-    return Object.keys(buttonColors).find(c => buttonColors[c].includes(actionName))!;
-}
+    return Object.keys(buttonColors).find((c) => buttonColors[c].includes(actionName))!;
+};
