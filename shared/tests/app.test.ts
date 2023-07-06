@@ -14,22 +14,26 @@ describe('app', () => {
 
     beforeEach(() => {
         midi = new MidiMock();
-        stdin = {} as any;
+        stdin = {} as unknown as Stdin;
         config = {
             actions: {
 
             },
             midi: {
-
+                inputs: [],
+                outputs: [],
             },
             wled: {
-                ctrls:
-            }
+                ctrls: [],
+            },
         };
-        userData = {};
+        userData = {
+            chords: {},
+            songs: [],
+        };
     });
 
     test('doit', () => {
-        const app = new App(midi, stdin, config, userData);
+        const _app = new App(midi, stdin, config, userData);
     });
 });

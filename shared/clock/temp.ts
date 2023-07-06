@@ -2,11 +2,11 @@ import {Input, Output} from 'easymidi';
 
 let currentChordIndex = 0; // index of current chord being played back
 let tickCount = 0; // number of MIDI clock ticks received
-let ticksPerQuarterNote = 24; // assume default value of 24 MIDI clock ticks per quarter note
+const ticksPerQuarterNote = 24; // assume default value of 24 MIDI clock ticks per quarter note
 
-let currentNotes: number[] = []; // array of currently held down notes
+const currentNotes: number[] = []; // array of currently held down notes
 let lastNotePosition = 0; // position (in ticks) of the last held down note
-let chords: Note[][] = []; // array of saved chords
+const chords: Note[][] = []; // array of saved chords
 
 let nextPlaybackPosition = 0; // position (in ticks) of the next chord playback
 let playbackScheduled = false; // whether a chord playback has been scheduled
@@ -25,13 +25,15 @@ input.on('clock', () => {
 
 // listen for sustain pedal messages
 input.on('cc', (msg) => {
-    if (msg.controller !== 64) return; // ignore other control messages
+    if (msg.controller !== 64) {
+        return;
+    } // ignore other control messages
 
     if (msg.value === 127 && currentNotes.length > 0) {
         // sustain pedal pressed, save current chord
         const currentChord = {
             notes: currentNotes.slice(),
-            position: lastNotePosition % (ticksPerQuarterNote * 2) // save chord position relative to 1/8 note
+            position: lastNotePosition % (ticksPerQuarterNote * 2), // save chord position relative to 1/8 note
         };
         chords.push(currentChord);
 

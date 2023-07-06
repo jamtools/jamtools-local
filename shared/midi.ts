@@ -1,4 +1,5 @@
 import {MidiInstrumentName} from 'constants/midi_instrument_constants';
+
 import type easymidi from 'easymidi';
 import type {Note} from 'easymidi';
 
@@ -12,7 +13,7 @@ export const sendNoteToPiano = (output) => {
         velocity: 40,
         channel: 3,
     });
-}
+};
 
 export type MidiMessage = easymidi.ControlChange | easymidi.Pitch | easymidi.Note;
 export type MidiMessageType = 'noteon' | 'noteoff' | 'cc' | 'clock';
@@ -24,8 +25,8 @@ export type ControlChangeEvent = easymidi.ControlChange;
 let clocks: number[] = [];
 let currentTime = (new Date().getTime());
 export const listenToAllMidiEvents = (midiInput: easymidi.Input) => {
-    inputEventTypes.forEach(type => {
-        midiInput.on(type as any, msg => {
+    inputEventTypes.forEach((type) => {
+        midiInput.on(type as 'noteon', (msg) => {
             if (isSpammyMidiEvent(type, msg as unknown as MidiMessage)) {
                 return;
             }
@@ -41,11 +42,11 @@ export const listenToAllMidiEvents = (midiInput: easymidi.Input) => {
 
             if (type === 'clock') {
                 const base = 1679023437240;
-                const display = new Date().getTime() - base;
+                const _display = new Date().getTime() - base;
 
                 const now = (new Date().getTime());
-                const seconds = now - currentTime;
-                clocks.push(now)
+                const _seconds = now - currentTime;
+                clocks.push(now);
                 if (clocks.length === 96) {
                 // }
                 // if (seconds > 100) {
@@ -56,7 +57,7 @@ export const listenToAllMidiEvents = (midiInput: easymidi.Input) => {
             }
         });
     });
-}
+};
 
 const inputEventTypes = INPUT_TYPES.concat(INPUT_EXTENDED_TYPES);
 const isSpammyMidiEvent = (type: string, msg: MidiMessage): boolean => {
@@ -72,7 +73,7 @@ const isSpammyMidiEvent = (type: string, msg: MidiMessage): boolean => {
     }
 
     return false;
-}
+};
 
 export const equalControlButton = (button: ControlButtonMapping | undefined, msg: MidiSubjectMessage) => {
     if (!button) {
@@ -94,15 +95,15 @@ export const equalKeyboard = (keyboard: KeyboardMapping | undefined, msg: MidiSu
 
 export const isNoteOnEvent = (msg: MidiSubjectMessage): msg is MidiSubjectMessage<NoteOnEvent> => {
     return msg.type === 'noteon';
-}
+};
 
 export const isNoteOffEvent = (msg: MidiSubjectMessage): msg is MidiSubjectMessage<NoteOffEvent> => {
     return msg.type === 'noteoff';
-}
+};
 
 export const isControlChangeEvent = (msg: MidiSubjectMessage): msg is MidiSubjectMessage<ControlChangeEvent> => {
     return msg.type === 'cc';
-}
+};
 
 export const equalChords = (chord1: Note[], chord2: Note[]) => {
     const set1 = new Set(chord1);
@@ -119,10 +120,10 @@ export const equalChords = (chord1: Note[], chord2: Note[]) => {
     }
 
     return true;
-}
+};
 
 export type MidiSubjectMessage<T extends MidiMessage = MidiMessage> = {
     name: MidiInstrumentName;
-    type: MidiMessageType
+    type: MidiMessageType;
     msg: T;
 }

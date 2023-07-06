@@ -36,17 +36,16 @@ export default class App {
         const actions = [
             this.wledService.setRandomColor,
             this.wledService.setRandomPreset,
-        ]
+        ];
 
         const action = actions[index];
         action?.();
-    }
+    };
 
     qwertyService = new QwertyService(this.stdin, this.config);
 
     midiService = new MidiService(this.midi, this.config);
     wledService = new WledService(this.config);
-
 
     progressionMode?: ProgressionModeManager;
     // progressionMode = new ProgressionModeManager(this.midiService, this.wledService, this.config, this);
@@ -64,12 +63,12 @@ export default class App {
         stdin: this.stdin,
         config: this.config,
         userData: this.userData,
-    }
+    };
 
     services = {
         midi: this.midiService,
         userData: this.userData,
-    }
+    };
 
     getUserData = () => this.userData;
     getConfig = () => this.config;
@@ -84,7 +83,7 @@ export default class App {
         }
 
         return undefined;
-    }
+    };
 
     getState = (): GlobalState => {
         return {
@@ -92,17 +91,17 @@ export default class App {
             userData: this.userData,
             // progression: this.getProgressionState(),
             adhocState: this.getAdhocState(),
-        }
-    }
+        };
+    };
 
-    broadcastState = (flash?: boolean) => {
+    broadcastState = (_flash?: boolean) => {
         const state = this.getState();
         this.globalStateSubject.next(state);
-    }
+    };
 
     subscribeToGlobalState = (callback: (subjectMessage: GlobalState) => void) => {
         return this.globalStateSubject.subscribe(callback);
-    }
+    };
 
     changeModeAdhocPlayback = (state: AdhocProgressionState) => {
         if (this.adhocPlaybackMode) {
@@ -117,7 +116,7 @@ export default class App {
         this.activeMode = this.adhocPlaybackMode;
 
         this.broadcastState();
-    }
+    };
 
     changeModeAdhocComposition = () => {
         this.adhocPlaybackMode?.close();
@@ -131,7 +130,7 @@ export default class App {
         this.activeMode = this.adhocCompositionMode;
 
         this.broadcastState();
-    }
+    };
 
     actions = {
         toggleDrumsColorAction: () => this.progressionMode?.toggleDrumColorAction(),
@@ -178,20 +177,20 @@ export default class App {
         resetProgression: () => {
             this.changeModeAdhocComposition();
         },
-    }
+    };
 
     playSpecificChord = (chord: number[]) => {
         console.log(chord);
 
         this.chordSupervisor.playChord(chord);
-        const name = Object.keys(CHORDS).find(key => CHORDS[key] === chord);
+        const name = Object.keys(CHORDS).find((key) => CHORDS[key] === chord);
         setTimeout(() => console.log('playing chord ' + name),);
-    }
+    };
 
     close = () => {
         this.progressionMode?.close();
         this.adhocCompositionMode?.close();
         this.midiService.close();
         this.qwertyService.close();
-    }
+    };
 }

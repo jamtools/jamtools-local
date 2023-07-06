@@ -1,6 +1,6 @@
-import MidiService from '../services/midi_service';
-
 import {Subscription} from 'rxjs';
+
+import MidiService from '../services/midi_service';
 
 import {MidiInstrumentName} from '../constants/midi_instrument_constants';
 import {isNoteOffEvent, isNoteOnEvent, MidiMessage, MidiMessageType, NoteOnEvent} from '../midi';
@@ -24,9 +24,9 @@ export default class InputChordSupervisor {
         this.midiEventHandlers = {
             noteon: this.handleNoteOn,
             noteoff: this.handleNoteOff,
-        }
+        };
 
-        this.midiServiceSubject = midi.subscribeToMusicalKeyboard(msg => {
+        this.midiServiceSubject = midi.subscribeToMusicalKeyboard((msg) => {
             const handler = this.midiEventHandlers[msg.type];
             if (handler) {
                 handler(msg);
@@ -36,7 +36,7 @@ export default class InputChordSupervisor {
 
     close = () => {
         this.midiServiceSubject.unsubscribe();
-    }
+    };
 
     handleNoteOn: MidiEventHandler = (event) => {
         if (!isNoteOnEvent(event)) {
@@ -46,7 +46,7 @@ export default class InputChordSupervisor {
         const current = this.getCurrentlyHeldDownNotes();
         let next: NoteOnEvent[];
 
-        const index = current.findIndex(n => n.note === event.msg.note)
+        const index = current.findIndex((n) => n.note === event.msg.note);
         if (index !== -1) {
             next = [
                 ...current.slice(0, index),
@@ -57,11 +57,11 @@ export default class InputChordSupervisor {
             next = [
                 ...current,
                 event.msg,
-            ]
+            ];
         }
 
         this.heldDownNotes = next;
-    }
+    };
 
     handleNoteOff: MidiEventHandler = (event) => {
         if (!isNoteOffEvent(event)) {
@@ -70,16 +70,16 @@ export default class InputChordSupervisor {
 
         const current = this.getCurrentlyHeldDownNotes();
 
-        const index = current.findIndex(n => n.note === event.msg.note);
+        const index = current.findIndex((n) => n.note === event.msg.note);
         if (index !== -1) {
             this.heldDownNotes = [
                 ...current.slice(0, index),
                 ...current.slice(index + 1),
             ];
         }
-    }
+    };
 
     getCurrentlyHeldDownNotes = (): NoteOnEvent[] => {
         return this.heldDownNotes;
-    }
+    };
 }

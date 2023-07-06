@@ -1,15 +1,5 @@
 import {Input, Output, PolyAfterTouch, Note, getInputs} from 'easymidi';
 
-type TickNote = {
-
-    tick: number;
-}
-
-type Chord = {
-    notes: Note[];
-    tickTiming: number;
-}
-
 class MidiLooper {
     private input: Input;
     private output: Output;
@@ -21,7 +11,7 @@ class MidiLooper {
     private lastClockTime = 0;
     private currentStep = -1;
     private shouldPlay = false;
-    private ticks = 0;
+    private _ticks = 0;
 
     constructor() {
         getInputs().forEach(console.log);
@@ -31,6 +21,8 @@ class MidiLooper {
         this.input.on('start', this.handleStart);
         this.input.on('stop', this.handleStop);
         this.input.on('clock', this.handleClock);
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.input.on('cc' as any, this.handlePedal);
         this.input.on('noteon', this.handleNoteOn);
         this.input.on('noteoff', this.handleNoteOff);
@@ -38,7 +30,7 @@ class MidiLooper {
 
     private handleStart = (): void => {
         this.currentStep = -1;
-        this.ticks = 0;
+        this._ticks = 0;
         this.shouldPlay = true;
         this.output.send('start');
     };
@@ -54,10 +46,10 @@ class MidiLooper {
         if (now - this.lastClockTime > 1000) {
             this.currentStep = -1;
             this.shouldPlay = true;
-            this.ticks = 0;
+            this._ticks = 0;
         }
 
-        this.ticks++;
+        this._ticks++;
         this.lastClockTime = now;
 
         if (!this.shouldPlay) {
@@ -100,7 +92,7 @@ class MidiLooper {
         // sustain pedal pressed, save current chord
         const currentChord = {
             notes: currentNotes.slice(),
-            position: lastNotePosition % (ticksPerQuarterNote * 2) // save chord position relative to 1/8 note
+            position: lastNotePosition % (ticksPerQuarterNote * 2), // save chord position relative to 1/8 note
         };
         chords.push(currentChord);
 
@@ -127,4 +119,4 @@ class MidiLooper {
     };
 }
 
-const looper = new MidiLooper();
+const _looper = new MidiLooper();

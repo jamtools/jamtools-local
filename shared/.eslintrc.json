@@ -182,7 +182,7 @@
         }
       ],
       "no-native-reassign": 2,
-      "no-negated-condition": 2,
+      "no-negated-condition": "off",
       "no-nested-ternary": 2,
       "no-new": 2,
       "no-new-func": 2,
@@ -227,7 +227,7 @@
         }
       ],
       "no-undef-init": 2,
-      "no-underscore-dangle": 2,
+      "no-underscore-dangle": "off",
       "no-unexpected-multiline": 2,
       "no-unmodified-loop-condition": 2,
       "no-unneeded-ternary": [
@@ -254,7 +254,7 @@
       "no-useless-return": 2,
       "no-var": 0,
       "no-void": 2,
-      "no-warning-comments": 1,
+      "no-warning-comments": "off",
       "no-whitespace-before-property": 2,
       "no-with": 2,
       "object-curly-newline": 0,
@@ -386,7 +386,8 @@
             },
             {
               "selector": "variable",
-              "format": ["camelCase", "PascalCase", "UPPER_CASE"]
+              "format": ["camelCase", "PascalCase", "UPPER_CASE"],
+              "leadingUnderscore": "allow"
             },
             {
               "selector": "parameter",

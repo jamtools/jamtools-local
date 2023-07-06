@@ -4,9 +4,8 @@ import {Config} from '../types/config_types/config_types';
 
 export type Stdin = Pick<
     typeof process.stdin,
-    'resume' | 'setEncoding' | 'on'
+'resume' | 'setEncoding' | 'on'
 > & {setRawMode?: typeof process.stdin.setRawMode};
-
 
 export default class QwertyService {
     private subject: Subject<string> = new ReplaySubject();
@@ -37,7 +36,7 @@ export default class QwertyService {
 
     subscribe = (callback: (subjectMessage) => void) => {
         return this.subject.subscribe(callback);
-    }
+    };
 
-    close = () => {}
+    close = () => {};
 }

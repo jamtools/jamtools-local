@@ -9,17 +9,17 @@ export class OutputChordSupervisor {
 
     notesOffAll = () => {
         this.heldDownNotes = [];
-    }
+    };
 
     playChord = (nextChord: number[]) => {
         // nextChord = nextChord.slice(0, 4);
 
-        const toRelease = this.heldDownNotes.filter(note => !nextChord.includes(note));
+        const toRelease = this.heldDownNotes.filter((note) => !nextChord.includes(note));
         const toPress = nextChord;
         // const toPress = nextChord.filter(note => !this.heldDownNotes.includes(note));
         this.heldDownNotes = nextChord;
 
-        toRelease.forEach(note => {
+        toRelease.forEach((note) => {
             this.midi.sendMessage('noteoff', {
                 channel: 0,
                 note,
@@ -27,12 +27,12 @@ export class OutputChordSupervisor {
             });
         });
 
-        toPress.forEach(note => {
+        toPress.forEach((note) => {
             this.midi.sendMessage('noteon', {
                 channel: 0,
                 note,
                 velocity: 100,
             });
         });
-    }
+    };
 }
