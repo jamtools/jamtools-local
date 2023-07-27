@@ -8,14 +8,14 @@ import type {ActionHandler} from './app_actions';
 type ImportMeta = {
     env: {
         API_HOST?: string;
-    }
+    };
 }
 
 const apiHost = (import.meta as unknown as ImportMeta).env.API_HOST;
 const host = apiHost || `http://${window.location.hostname}:1337`;
 
 export class RemoteActionHandler implements ActionHandler {
-    subscribeToMessages = (callback: (msg: WebsocketMessage<any>) => void) => {
+    subscribeToMessages = (callback: (msg: WebsocketMessage<unknown>) => void) => {
         return subscribeToMessages(callback);
     };
 
@@ -31,14 +31,15 @@ export class RemoteActionHandler implements ActionHandler {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                }
+                },
             });
-        } catch (e: any) {
-            return {error: e.message};
+        } catch (e: unknown) {
+            const e2 = e as Error;
+            return {error: e2.message};
         }
 
         return res.json();
-    }
+    };
 
     fetchGlobalState = async (): Promise<GetStateAPIResponse> => {
         let res;
@@ -46,11 +47,11 @@ export class RemoteActionHandler implements ActionHandler {
             res = await fetch(host + '/state', {
                 method: 'GET',
             });
-        } catch (e: any) {
-            return {error: e.message};
+        } catch (e: unknown) {
+            const e2 = e as Error;
+            return {error: e2.message};
         }
 
         return res.json();
-
-    }
+    };
 }

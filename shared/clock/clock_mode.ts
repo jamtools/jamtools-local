@@ -1,10 +1,11 @@
 import type {ControlChange} from 'easymidi';
 import {Subscription} from 'rxjs';
+
 import MidiService, {MidiSubjectMessage} from '../services/midi_service';
 
 const PULSES_PER_MEASURE = 96;
 
-const eigthNotePulse = 96 / 8; // 12
+// const eigthNotePulse = 96 / 8; // 12
 
 // figure out that the music has started
 
@@ -34,10 +35,10 @@ export default class ClockMode {
         this.lastPulses = this.lastPulses.slice(0, PULSES_PER_MEASURE);
 
         // not an eigth note
-        if (this.index % eigthNotePulse === 0) {
-            return;
-        }
-    }
+        // if (this.index % eigthNotePulse === 0) {
+
+        // }
+    };
 
     handleMidiEvent = (message: MidiSubjectMessage) => {
         if (message.type === 'noteon') {
@@ -55,14 +56,12 @@ export default class ClockMode {
             if (controlChange.value === 127) {
                 this.handlePedal();
             }
-
-            return;
         }
-    }
+    };
 
     handlePedal = () => {
 
-    }
+    };
 
     close = () => this.midiSubscription.unsubscribe();
 }

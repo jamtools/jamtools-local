@@ -14,13 +14,17 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/eslint-plugin": "^7.22.5",
     "@snowpack/plugin-sass": "^1.4.0",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@types/webmidi": "^2.0.7",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
     "detect-port": "^1.5.1",
     "eslint": "^8.35.0",
+    "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "snowpack": "^3.8.8",
     "typescript": "^4.9.5"
   },

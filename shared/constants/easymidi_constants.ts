@@ -20,11 +20,11 @@ export const INPUT_EXTENDED_TYPES = [
     'continue',
     'stop',
     'activesense',
-    'reset'
+    'reset',
 ];
 
 export const SPAMMY_MIDI_EVENT_TYPES = {
     CLOCK: 'clock',
     PITCH: 'pitch',
     ACTIVE_SENSE: 'activesense',
-}
+};

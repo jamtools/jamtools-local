@@ -1,4 +1,5 @@
 import {MidiTriggerMappings} from '../trigger_types';
+
 import {WledConfig} from './wled_config';
 
 export type ActionConfig = {
@@ -6,9 +7,7 @@ export type ActionConfig = {
     action: string;
 }
 
-export type WledActionConfig = {
-
-} & ActionConfig;
+export type WledActionConfig = ActionConfig;
 
 export type MidiActionConfig = {
     chord?: {
@@ -30,6 +29,6 @@ export type Config = {
     };
 
     actions: {
-        [actionHash: string]: (WledActionConfig | MidiActionConfig)[];
+        [actionHash: string]: Array<WledActionConfig | MidiActionConfig>;
     };
 }

@@ -22,26 +22,16 @@ type TriggerName = string;
 
 type WledActionName = 'next palette' | 'next preset';
 
-const WLED_ACTION_NAMES: Record<string, WledActionName> = {
-    NEXT_PALETTE: 'next palette',
-    NEXT_PRESET: 'next preset',
-}
-
 type WledAction = {
-    type: 'wled',
+    type: 'wled';
     name: string;
     action: WledActionName;
 }
 
 type MidiActionName = 'next chord' | 'next progression';
 
-const MIDI_ACTION_NAMES: Record<string, MidiActionName> = {
-    NEXT_CHORD: 'next chord',
-    NEXT_PROGRESSION: 'next progression',
-}
-
 type MidiAction = {
-    type: 'midi',
+    type: 'midi';
     name: string;
     action: MidiActionName;
 }
@@ -52,74 +42,74 @@ type SetTriggerMappings = {
     [trigger: TriggerName]: ActionMapping[];
 }
 
-const x: SetConfig = {
-    "chords": {
-        "C": [
+const _set: SetConfig = {
+    chords: {
+        C: [
             12,
             24,
-            36
-        ]
+            36,
+        ],
     },
-    "wled": {
-        "presets": [
+    wled: {
+        presets: [
 
         ],
-        "palettes": [
+        palettes: [
 
-        ]
+        ],
     },
-    "mappings": {
-        "A1": [
+    mappings: {
+        A1: [
             {
-                "type": "midi",
-                "name": "Juno USB Midi",
-                "action": "next chord"
-            }
+                type: 'midi',
+                name: 'Juno USB Midi',
+                action: 'next chord',
+            },
         ],
-        "A2": [
+        A2: [
             {
-                "type": "midi",
-                "name": "Juno USB Midi",
-                "action": "next chord"
+                type: 'midi',
+                name: 'Juno USB Midi',
+                action: 'next chord',
             },
             {
-                "type": "wled",
-                "name": "Diamond",
-                "action": "next palette"
-            }
+                type: 'wled',
+                name: 'Diamond',
+                action: 'next palette',
+            },
         ],
-        "A3": [
+        A3: [
             {
-                "type": "midi",
-                "name": "Juno USB Midi",
-                "action": "next chord"
+                type: 'midi',
+                name: 'Juno USB Midi',
+                action: 'next chord',
             },
             {
-                "type": "wled",
-                "name": "Diamond",
-                "action": "next preset"
-            }
+                type: 'wled',
+                name: 'Diamond',
+                action: 'next preset',
+            },
         ],
-        "A4": [
+        A4: [
             {
-                "type": "midi",
-                "name": "Juno USB Midi",
-                "action": "next progression"
+                type: 'midi',
+                name: 'Juno USB Midi',
+                action: 'next progression',
             },
             {
-                "type": "wled",
-                "name": "Diamond",
-                "action": "next preset"
-            }
-        ]
+                type: 'wled',
+                name: 'Diamond',
+                action: 'next preset',
+            },
+        ],
     },
-    "sections": [
+    sections: [
         {
-            "steps": [
+            steps: [
                 {
-                    "chord": "C"
-                }
-            ]
-        }
-    ]
-}
+                    chord: 'C',
+                },
+            ],
+        },
+    ],
+};

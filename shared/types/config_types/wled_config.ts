@@ -4,5 +4,5 @@ export type WledController = {
 }
 
 export type WledConfig = {
-    ctrls: WledController[],
+    ctrls: WledController[];
 };

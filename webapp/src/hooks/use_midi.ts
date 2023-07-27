@@ -13,14 +13,16 @@ export const useWebMidi = (): UseMidiResponse => {
     useEffect(() => {
         (async () => {
             await WebMidi.enable();
+
             // setError(WebMidi.inputs);
             console.log(WebMidi.inputs);
             const input = WebMidi.inputs[0];
             if (!input) {
-                alert('Cant find juno midi input');
+                alert('Cant find midi input');
                 return;
             }
             midiInput.current = input;
+
             // initializeJuno(input);
             setWebMidi(WebMidi);
 

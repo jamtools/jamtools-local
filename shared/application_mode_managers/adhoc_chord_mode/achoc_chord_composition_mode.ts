@@ -1,18 +1,15 @@
 import {Subscription} from 'rxjs';
 
+import type {Note} from 'easymidi';
+
 import MidiService, {MidiSubjectMessage} from '../../services/midi_service';
-import {Config} from '../../types/config_types/config_types';
 
 import {ApplicationModeManager} from '../application_mode_manager';
-import {log} from '../../utils';
 
 import type App from '../../app';
-import {MidiInstrumentName} from '../../constants/midi_instrument_constants';
-import {AdhocProgressionState, ProgressionState} from '../../state/progression_state';
+import {AdhocProgressionState} from '../../state/progression_state';
 import InputChordSupervisor from '../../music/input_chord_supervisor';
 import {ControlChangeEvent, equalChords, isNoteOnEvent, NoteOffEvent, NoteOnEvent} from '../../midi';
-import type {Note} from 'easymidi';
-import AdhocChordPlaybackMode from './achoc_chord_playback_mode';
 
 export default class AdhocChordCompositionMode implements ApplicationModeManager<AdhocProgressionState> {
     private state: AdhocProgressionState = {
@@ -30,12 +27,12 @@ export default class AdhocChordCompositionMode implements ApplicationModeManager
     constructor(
         private midiService: MidiService,
         private app: App,
-        ) {
-            // this.inputChordSupervisor = new InputChordSupervisor(midiService);
-            this.mainTriggerSubscription = midiService.subscribeToMainTrigger(this.handleMainTrigger);
-            this.musicalKeyboardSubscription = midiService.subscribeToMusicalKeyboard(this.handleMusicalKeyboardNote);
-            this.sustainPedalSubscription = midiService.subscribeToSustainPedal(this.handleSustainPedalPress, this.handleSustainPedalRelease);
-        }
+    ) {
+        // this.inputChordSupervisor = new InputChordSupervisor(midiService);
+        this.mainTriggerSubscription = midiService.subscribeToMainTrigger(this.handleMainTrigger);
+        this.musicalKeyboardSubscription = midiService.subscribeToMusicalKeyboard(this.handleMusicalKeyboardNote);
+        this.sustainPedalSubscription = midiService.subscribeToSustainPedal(this.handleSustainPedalPress, this.handleSustainPedalRelease);
+    }
 
     private inputChordSupervisor = new InputChordSupervisor(this.midiService);
 
@@ -44,7 +41,7 @@ export default class AdhocChordCompositionMode implements ApplicationModeManager
         this.musicalKeyboardSubscription.unsubscribe();
         this.sustainPedalSubscription.unsubscribe();
         this.inputChordSupervisor.close();
-    }
+    };
 
     getState = (): AdhocProgressionState => this.state;
 
@@ -55,7 +52,7 @@ export default class AdhocChordCompositionMode implements ApplicationModeManager
         };
 
         this.app.broadcastState();
-    }
+    };
 
     // add config settings to midi configs:
     // - subscribesToNotes: {}
@@ -68,12 +65,12 @@ export default class AdhocChordCompositionMode implements ApplicationModeManager
     private handleFinalConfirm = () => {
         console.log('final confirm');
         this.app.changeModeAdhocPlayback(this.state);
-    }
+    };
 
     private handleMainTrigger = (event: MidiSubjectMessage<NoteOnEvent>) => {
         // Nothing to do in this mode
         console.log('no-op main trigger', event);
-    }
+    };
 
     private handleMusicalKeyboardNote = (event: MidiSubjectMessage<NoteOnEvent | NoteOffEvent>) => {
         if (isNoteOnEvent(event)) {
@@ -82,11 +79,11 @@ export default class AdhocChordCompositionMode implements ApplicationModeManager
         }
 
         this.handleMusicalKeyboardNoteOff(event);
-    }
+    };
 
     private sustainIsPressed = false;
     private currentSustainedNotes: Note[] = [];
-    private handleSustainPedalPress = (event: MidiSubjectMessage<ControlChangeEvent>) => {
+    private handleSustainPedalPress = (_event: MidiSubjectMessage<ControlChangeEvent>) => {
         this.sustainIsPressed = true;
 
         const currentNotes = this.inputChordSupervisor.getCurrentlyHeldDownNotes();
@@ -101,20 +98,20 @@ export default class AdhocChordCompositionMode implements ApplicationModeManager
             return;
         }
 
-        console.log('add chord')
+        console.log('add chord');
         const newChords = [...this.state.chords, currentNotes];
         this.setState({
             chords: newChords,
             currentIndex: this.state.chords.length - 1,
         });
-    }
+    };
 
-    private handleSustainPedalRelease = (event: MidiSubjectMessage<ControlChangeEvent>) => {
+    private handleSustainPedalRelease = (_event: MidiSubjectMessage<ControlChangeEvent>) => {
         this.sustainIsPressed = false;
 
         const currentNotes = this.inputChordSupervisor.getCurrentlyHeldDownNotes();
         this.midiService.notesOffExceptFor(currentNotes);
-    }
+    };
 
     handleMusicalKeyboardNoteOn = (msg: MidiSubjectMessage<NoteOnEvent>) => {
         if (!this.currentSustainedNotes.includes(msg.msg)) {
@@ -122,7 +119,7 @@ export default class AdhocChordCompositionMode implements ApplicationModeManager
         }
 
         this.midiService.sendMessage(msg.type, msg.msg);
-    }
+    };
 
     handleMusicalKeyboardNoteOff = (msg: MidiSubjectMessage<NoteOffEvent>) => {
         if (this.sustainIsPressed) {
@@ -130,5 +127,5 @@ export default class AdhocChordCompositionMode implements ApplicationModeManager
         }
 
         this.midiService.sendMessage(msg.type, msg.msg);
-    }
+    };
 }

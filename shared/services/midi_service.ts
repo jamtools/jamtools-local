@@ -1,5 +1,6 @@
 import type {Input, Note, Output} from 'easymidi';
-import {BehaviorSubject, Subject} from 'rxjs';
+import {Subject} from 'rxjs';
+
 import {MidiTriggerMappings} from '../types/trigger_types';
 
 import {MidiInstrumentName} from '../constants/midi_instrument_constants';
@@ -15,7 +16,7 @@ export default class MidiService {
     private outputs: Output[] = [];
 
     constructor(private midi: EasyMidi, private config: Config) {
-        this.midiEventSubject = new BehaviorSubject({} as any);
+        this.midiEventSubject = new Subject();
         this.setupMidi();
     }
 
@@ -25,36 +26,36 @@ export default class MidiService {
             try {
                 await maybeEnable.enable();
             } catch (e) {
-                alert(e)
+                alert(e);
                 return;
             }
         }
 
         const allInputs = this.midi.getInputs();
         for (const configInput of this.config.midi.inputs) {
-            if (allInputs.find(midiName => midiName === configInput.name)) {
+            if (allInputs.find((midiName) => midiName === configInput.name)) {
                 this.registerInput(configInput.name as MidiInstrumentName, configInput);
             }
         }
 
         const allOutputs = this.midi.getOutputs();
         for (const configOutput of this.config.midi.outputs) {
-            if (allOutputs.find(midiName => midiName === configOutput.name)) {
+            if (allOutputs.find((midiName) => midiName === configOutput.name)) {
                 this.registerOutput(configOutput.name as MidiInstrumentName);
             }
         }
-    }
+    };
 
     // sendMessage = (midiName: MidiInstrumentName, type: MidiMessageType, msg: MidiMessage) => {
     sendMessage = (type: MidiMessageType, msg: MidiMessage) => {
-        this.outputs.forEach(output => {
-            output.send(type as any, msg as any);
+        this.outputs.forEach((output) => {
+            output.send(type as unknown as 'noteon', msg as Note);
         });
-    }
+    };
 
     subscribe = (callback: (subjectMessage: MidiSubjectMessage) => void) => {
         return this.midiEventSubject.subscribe(callback);
-    }
+    };
 
     subscribeToControlButtons = (callback: (actionIndex: number) => void) => {
         return this.midiEventSubject.subscribe((event) => {
@@ -77,7 +78,7 @@ export default class MidiService {
                 return;
             }
 
-            const control = controlButtons.find(button => equalControlButton(button, event));
+            const control = controlButtons.find((button) => equalControlButton(button, event));
             if (!control) {
                 return;
             }
@@ -85,7 +86,7 @@ export default class MidiService {
             const index = controlButtons.indexOf(control);
             callback(index);
         });
-    }
+    };
 
     subscribeToSustainPedal = (
         onPress: (subjectMessage: MidiSubjectMessage<ControlChangeEvent>) => void,
@@ -106,7 +107,7 @@ export default class MidiService {
                 onRelease(event);
             }
         });
-    }
+    };
 
     private isSustainPedalEvent = (event: MidiSubjectMessage): event is MidiSubjectMessage<ControlChangeEvent> => {
         if (!isControlChangeEvent(event)) {
@@ -115,7 +116,7 @@ export default class MidiService {
 
         const input = this.getInputConfig(event.name);
         return Boolean(input?.sustainPedal);
-    }
+    };
 
     subscribeToMainTrigger = (
         callback: (subjectMessage: MidiSubjectMessage<NoteOnEvent>) => void,
@@ -127,7 +128,7 @@ export default class MidiService {
 
             callback(event);
         });
-    }
+    };
 
     private isMainTriggerEvent = (event: MidiSubjectMessage): event is MidiSubjectMessage<NoteOnEvent> => {
         if (!isNoteOnEvent(event)) {
@@ -144,7 +145,7 @@ export default class MidiService {
         }
 
         return equalControlButton(input.mainTrigger, event);
-    }
+    };
 
     subscribeToMusicalKeyboard = (
         callback: (subjectMessage: MidiSubjectMessage<NoteOnEvent | NoteOffEvent>) => void,
@@ -156,7 +157,7 @@ export default class MidiService {
 
             callback(event);
         });
-    }
+    };
 
     private isMusicalKeyboardEvent = (event: MidiSubjectMessage): event is MidiSubjectMessage<NoteOnEvent | NoteOffEvent> => {
         if (!isNoteOnEvent(event) && !isNoteOffEvent(event)) {
@@ -169,19 +170,19 @@ export default class MidiService {
         }
 
         return equalKeyboard(input.keyboard, event);
-    }
+    };
 
     private getInputConfig = (instrumentName: string): MidiTriggerMappings | undefined => {
-        return this.config.midi.inputs.find(input => input.name === instrumentName);
-    }
+        return this.config.midi.inputs.find((input) => input.name === instrumentName);
+    };
 
     close = () => {
-        this.inputs.forEach(input => input.close());
-        this.outputs.forEach(output => {
+        this.inputs.forEach((input) => input.close());
+        this.outputs.forEach((output) => {
             // this.notesOff(output);
             output.close();
         });
-    }
+    };
 
     notesOff = (output: Output) => {
         for (let i = 0; i < 100; i++) {
@@ -192,7 +193,24 @@ export default class MidiService {
                 velocity: 0,
             });
         }
-    }
+    };
+
+    notesOffExceptFor = (keepHolding: Note[]) => {
+        for (let i = 0; i < 100; i++) {
+            const note = 24 + i;
+            if (keepHolding.find((n) => n.note === note)) {
+                continue;
+            }
+
+            for (const output of this.outputs) {
+                output.send('noteoff', {
+                    channel: 0,
+                    note,
+                    velocity: 0,
+                });
+            }
+        }
+    };
 
     notesOffExceptFor = (keepHolding: Note[]) => {
         for (let i = 0; i < 100; i++) {
@@ -213,7 +231,7 @@ export default class MidiService {
 
     notesOffAll = () => {
         this.outputs.forEach(this.notesOff);
-    }
+    };
 
     getInputs = () => this.inputs;
     getOutputs = () => this.outputs;
@@ -271,10 +289,10 @@ export default class MidiService {
         }
 
         this.inputs.push(input);
-    }
+    };
 
     private registerOutput = (midiName: MidiInstrumentName) => {
         const output = new this.midi.Output(midiName);
         this.outputs.push(output);
-    }
+    };
 }

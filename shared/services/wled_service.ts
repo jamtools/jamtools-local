@@ -1,4 +1,5 @@
-import {WLEDClient, WLEDClientPreset} from 'wled-client';
+import {WLEDClient} from 'wled-client';
+
 import {Config} from '../types/config_types/config_types';
 import {log} from '../utils';
 import {setRandomColor, setRandomEffect} from '../wled';
@@ -15,26 +16,26 @@ export default class WledService {
     setRandomColor = () => {
         // log('fake setting random color');
         // return;
-        this.wledClients.forEach(wled => {
-            setRandomColor(wled)
+        this.wledClients.forEach((wled) => {
+            setRandomColor(wled);
         });
-    }
+    };
 
     setRandomEffect = () => {
         // log('fake setting random effect');
         // return;
-        this.wledClients.forEach(wled => {
+        this.wledClients.forEach((wled) => {
             setRandomEffect(wled);
         });
-    }
+    };
 
     setPreset = (preset: number) => {
         // log('fake setting preset ' + preset);
         // return;
-        this.wledClients.forEach(wled => {
+        this.wledClients.forEach((wled) => {
             wled.setPreset(preset);
         });
-    }
+    };
 
     presets: string[] = [];
     currentPresentIndex = 1;
@@ -51,7 +52,7 @@ export default class WledService {
 
         this.currentPresentIndex = rand;
         this.setPreset(rand);
-    }
+    };
 
     savePreset = async () => {
         const client = this.getClient();
@@ -59,7 +60,7 @@ export default class WledService {
             return;
         }
 
-        const names = Object.values(client.presets).map(p => p.name);
+        const names = Object.values(client.presets).map((p) => p.name);
         for (let i = 0; i < 60; i++) {
             const name = i.toString();
 
@@ -70,6 +71,8 @@ export default class WledService {
             const id = names.length;
 
             try {
+                // this will only run once, since we break afterwards
+                // eslint-disable-next-line no-await-in-loop
                 await client.saveStateAsPreset(id, {
                     name,
                     includeBrightness: false,
@@ -83,7 +86,7 @@ export default class WledService {
         }
         // console.log(newName);
         // client.saveStateAsPreset(presetName)
-    }
+    };
 
     increaseSpeed = () => {
         // TODO: debounce changes
@@ -98,7 +101,7 @@ export default class WledService {
         client.setEffectSpeed(newSpeed);
 
         log('increasing speed to ' + newSpeed);
-    }
+    };
 
     decreaseSpeed = () => {
         const client = this.getClient();
@@ -111,15 +114,15 @@ export default class WledService {
         speed = newSpeed;
         client.setEffectSpeed(newSpeed);
         log('decreasing speed to ' + newSpeed);
-    }
+    };
 
     private getClient = (): WLEDClient | undefined => {
         return this.wledClients[0];
-    }
+    };
 
     private initWledClients = () => {
         log('initializing wled clients');
-        this.config.wled.ctrls.forEach(async address => {
+        this.config.wled.ctrls.forEach(async (address) => {
             try {
                 const ip = address.ip;
                 const client = new WLEDClient(ip);
@@ -130,5 +133,5 @@ export default class WledService {
                 console.error(e);
             }
         });
-    }
+    };
 }

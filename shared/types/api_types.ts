@@ -18,6 +18,6 @@ export type GetStateAPIResponse = APIResponse<GlobalState>;
 
 export type SubmitControlPanelActionAPIResponse = APIResponse<GlobalState>;
 
-export const isErrorResponse = (response: APIResponse<any>): response is ErrorResponse => {
+export const isErrorResponse = (response: APIResponse<unknown>): response is ErrorResponse => {
     return 'error' in response;
-}
+};

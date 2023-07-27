@@ -69,7 +69,7 @@ export const CHORDS = {
         53,
         57,
         60,
-        65
+        65,
     ],
     fsMinor: [
         42,
@@ -77,7 +77,7 @@ export const CHORDS = {
         54,
         57,
         61,
-        66
+        66,
     ],
     gPower: [
         38,
@@ -93,7 +93,7 @@ export const CHORDS = {
         52,
         55,
         60,
-        64
+        64,
     ],
     bFlatMajor: [
         // 41,
@@ -125,7 +125,7 @@ export const CHORDS = {
         54,
         58,
         61,
-        66
+        66,
     ],
     gSharpMajor: [
         44,
@@ -133,7 +133,7 @@ export const CHORDS = {
         56,
         60,
         63,
-        68
+        68,
     ],
     eFlatMinor: [
         39,
@@ -157,7 +157,7 @@ export const CHORDS = {
         59,
         62,
         66,
-        71
+        71,
     ],
     aMajor: [
         45,
@@ -165,7 +165,7 @@ export const CHORDS = {
         57,
         61,
         64,
-        69
+        69,
     ],
     gMajor7: [
         43,
@@ -173,7 +173,7 @@ export const CHORDS = {
         55,
         59,
         62,
-        66
+        66,
     ],
     dMajor: [
         38,
@@ -181,7 +181,7 @@ export const CHORDS = {
         50,
         57,
         62,
-        66
+        66,
     ],
     eMinor: [
         40,
@@ -189,7 +189,7 @@ export const CHORDS = {
         52,
         55,
         59,
-        64
+        64,
     ],
     fSharpMinor: [
         42,
@@ -197,7 +197,7 @@ export const CHORDS = {
         54,
         57,
         61,
-        66
+        66,
     ],
     cSharpMinor: [
         37,
@@ -205,7 +205,7 @@ export const CHORDS = {
         49,
         52,
         56,
-        61
+        61,
     ],
     gSharpMinor: [
         44,
@@ -213,6 +213,6 @@ export const CHORDS = {
         56,
         59,
         63,
-        68
+        68,
     ],
-}
+};

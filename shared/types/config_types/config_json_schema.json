@@ -121,12 +121,6 @@
                             }
                         ]
                     }
-                },
-                "controlKnobs": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/ControlKnobMapping"
-                    }
                 }
             },
             "required": [
@@ -168,10 +162,6 @@
                     "type": "null"
                 }
             ]
-        },
-        "ControlKnobMapping": {
-            "type": "object",
-            "additionalProperties": false
         },
         "MidiOutputConfig": {
             "type": "object",

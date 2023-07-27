@@ -1,4 +1,4 @@
-export interface ApplicationModeManager<T = any> {
+export interface ApplicationModeManager<T> {
     getState(): T;
     close(): void;
 }

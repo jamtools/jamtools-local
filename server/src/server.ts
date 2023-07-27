@@ -1,3 +1,5 @@
+import http from 'http';
+
 import express from 'express';
 import cors from 'cors';
 
@@ -5,9 +7,8 @@ import {SerializedAction, getActionMap} from '@shared/actions/control_panel_acti
 import type App from '@shared/app';
 import {GlobalState} from '@shared/state/global_state';
 import {SubmitControlPanelActionAPIResponse, GetStateAPIResponse} from '@shared/types/api_types';
-import {initWebsocketServer} from './websocket_server';
 
-import http from 'http';
+import {initWebsocketServer} from './websocket_server';
 
 export default async function initServer(app: App): Promise<http.Server> {
     const server = express();
@@ -45,12 +46,13 @@ export default async function initServer(app: App): Promise<http.Server> {
 
         try {
             await Promise.resolve(actions[action]());
-        } catch (e: any) {
-            console.error(`Error running action ${action}: ` + e);
+        } catch (e: unknown) {
+            const e2 = e as Error;
+            console.error(`Error running action ${action}: ` + e2.message);
 
             res.json({
-                error: e.message,
-            })
+                error: e2.message,
+            });
             return;
         }
 

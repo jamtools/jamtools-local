@@ -1,4 +1,5 @@
 import {Subscription} from 'rxjs';
+
 import QwertyService from '../services/qwerty_service';
 import {log} from '../utils';
 
@@ -7,8 +8,6 @@ const thumbstickRight = 'w';
 
 const mainTrigger = 'h';
 const secondaryTrigger = 'u';
-
-const test = 'a';
 
 export type Action = {
     name: string;
@@ -49,15 +48,14 @@ export default class BluetoothRemoteDynamicMapping {
         }
 
         if (key === thumbstickRight) {
-            const offset = 1
+            const offset = 1;
             const newIndex = (this.currentMainIndex + offset) % this.main.length;
             log('Setting main action index to ' + newIndex);
             this.currentMainIndex = newIndex;
-            return;
         }
-    }
+    };
 
     close = () => {
         this.qwertyServiceSubject.unsubscribe();
-    }
+    };
 }

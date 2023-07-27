@@ -11,4 +11,4 @@ export enum MidiInstrumentName {
     DTX_DRUMS = 'DTX drums',
     GRAND_PIANO = 'USB MIDI Interface',
     VI49 = 'VI49 Out'
-};
+}

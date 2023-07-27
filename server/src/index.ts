@@ -1,18 +1,21 @@
 import easymidi from 'easymidi';
 
-import config from '../../data/config.json';
 import App from '@shared/app';
-// import main from './drum_trigger_test/drum_trigger_test';
-import {oldMain} from '../../shared/old_index';
 
 import {Config} from '@shared/types/config_types/config_types';
 import {UserDataState} from '@shared/state/user_data_state';
-const conf: Config = config;
 
-import initServer from './server';
 import {CHORDS} from '@shared/constants/chord_constants';
 import {jimmySet1, jimmySet2, michaelSet1} from '@shared/constants/progression_constants';
+
+import config from '../../data/config.json';
+
+import {oldMain} from '../../shared/old_index';
+
+import initServer from './server';
 import {exitHandler} from './exit_handler';
+
+const conf: Config = config;
 
 const songs: number[][][][] = [
     // set1,
@@ -20,7 +23,7 @@ const songs: number[][][][] = [
     jimmySet1,
     jimmySet2,
     michaelSet1,
-]
+];
 
 const userData: UserDataState = {
     chords: CHORDS,
@@ -29,7 +32,7 @@ const userData: UserDataState = {
 
 // main();
 
-const app = new App(easymidi, process.stdin, config, userData);
+const app = new App(easymidi, process.stdin, conf, userData);
 
 (async () => {
     exitHandler(app);
