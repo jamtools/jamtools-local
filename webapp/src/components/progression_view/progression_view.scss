@@ -1,0 +1,33 @@
+.heading {
+  font-size: 40px;
+}
+
+.progressionContainer {
+  border: 5px solid;
+  width: 1050px;
+}
+
+.chordName {
+  font-size: 80px;
+  font-family:Georgia, 'Times New Roman', Times, serif
+  // margin-right: 30px;
+}
+
+.entireChordContainer {
+  margin: 10px;
+  display: inline-block;
+  padding: 20px;
+}
+
+.selectedChord {
+  background-color: #FDEFCC;
+}
+
+.noteNameContainer {
+  background-color: #7EAA54;
+  text-align: center;
+  border: 20px solid;
+  border-color: #4D73BE;
+  border-radius: 30px;
+  padding: 10px;
+}

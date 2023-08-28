@@ -6,6 +6,8 @@ import {useGlobalState} from '../hooks/use_global_state';
 
 import ControlPanel from './control_panel/control_panel';
 
+import ProgressionView from './progression_view/progression_view';
+
 type Props = {
     actionHandler: ActionHandler;
     // localMode: boolean;
@@ -35,8 +37,13 @@ export default function Main(props: Props) {
     //     />
     // );
 
+    const progressionView = (
+        <ProgressionView/>
+    );
+
     return (
         <div>
+            {progressionView}
             <div>
                 <pre>
                     {messages.length}
