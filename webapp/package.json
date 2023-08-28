@@ -8,6 +8,9 @@
     "dev": "snowpack dev --port 2000",
     "local": "LOCAL_MODE=true snowpack dev --port 2000",
     "build": "snowpack build",
+    "check": "eslint --ext .js,.jsx,.tsx,.ts ./src --quiet --cache && eslint --ext .js,.jsx,.tsx,.ts ./webapp/src --quiet --cache",
+    "fix": "eslint --ext .js,.jsx,.tsx,.ts ./src --quiet --fix --cache && eslint --ext .js,.jsx,.tsx,.ts ./webapp/src --quiet --fix --cache",
+    "check-types": "tsc -b",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -29,6 +32,7 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
+    "classnames": "^2.3.2",
     "easymidi": "^3.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
