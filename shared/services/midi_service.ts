@@ -212,23 +212,6 @@ export default class MidiService {
         }
     };
 
-    notesOffExceptFor = (keepHolding: Note[]) => {
-        for (let i = 0; i < 100; i++) {
-            const note = 24 + i;
-            if (keepHolding.find(n => n.note === note)) {
-                continue;
-            }
-
-            for (const output of this.outputs) {
-                output.send('noteoff', {
-                    channel: 0,
-                    note,
-                    velocity: 0,
-                });
-            }
-        }
-    }
-
     notesOffAll = () => {
         this.outputs.forEach(this.notesOff);
     };
