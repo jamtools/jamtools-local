@@ -16,7 +16,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "audic": "^3.0.1",
     "debounce": "^1.2.1",
     "easymidi": "^3.0.1",
     "rxjs": "^7.8.0",
