@@ -2,11 +2,11 @@ import {BehaviorSubject, Subject, Subscription} from 'rxjs';
 
 import ProgressionModeManager from './application_mode_managers/progression_mode_manager';
 import {CHORDS} from './constants/chord_constants';
-import {OutputChordSupervisor} from './music/output_chord_supervisor';
+import {OutputChordSupervisor} from './io/midi/output_chord_supervisor';
 
-import MidiService from './services/midi_service';
-import QwertyService, {Stdin} from './services/qwerty_service';
-import WledService from './services/wled_service';
+import MidiService from './io/midi/midi_service';
+import QwertyService, {Stdin} from './io/qwerty/qwerty_service';
+import WledService from './io/wled/wled_service';
 import {Config} from './types/config_types/config_types';
 import {EasyMidi} from './types/easy_midi_types';
 
@@ -54,7 +54,7 @@ export default class App {
     adhocCompositionMode?: AdhocChordCompositionMode = new AdhocChordCompositionMode(this.midiService, this);
     adhocPlaybackMode?: AdhocChordPlaybackMode;
 
-    private activeMode: ApplicationModeManager = this.adhocCompositionMode!;
+    private activeMode: ApplicationModeManager<AdhocProgressionState> = this.adhocCompositionMode!;
 
     chordSupervisor = new OutputChordSupervisor(this.midiService);
 
@@ -131,35 +131,6 @@ export default class App {
 
         this.broadcastState();
     };
-
-    changeModeAdhocPlayback = (state: AdhocProgressionState) => {
-        if (this.adhocPlaybackMode) {
-            return;
-        }
-
-        this.adhocCompositionMode?.close();
-        this.adhocCompositionMode = undefined;
-
-        const newState: AdhocProgressionState = {...state, mode: 'playback'};
-        this.adhocPlaybackMode = new AdhocChordPlaybackMode(newState, this.midiService, this);
-        this.activeMode = this.adhocPlaybackMode;
-
-        this.broadcastState();
-    }
-
-    changeModeAdhocComposition = () => {
-        this.adhocPlaybackMode?.close();
-        this.adhocPlaybackMode = undefined;
-        this.adhocCompositionMode?.close();
-        this.adhocCompositionMode = undefined;
-
-        this.midiService.notesOffAll();
-
-        this.adhocCompositionMode = new AdhocChordCompositionMode(this.midiService, this);
-        this.activeMode = this.adhocCompositionMode;
-
-        this.broadcastState();
-    }
 
     actions = {
         toggleDrumsColorAction: () => this.progressionMode?.toggleDrumColorAction(),

@@ -1,14 +1,14 @@
 import type {Input, Note, Output} from 'easymidi';
 import {Subject} from 'rxjs';
 
-import {MidiTriggerMappings} from '../types/trigger_types';
+import {MidiTriggerMappings} from '../../types/trigger_types';
 
-import {MidiInstrumentName} from '../constants/midi_instrument_constants';
-import {ControlChangeEvent, equalControlButton, equalKeyboard, isControlChangeEvent, isNoteOffEvent, isNoteOnEvent, MidiMessage, MidiMessageType, MidiSubjectMessage, NoteOffEvent, NoteOnEvent} from '../midi';
-import {Config} from '../types/config_types/config_types';
-import {EasyMidi} from '../types/easy_midi_types';
+import {MidiInstrumentName} from '../../constants/midi_instrument_constants';
+import {ControlChangeEvent, equalControlButton, equalKeyboard, isControlChangeEvent, isNoteOffEvent, isNoteOnEvent, MidiMessage, MidiMessageType, MidiSubjectMessage, NoteOffEvent, NoteOnEvent} from './midi_utls';
+import {Config} from '../../types/config_types/config_types';
+import {EasyMidi} from '../../types/easy_midi_types';
 
-export type {MidiSubjectMessage} from '../midi';
+export type {MidiSubjectMessage} from './midi_utls';
 
 export default class MidiService {
     private midiEventSubject: Subject<MidiSubjectMessage>;
@@ -212,23 +212,6 @@ export default class MidiService {
         }
     };
 
-    notesOffExceptFor = (keepHolding: Note[]) => {
-        for (let i = 0; i < 100; i++) {
-            const note = 24 + i;
-            if (keepHolding.find(n => n.note === note)) {
-                continue;
-            }
-
-            for (const output of this.outputs) {
-                output.send('noteoff', {
-                    channel: 0,
-                    note,
-                    velocity: 0,
-                });
-            }
-        }
-    }
-
     notesOffAll = () => {
         this.outputs.forEach(this.notesOff);
     };
@@ -279,7 +262,7 @@ export default class MidiService {
         });
 
         if (inputConfig.clock) {
-            input.on('clock', (msg) => {
+            input.on('clock' as unknown as 'noteon', (msg) => { // TODO: incorrect type here
                 this.midiEventSubject.next({
                     name: midiName,
                     type: 'clock',

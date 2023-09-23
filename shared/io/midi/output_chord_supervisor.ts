@@ -1,4 +1,4 @@
-import MidiService from '../services/midi_service';
+import MidiService from '../io/midi/midi_service';
 
 export class OutputChordSupervisor {
     heldDownNotes: number[] = [];

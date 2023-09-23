@@ -5,7 +5,7 @@ import type {Note} from 'easymidi';
 
 import {ControlButtonMapping, KeyboardMapping} from 'types/trigger_types';
 
-import {INPUT_EXTENDED_TYPES, INPUT_TYPES, SPAMMY_MIDI_EVENT_TYPES} from './constants/easymidi_constants';
+import {INPUT_EXTENDED_TYPES, INPUT_TYPES, SPAMMY_MIDI_EVENT_TYPES} from '../../constants/easymidi_constants';
 
 export const sendNoteToPiano = (output) => {
     output.send('noteoff', {

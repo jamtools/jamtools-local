@@ -1,7 +1,7 @@
 import type {ControlChange} from 'easymidi';
 import {Subscription} from 'rxjs';
 
-import MidiService, {MidiSubjectMessage} from '../services/midi_service';
+import MidiService, {MidiSubjectMessage} from '../midi_service';
 
 const PULSES_PER_MEASURE = 96;
 
