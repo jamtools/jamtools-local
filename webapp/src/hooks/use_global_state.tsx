@@ -50,7 +50,9 @@ export const GlobalStateProvider = (props: GlobalStateProviderProps) => {
     useEffect(() => {
         props.actionHandler.fetchGlobalState().then((res) => {
             if (isErrorResponse(res)) {
-                alert(res.error);
+                if (res.error !== 'Failed to fetch') {
+                    alert(res.error);
+                }
                 return;
             }
 
