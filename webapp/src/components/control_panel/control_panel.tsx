@@ -1,8 +1,9 @@
 import React from 'react';
 import {ControlPanelActions} from '@shared/actions/control_panel_actions';
 
-import {useGlobalState} from 'src/hooks/use_global_state';
 import {isErrorResponse} from '@shared/types/api_types';
+
+import {useGlobalState} from '../../hooks/use_global_state';
 
 import ControlButton from './control_button';
 

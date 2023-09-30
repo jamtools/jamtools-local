@@ -8,15 +8,9 @@ import {RemoteActionHandler} from './actions/action_handler_remote';
 import Main from './components/main';
 import {GlobalStateProvider} from './hooks/use_global_state';
 
-type ImportMeta = {
-    env: {
-        LOCAL_MODE?: string;
-    };
-}
-
 let actionHandler: ActionHandler;
 
-const localMode = (import.meta as unknown as ImportMeta).env.LOCAL_MODE === 'true';
+const localMode = process.env.LOCAL_MODE === 'true';
 if (localMode) {
     actionHandler = new LocalActionHandler();
 } else {

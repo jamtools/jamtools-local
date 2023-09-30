@@ -1,7 +1,8 @@
 import React, {CSSProperties} from 'react';
 
 import {ControlPanelActions} from '@shared/actions/control_panel_actions';
-import {useGlobalState} from 'src/hooks/use_global_state';
+
+import {useGlobalState} from '../../hooks/use_global_state';
 
 export type Props = {
     action: ControlPanelActions;
