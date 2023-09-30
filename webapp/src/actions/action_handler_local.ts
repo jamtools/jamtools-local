@@ -29,7 +29,7 @@ type WebMidiType = {
 }
 
 import * as webmidi from 'webmidi';
-const WebMidi = webmidi.WebMidi as WebMidiType;
+const WebMidi = webmidi.WebMidi as unknown as WebMidiType;
 
 import {CHORDS} from '@shared/constants/chord_constants';
 
@@ -37,7 +37,7 @@ import {jimmySet1, jimmySet2, michaelSet1} from '@shared/constants/progression_c
 
 import type {EasyMidi} from '@shared/types/easy_midi_types';
 
-import {MidiMessageType} from '@shared/midi';
+import {MidiMessageType} from '@shared/io/midi/midi_utls';
 
 import {ControlPanelActions, getActionMap} from '@shared/actions/control_panel_actions';
 import {SubmitControlPanelActionAPIResponse, GetStateAPIResponse} from '@shared/types/api_types';
@@ -45,7 +45,7 @@ import {SubmitControlPanelActionAPIResponse, GetStateAPIResponse} from '@shared/
 import App from '@shared/app';
 
 import {GlobalState} from '@shared/state/global_state';
-import {Stdin} from '@shared/services/qwerty_service';
+import {Stdin} from '@shared/io/qwerty/qwerty_service';
 import {Config} from '@shared/types/config_types/config_types';
 import {UserDataState} from '@shared/state/user_data_state';
 
@@ -155,6 +155,9 @@ class EasyMidiWebShim implements EasyMidi {
 
     Input = this.getInputConstructor();
     Output = this.getOutputConstructor();
+
+    createInput = (name: string) => new this.Input(name);
+    createOutput = (name: string) => new this.Output(name);
 }
 
 export class LocalActionHandler implements ActionHandler {
@@ -184,7 +187,7 @@ export class LocalActionHandler implements ActionHandler {
     }
 
     subscribeToMessages = (callback: (msg: WebsocketMessage<unknown>) => void) => {
-        this.subscribeToGlobalState((state) => {
+        return this.subscribeToGlobalState((state) => {
             const msg: WebsocketMessage<unknown> = {
                 type: 'update_state',
                 data: state,

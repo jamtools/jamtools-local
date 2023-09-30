@@ -8,6 +8,8 @@ import {UserDataState} from '@shared/state/user_data_state';
 import {CHORDS} from '@shared/constants/chord_constants';
 import {jimmySet1, jimmySet2, michaelSet1} from '@shared/constants/progression_constants';
 
+import {EasyMidi} from '@shared/types/easy_midi_types';
+
 import config from '../../data/config.json';
 
 import {oldMain} from '../../shared/old_index';
@@ -32,7 +34,14 @@ const userData: UserDataState = {
 
 // main();
 
-const app = new App(easymidi, process.stdin, conf, userData);
+const fullEasyMidi: EasyMidi = {
+    getInputs: easymidi.getInputs,
+    getOutputs: easymidi.getOutputs,
+    createInput: (name: string, virtual?: boolean) => new easymidi.Input(name, virtual),
+    createOutput: (name: string, virtual?: boolean) => new easymidi.Output(name, virtual),
+};
+
+const app = new App(fullEasyMidi, process.stdin, conf, userData);
 
 (async () => {
     exitHandler(app);

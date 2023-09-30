@@ -1,7 +1,8 @@
 import {Subscription} from 'rxjs';
 
-import QwertyService from './qwerty_service';
 import {log} from '../../utils';
+
+import QwertyService from './qwerty_service';
 
 const thumbstickLeft = 'x';
 const thumbstickRight = 'w';

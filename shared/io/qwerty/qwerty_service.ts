@@ -1,6 +1,6 @@
 import {ReplaySubject, Subject} from 'rxjs';
 
-import {Config} from '../types/config_types/config_types';
+import {Config} from '../../types/config_types/config_types';
 
 export type Stdin = Pick<
     typeof process.stdin,

@@ -1,11 +1,10 @@
-import {MidiInstrumentName} from 'constants/midi_instrument_constants';
-
 import type easymidi from 'easymidi';
 import type {Note} from 'easymidi';
 
-import {ControlButtonMapping, KeyboardMapping} from 'types/trigger_types';
+import {ControlButtonMapping, KeyboardMapping} from '../../types/trigger_types';
 
 import {INPUT_EXTENDED_TYPES, INPUT_TYPES, SPAMMY_MIDI_EVENT_TYPES} from '../../constants/easymidi_constants';
+import {MidiInstrumentName} from '../../constants/midi_instrument_constants';
 
 export const sendNoteToPiano = (output) => {
     output.send('noteoff', {
@@ -74,7 +73,6 @@ const isSpammyMidiEvent = (type: string, msg: MidiMessage): boolean => {
 
     return false;
 };
-
 
 export type MidiSubjectMessage<T extends MidiMessage = MidiMessage> = {
     name: MidiInstrumentName;

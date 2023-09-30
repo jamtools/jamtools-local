@@ -1,12 +1,11 @@
 import React from 'react';
 import {ControlPanelActions} from '@shared/actions/control_panel_actions';
 
-import {GlobalState} from '@shared/state/global_state';
+import {useGlobalState} from 'src/hooks/use_global_state';
 import {isErrorResponse} from '@shared/types/api_types';
 
-import {ActionHandler} from '../../actions/app_actions';
-
 import ControlButton from './control_button';
+
 import './control_panel.scss';
 
 type RowsData = ControlPanelActions[][];
@@ -24,8 +23,7 @@ const rowsData: RowsData = Object.values(ControlPanelActions).reduce((accum: Row
 }, []);
 
 export type Props = {
-    globalState: GlobalState | null;
-    actionHandler: ActionHandler;
+    // submitControlPanelAction: (action: ControlPanelActions) => void;
 }
 
 // const arraysAreEqual = (arr1: number[], arr2: number[]): boolean => {
@@ -34,9 +32,11 @@ export type Props = {
 //     }, true);
 // };
 
-export default function ControlPanel(props: Props) {
+export default function ControlPanel() {
+    const {actionHandler} = useGlobalState();
+
     const submitAction = (action: ControlPanelActions) => {
-        props.actionHandler.submitControlPanelAction(action).then((res) => {
+        actionHandler.submitControlPanelAction(action).then((res) => {
             if (isErrorResponse(res)) {
                 alert(res.error);
             }
@@ -47,67 +47,29 @@ export default function ControlPanel(props: Props) {
         <ControlButton
             action={action}
             color={getColor(action)}
-            state={props.globalState}
             submitControlPanelAction={submitAction}
         />
     );
 
+    const rows = rowsData.map((row, i) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <tr key={i}>
+            {row.map((action) => (
+                <td key={action}>
+                    {makeButton(action)}
+                </td>
+            ))}
+        </tr>
+    ));
+
     let content: React.ReactNode | undefined;
-
-    // if (props.globalState && props.globalState.progression) {
-    //     const {progression: {currentChord, currentProgression, currentSong}, userData: {chords, songs}} = props.globalState;
-    //     const prog = songs[currentSong][currentProgression];
-    //     const chord = [currentChord];
-    //     const getChordName = (chord: number[]) => Object.keys(chords).find((chordName) => arraysAreEqual(chords[chordName], chord));
-    //     const getColor = (i: number) => {
-    //         if (i === currentChord) {
-    //             return 'blue';
-    //         }
-
-    //         if ((currentChord + prog.length - 1) % prog.length === i) {
-    //             return 'green';
-    //         }
-
-    //         return 'white';
-    //     };
-
-    //     content = (
-    //         <div>
-    //             <h1>
-    //                 {getChordName(chord)}
-    //             </h1>
-    //             <ul>
-    //                 {prog.map((nums, i) => (
-    //                     <li key={i}>
-    //                         <span
-    //                             style={{
-    //                                 backgroundColor: getColor(i),
-    //                             }}
-    //                         >
-    //                             {getChordName(nums)}
-    //                         </span>
-    //                     </li>
-    //                 ))}
-    //             </ul>
-    //         </div>
-    //     );
-    // }
 
     return (
         <div>
             {content}
             <table>
                 <tbody>
-                    {rowsData.map((row, i) => (
-                        // eslint-disable-next-line react/no-array-index-key
-                        <tr key={i}>
-                            {row.map((action) => (
-                                <td key={action}>
-                                    {makeButton(action)}
-                                </td>
-                            ))}
-                        </tr>
-                    ))}
+                    {rows}
                 </tbody>
             </table>
         </div>
@@ -124,9 +86,9 @@ const Colors = {
 
 const buttonColors: Record<string, ControlPanelActions[]> = {
     [Colors.NAVY]: [
-        ControlPanelActions.NEXT_CHORD,
-        ControlPanelActions.NEXT_PROGRESSION,
-        ControlPanelActions.NEXT_SONG,
+        // ControlPanelActions.NEXT_CHORD,
+        ControlPanelActions.RESET_PROGRESSION,
+        ControlPanelActions.LOCK_IN_PROGRESSION,
     ],
     [Colors.AQUA]: [
         ControlPanelActions.CHANGE_COLOR,

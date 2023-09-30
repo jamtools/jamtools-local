@@ -8,10 +8,6 @@ import './progression_view.scss';
 
 import ChordComponent from './chord';
 
-type Props = {
-
-}
-
 // const getGroupsOfChords = (chords: Chord[]) => {
 //     const copy = [...chords];
 //     const result = [];
@@ -22,7 +18,7 @@ type Props = {
 //     return result;
 // };
 
-export default function ProgressionView(props: Props) {
+export default function ProgressionView() {
     // const progressions: Progression[] = useStore((state: State<IGlobalStore>) => state.progressions.progressions);
     // const scale: Scale = useStore((state: State<IGlobalStore>) => state.progressions.currentScale);
 
@@ -90,3 +86,42 @@ export default function ProgressionView(props: Props) {
         </React.Fragment>
     );
 }
+
+// if (props.globalState && props.globalState.progression) {
+//     const {progression: {currentChord, currentProgression, currentSong}, userData: {chords, songs}} = props.globalState;
+//     const prog = songs[currentSong][currentProgression];
+//     const chord = [currentChord];
+//     const getChordName = (chord: number[]) => Object.keys(chords).find((chordName) => arraysAreEqual(chords[chordName], chord));
+//     const getColor = (i: number) => {
+//         if (i === currentChord) {
+//             return 'blue';
+//         }
+
+//         if ((currentChord + prog.length - 1) % prog.length === i) {
+//             return 'green';
+//         }
+
+//         return 'white';
+//     };
+
+//     content = (
+//         <div>
+//             <h1>
+//                 {getChordName(chord)}
+//             </h1>
+//             <ul>
+//                 {prog.map((nums, i) => (
+//                     <li key={i}>
+//                         <span
+//                             style={{
+//                                 backgroundColor: getColor(i),
+//                             }}
+//                         >
+//                             {getChordName(nums)}
+//                         </span>
+//                     </li>
+//                 ))}
+//             </ul>
+//         </div>
+//     );
+// }

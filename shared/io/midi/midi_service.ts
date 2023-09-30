@@ -4,9 +4,11 @@ import {Subject} from 'rxjs';
 import {MidiTriggerMappings} from '../../types/trigger_types';
 
 import {MidiInstrumentName} from '../../constants/midi_instrument_constants';
-import {ControlChangeEvent, equalControlButton, equalKeyboard, isControlChangeEvent, isNoteOffEvent, isNoteOnEvent, MidiMessage, MidiMessageType, MidiSubjectMessage, NoteOffEvent, NoteOnEvent} from './midi_utls';
+
 import {Config} from '../../types/config_types/config_types';
 import {EasyMidi} from '../../types/easy_midi_types';
+
+import {ControlChangeEvent, equalControlButton, equalKeyboard, isControlChangeEvent, isNoteOffEvent, isNoteOnEvent, MidiMessage, MidiMessageType, MidiSubjectMessage, NoteOffEvent, NoteOnEvent} from './midi_utls';
 
 export type {MidiSubjectMessage} from './midi_utls';
 
@@ -220,7 +222,7 @@ export default class MidiService {
     getOutputs = () => this.outputs;
 
     private registerInput = (midiName: MidiInstrumentName, inputConfig: MidiTriggerMappings) => {
-        const input = new this.midi.Input(midiName);
+        const input = this.midi.createInput(midiName);
 
         input.on('noteon', (msg) => {
             // console.log('onnyy')
@@ -275,7 +277,7 @@ export default class MidiService {
     };
 
     private registerOutput = (midiName: MidiInstrumentName) => {
-        const output = new this.midi.Output(midiName);
+        const output = this.midi.createOutput(midiName);
         this.outputs.push(output);
     };
 }

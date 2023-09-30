@@ -2,6 +2,7 @@ import {WLEDClient} from 'wled-client';
 
 import {Config} from '../../types/config_types/config_types';
 import {log} from '../../utils';
+
 import {setRandomColor, setRandomEffect} from './wled_utils';
 
 let speed = 50;

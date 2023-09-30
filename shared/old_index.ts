@@ -22,7 +22,8 @@ export const oldMain = () => {
     // const input = new easymidi.Input(MidiInstrumentName.IAC_DRIVER_BUS_1);
     // const input = new easymidi.Input(MidiInstrumentName.YAMAHA_PIANO);
     // const input = new easymidi.Input(MidiInstrumentName.KORG_MICRO_KEY);
-    // listenToAllMidiEvents(input);
+    const input = new easymidi.Input(MidiInstrumentName.LAUNCHKEY_MINI);
+    listenToAllMidiEvents(input);
 
     // wledMain();
 
