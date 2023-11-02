@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "es2020", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "jsx": "react", /* Specify what JSX code is generated. */
+    "module": "es2020", /* Specify what module code is generated. */
+    "allowSyntheticDefaultImports": true, /* Allow 'import x from y' when a module doesn't have a default export. */
+    "esModuleInterop": true, /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
+    "forceConsistentCasingInFileNames": true, /* Ensure that casing is correct in imports. */
+    "strict": true, /* Enable all strict type-checking options. */
+    "noImplicitAny": true, /* Enable error reporting for expressions and declarations with an implied 'any' type. */
+    "strictNullChecks": true, /* When type checking, take into account 'null' and 'undefined'. */
+    "strictFunctionTypes": true, /* When assigning functions, check to ensure parameters and the return values are subtype-compatible. */
+    "strictBindCallApply": true, /* Check that the arguments for 'bind', 'call', and 'apply' methods match the original function. */
+    "skipLibCheck": true, /* Skip type checking all .d.ts files. */
+    "baseUrl": "./", /* Specify the base directory to resolve non-relative module names. */
+    "resolveJsonModule": true,
+    "moduleResolution": "Bundler",
+    "paths": {
+      "@shared/*": [
+        "../shared/*"
+      ],
+      "src/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "src/*",
+    "../shared/*",
+    "../data/*",
+  ]
+}
