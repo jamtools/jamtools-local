@@ -1,261 +1,261 @@
 {
-  "wled": {
-    "ctrls": []
-  },
-  "midi": {
-    "inputs": [
-      {
-        "name": "Teensy MIDI",
-        "controlButtons": {},
-        "clock": false,
-        "sustainPedal": null,
-        "mainTrigger": {
-          "channel": 0,
-          "note": 81
-        }
-      },
-      {
-        "name": "Digital Piano",
-        "keyboard": {
-          "channel": 0
-        },
-        "controlButtons": {},
-        "clock": false,
-        "sustainPedal": true,
-        "mainTrigger": null
-      },
-      {
-        "name": "VI49 Out",
-        "keyboard": {
-          "channel": 0
-        }
-      },
-      {
-        "name": "DTX drums",
-        "alias": "iojijxdwdcwcwcv",
-        "controlButtons": {
-          "A1": {
-            "channel": 9,
-            "note": 62
-          }
-        },
-        "clock": false,
-        "sustainPedal": null,
-        "mainTrigger": {
-          "channel": 9,
-          "note": 59
-        }
-      },
-      {
-        "name": "IAC Driver Bus 1",
-        "controlButtons": {
-          "A1": {
-            "channel": 0,
-            "note": 50
-          },
-          "A2": {
-            "channel": 9,
-            "note": 61
-          },
-          "A3": {
-            "channel": 9,
-            "note": 66
-          },
-          "B3": {
-            "channel": 9,
-            "note": 60
-          }
-        }
-      },
-      {
-        "name": "IAC Driver Bus 2",
-        "keyboard": {
-          "channel": 1
-        }
-      },
-      {
-        "name": "SPD-SX",
-        "controlButtons": {
-          "A1": {
-            "channel": 9,
-            "note": 65
-          },
-          "A2": {
-            "channel": 9,
-            "note": 61
-          },
-          "A3": {
-            "channel": 9,
-            "note": 66
-          },
-          "B3": {
-            "channel": 9,
-            "note": 60
-          }
-        }
-      },
-      {
-        "name": "Launchkey Mini MK3 MIDI Port",
-        "controlButtons": {
-          "A1": {
-            "channel": 9,
-            "note": 40
-          },
-          "A2": {
-            "channel": 9,
-            "note": 41
-          },
-          "A3": {
-            "channel": 9,
-            "note": 42
-          },
-          "A4": {
-            "channel": 9,
-            "note": 43
-          },
-          "B1": {
-            "channel": 9,
-            "note": 36
-          },
-          "B2": {
-            "channel": 9,
-            "note": 37
-          },
-          "B3": {
-            "channel": 9,
-            "note": 38
-          },
-          "B4": {
-            "channel": 9,
-            "note": 39
-          }
-        },
-        "keyboard": {
-          "channel": 0
-        },
-        "sustainPedal": true,
-        "clock": false
-      },
-      {
-        "name": "nanoKEY Studio Bluetooth",
-        "controlButtons": {
-          "A1": {
-            "channel": 1,
-            "note": 40
-          },
-          "A2": {
-            "channel": 1,
-            "note": 41
-          },
-          "A3": {
-            "channel": 1,
-            "note": 42
-          },
-          "A4": {
-            "channel": 1,
-            "note": 43
-          },
-          "B1": {
-            "channel": 1,
-            "note": 44
-          },
-          "B2": {
-            "channel": 1,
-            "note": 45
-          },
-          "B3": {
-            "channel": 1,
-            "note": 46
-          },
-          "B4": {
-            "channel": 1,
-            "note": 47
-          }
-        },
-        "keyboard": {
-          "channel": 0
-        },
-        "mainTrigger": {
-          "channel": 1,
-          "note": 40
-        }
-      },
-      {
-        "name": "nanoKEY Studio KEYBOARD/CTRL",
-        "controlButtons": {
-          "A1": {
-            "channel": 1,
-            "note": 40
-          },
-          "A2": {
-            "channel": 1,
-            "note": 41
-          },
-          "A3": {
-            "channel": 1,
-            "note": 42
-          },
-          "A4": {
-            "channel": 1,
-            "note": 43
-          },
-          "B1": {
-            "channel": 1,
-            "note": 44
-          },
-          "B2": {
-            "channel": 1,
-            "note": 45
-          },
-          "B3": {
-            "channel": 1,
-            "note": 46
-          },
-          "B4": {
-            "channel": 1,
-            "note": 47
-          }
-        },
-        "keyboard": {
-          "channel": 0
-        },
-        "mainTrigger": {
-          "channel": 1,
-          "note": 40
-        }
-      },
-      {
-        "name": "microKEY2-37 Air Bluetooth",
-        "keyboard": {
-          "channel": 0
-        }
-      },
-      {
-        "name": "microKEY2 Air KEYBOARD",
-        "keyboard": {
-          "channel": 0
-        }
-      }
-    ],
-    "outputs": [
-      {
-        "name": "Juno USB Midi",
-        "alias": "Juno"
-      },
-      {
-        "name": "USB Midi ",
-        "alias": "Juno"
-      },
-      {
-        "name": "IAC Driver Bus 2"
-      },
-      {
-        "name": "Digital Piano 2"
-      },
-      {
-        "name": "MD-BT01 Bluetooth"
-      }
-    ]
-  },
-  "actions": {}
+    "wled": {
+        "ctrls": []
+    },
+    "midi": {
+        "inputs": [
+            {
+                "name": "Teensy MIDI",
+                "controlButtons": {},
+                "clock": false,
+                "sustainPedal": null,
+                "mainTrigger": {
+                    "channel": 0,
+                    "note": 81
+                }
+            },
+            {
+                "name": "Digital Piano",
+                "keyboard": {
+                    "channel": 0
+                },
+                "controlButtons": {},
+                "clock": false,
+                "sustainPedal": true,
+                "mainTrigger": null
+            },
+            {
+                "name": "VI49 Out",
+                "keyboard": {
+                    "channel": 0
+                }
+            },
+            {
+                "name": "DTX drums",
+                "alias": "iojijxdwdcwcwcv",
+                "controlButtons": {
+                    "A1": {
+                        "channel": 9,
+                        "note": 62
+                    }
+                },
+                "clock": false,
+                "sustainPedal": null,
+                "mainTrigger": {
+                    "channel": 9,
+                    "note": 59
+                }
+            },
+            {
+                "name": "IAC Driver Bus 1",
+                "controlButtons": {
+                    "A1": {
+                        "channel": 0,
+                        "note": 50
+                    },
+                    "A2": {
+                        "channel": 9,
+                        "note": 61
+                    },
+                    "A3": {
+                        "channel": 9,
+                        "note": 66
+                    },
+                    "B3": {
+                        "channel": 9,
+                        "note": 60
+                    }
+                }
+            },
+            {
+                "name": "IAC Driver Bus 2",
+                "keyboard": {
+                    "channel": 1
+                }
+            },
+            {
+                "name": "SPD-SX",
+                "controlButtons": {
+                    "A1": {
+                        "channel": 9,
+                        "note": 65
+                    },
+                    "A2": {
+                        "channel": 9,
+                        "note": 61
+                    },
+                    "A3": {
+                        "channel": 9,
+                        "note": 66
+                    },
+                    "B3": {
+                        "channel": 9,
+                        "note": 60
+                    }
+                }
+            },
+            {
+                "name": "Launchkey Mini MK3 MIDI Port",
+                "controlButtons": {
+                    "A1": {
+                        "channel": 9,
+                        "note": 40
+                    },
+                    "A2": {
+                        "channel": 9,
+                        "note": 41
+                    },
+                    "A3": {
+                        "channel": 9,
+                        "note": 42
+                    },
+                    "A4": {
+                        "channel": 9,
+                        "note": 43
+                    },
+                    "B1": {
+                        "channel": 9,
+                        "note": 36
+                    },
+                    "B2": {
+                        "channel": 9,
+                        "note": 37
+                    },
+                    "B3": {
+                        "channel": 9,
+                        "note": 38
+                    },
+                    "B4": {
+                        "channel": 9,
+                        "note": 39
+                    }
+                },
+                "keyboard": {
+                    "channel": 0
+                },
+                "sustainPedal": true,
+                "clock": false
+            },
+            {
+                "name": "nanoKEY Studio Bluetooth",
+                "controlButtons": {
+                    "A1": {
+                        "channel": 1,
+                        "note": 40
+                    },
+                    "A2": {
+                        "channel": 1,
+                        "note": 41
+                    },
+                    "A3": {
+                        "channel": 1,
+                        "note": 42
+                    },
+                    "A4": {
+                        "channel": 1,
+                        "note": 43
+                    },
+                    "B1": {
+                        "channel": 1,
+                        "note": 44
+                    },
+                    "B2": {
+                        "channel": 1,
+                        "note": 45
+                    },
+                    "B3": {
+                        "channel": 1,
+                        "note": 46
+                    },
+                    "B4": {
+                        "channel": 1,
+                        "note": 47
+                    }
+                },
+                "keyboard": {
+                    "channel": 0
+                },
+                "mainTrigger": {
+                    "channel": 1,
+                    "note": 40
+                }
+            },
+            {
+                "name": "nanoKEY Studio KEYBOARD/CTRL",
+                "controlButtons": {
+                    "A1": {
+                        "channel": 1,
+                        "note": 40
+                    },
+                    "A2": {
+                        "channel": 1,
+                        "note": 41
+                    },
+                    "A3": {
+                        "channel": 1,
+                        "note": 42
+                    },
+                    "A4": {
+                        "channel": 1,
+                        "note": 43
+                    },
+                    "B1": {
+                        "channel": 1,
+                        "note": 44
+                    },
+                    "B2": {
+                        "channel": 1,
+                        "note": 45
+                    },
+                    "B3": {
+                        "channel": 1,
+                        "note": 46
+                    },
+                    "B4": {
+                        "channel": 1,
+                        "note": 47
+                    }
+                },
+                "keyboard": {
+                    "channel": 0
+                },
+                "mainTrigger": {
+                    "channel": 1,
+                    "note": 40
+                }
+            },
+            {
+                "name": "microKEY2-37 Air Bluetooth",
+                "keyboard": {
+                    "channel": 0
+                }
+            },
+            {
+                "name": "microKEY2 Air KEYBOARD",
+                "keyboard": {
+                    "channel": 0
+                }
+            }
+        ],
+        "outputs": [
+            {
+                "name": "Juno USB Midi",
+                "alias": "Juno"
+            },
+            {
+                "name": "USB Midi ",
+                "alias": "Juno"
+            },
+            {
+                "name": "IAC Driver Bus 2"
+            },
+            {
+                "name": "Digital Piano 2"
+            },
+            {
+                "name": "MD-BT01 Bluetooth"
+            }
+        ]
+    },
+    "actions": {}
 }
