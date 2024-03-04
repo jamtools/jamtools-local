@@ -64,7 +64,6 @@ export const GlobalStateProvider = (props: GlobalStateProviderProps) => {
         messages,
         setMessages,
         globalState,
-        setGlobalState,
         actionHandler: props.actionHandler,
         localMode: props.localMode,
     }), [messages, globalState]);

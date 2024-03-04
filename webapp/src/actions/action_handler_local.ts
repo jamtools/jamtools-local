@@ -40,7 +40,7 @@ import type {EasyMidi} from '@shared/types/easy_midi_types';
 import {MidiMessageType} from '@shared/io/midi/midi_utls';
 
 import {ControlPanelActions, getActionMap} from '@shared/actions/control_panel_actions';
-import {SubmitControlPanelActionAPIResponse, GetStateAPIResponse} from '@shared/types/api_types';
+import {SubmitControlPanelActionAPIResponse, GetStateAPIResponse, SetConfigAPIResponse} from '@shared/types/api_types';
 
 import App from '@shared/app';
 
@@ -57,7 +57,7 @@ import type {ActionHandler} from './app_actions';
 
 const conf: Config = config;
 
-class EasyMidiWebShim implements EasyMidi {
+export class EasyMidiWebShim implements EasyMidi {
     constructor(private webMidi: typeof WebMidi) { }
 
     enable = () => this.webMidi.enable();
@@ -178,13 +178,47 @@ export class LocalActionHandler implements ActionHandler {
 
         const midiShim = new EasyMidiWebShim(WebMidi);
 
-        // try {
-        this.app = new App(midiShim, stdin, conf, userData);
+        const conf = this.initConfig();
 
+        this.app = new App(midiShim, stdin, conf, userData);
+        // try {
         // } catch (e) {
-        // alert(e)
+        //     alert(e);
         // }
     }
+
+    initConfig = () => {
+        const storedConfig = localStorage.getItem('jamtools-config');
+        if (!storedConfig) {
+            const config: Config = {
+                midi: {
+                    inputs: [
+                    ],
+                    outputs: [],
+                },
+                actions: {},
+                wled: {
+                    ctrls: [],
+                },
+            };
+
+            const toStore = JSON.stringify(config);
+            localStorage.setItem('jamtools-config', toStore);
+
+            return config;
+        }
+
+        const config = JSON.parse(storedConfig);
+        return config;
+    };
+
+    setConfig = async (config: Config): Promise<SetConfigAPIResponse> => {
+        const toStore = JSON.stringify(config);
+        localStorage.setItem('jamtools-config', toStore);
+
+        this.app.setConfig(config);
+        return {data: this.app.getState()};
+    };
 
     subscribeToMessages = (callback: (msg: WebsocketMessage<unknown>) => void) => {
         return this.subscribeToGlobalState((state) => {
