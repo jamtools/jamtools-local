@@ -1,4 +1,5 @@
 import http from 'http';
+import fs from 'fs';
 
 import express from 'express';
 import cors from 'cors';
@@ -6,7 +7,7 @@ import cors from 'cors';
 import {SerializedAction, getActionMap} from '@shared/actions/control_panel_actions';
 import type App from '@shared/app';
 import {GlobalState} from '@shared/state/global_state';
-import {SubmitControlPanelActionAPIResponse, GetStateAPIResponse} from '@shared/types/api_types';
+import {SubmitControlPanelActionAPIResponse, GetStateAPIResponse, SetConfigAPIRequest, SetConfigAPIResponse} from '@shared/types/api_types';
 
 import {initWebsocketServer} from './websocket_server';
 
@@ -31,6 +32,18 @@ export default async function initServer(app: App): Promise<http.Server> {
     }));
 
     server.get<undefined, GetStateAPIResponse>('/state', (req, res) => {
+        res.json({
+            data: app.getState(),
+        });
+    });
+
+    server.post<undefined, SetConfigAPIResponse, SetConfigAPIRequest>('/config', async (req, res) => {
+        const config = req.body.config;
+
+        app.setConfig(config);
+
+        await fs.promises.writeFile('../data/config.json', JSON.stringify(config, null, 2));
+
         res.json({
             data: app.getState(),
         });

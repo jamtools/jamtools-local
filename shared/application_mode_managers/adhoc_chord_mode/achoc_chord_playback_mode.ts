@@ -28,7 +28,7 @@ export default class AdhocChordPlaybackMode implements ApplicationModeManager<Ad
         const lastChord = this.state.chords[state.currentIndex];
         if (lastChord) {
             const notes = lastChord.map((n) => n.note);
-            this.app.playSpecificChord(notes);
+            // this.app.playSpecificChord(notes);
         }
     }
 

@@ -17,13 +17,18 @@ const wled: WLEDClient | undefined = undefined;
 export const oldMain = () => {
     getInputsMain();
 
-    // const input = new easymidi.Input(MidiInstrumentName.GRAND_PIANO);
-    // const input = new easymidi.Input(MidiInstrumentName.DTX_DRUMS);
-    // const input = new easymidi.Input(MidiInstrumentName.IAC_DRIVER_BUS_1);
-    // const input = new easymidi.Input(MidiInstrumentName.YAMAHA_PIANO);
-    // const input = new easymidi.Input(MidiInstrumentName.KORG_MICRO_KEY);
-    const input = new easymidi.Input(MidiInstrumentName.LAUNCHKEY_MINI);
-    listenToAllMidiEvents(input);
+    try {
+        const input = new easymidi.Input(MidiInstrumentName.TEENSY_MIDI);
+        // const input = new easymidi.Input(MidiInstrumentName.DTX_DRUMS);
+        // const input = new easymidi.Input(MidiInstrumentName.IAC_DRIVER_BUS_2);
+        // const input = new easymidi.Input(MidiInstrumentName.YAMAHA_PIANO);
+        // const input = new easymidi.Input(MidiInstrumentName.KORG_MICRO_KEY);
+        // const input = new easymidi.Input(MidiInstrumentName.LAUNCHKEY_MINI);
+        // const input = new easymidi.Input('ESP32 BLE MIDI device Bluetooth');
+        listenToAllMidiEvents(input);
+    } catch (e) {
+        console.log('Error during debug midi message logging. ' + (e as any).toString().split('\n')[0]);
+    }
 
     // wledMain();
 

@@ -1,19 +1,19 @@
 import {Subscription} from 'rxjs';
 
-import {jimmySet1, jimmySet2, michaelSet1} from '../constants/progression_constants';
+import {jimmySet1, jimmySet2, michaelSet1} from '../../constants/progression_constants';
 
-import MidiService, {MidiSubjectMessage} from '../io/midi/midi_service';
-import WledService from '../io/wled/wled_service';
-import {Config} from '../types/config_types/config_types';
+import MidiService, {MidiSubjectMessage} from '../../io/midi/midi_service';
+import WledService from '../../io/wled/wled_service';
+import {Config} from '../../types/config_types/config_types';
 
-import {log} from '../utils';
+import {log} from '../../utils';
 
-import type App from '../app';
-import {MidiInstrumentName} from '../constants/midi_instrument_constants';
-import {ProgressionState} from '../state/progression_state';
-import {equalControlButton, equalKeyboard} from '../io/midi/midi_utls';
+import type App from '../../app';
+import {MidiInstrumentName} from '../../constants/midi_instrument_constants';
+import {ProgressionState} from '../../state/progression_state';
+import {equalControlButton, equalKeyboard} from '../../io/midi/midi_utls';
 
-import {ApplicationModeManager} from './application_mode_manager';
+import {ApplicationModeManager} from '../application_mode_manager';
 
 type MidiEventHandler = ((msg: MidiSubjectMessage) => void) | undefined;
 
@@ -34,6 +34,10 @@ export default class ProgressionModeManager implements ApplicationModeManager<Pr
         currentSong: 0,
         shouldDrumsChangeColor: true,
         shouldDrumsChangeProgression: false,
+    };
+
+    static getControlPanelData = () => {
+        return {buttonData: [{name: 'Toggle Drums M', color: 'green'}]};
     };
 
     private midiServiceSubject: Subscription;
@@ -96,6 +100,13 @@ export default class ProgressionModeManager implements ApplicationModeManager<Pr
         //     name: 'change progression and change preset',
         //     func: this.nextProgressionAndPreset,
         // }, this.qwertyService);
+
+        // let i = setInterval(this.playChord, 1000);
+        // setInterval(() => {
+        //     clearInterval(i);
+        //     i = setInterval(this.playChord, 1000);
+        //     this.nextProgression();
+        // }, 4999);
     }
 
     getState = (): ProgressionState => this.progressionState;

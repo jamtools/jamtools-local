@@ -1,15 +1,9 @@
 import React from 'react';
 
-import {useGlobalState} from '../hooks/use_global_state';
+import MidiConfigView from '../components/midi_config_view/midi_config_view';
 
 export default function MidiConfigPage() {
-    const {
-        messages,
-    } = useGlobalState();
-
     return (
-        <div>
-            Time to config the midi
-        </div>
+        <MidiConfigView/>
     );
 }

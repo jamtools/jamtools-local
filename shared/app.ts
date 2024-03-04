@@ -1,6 +1,6 @@
 import {BehaviorSubject, Subject, Subscription} from 'rxjs';
 
-import ProgressionModeManager from './application_mode_managers/progression_mode_manager';
+import ProgressionModeManager from './application_mode_managers/progression_mode/progression_mode_manager';
 import {CHORDS} from './constants/chord_constants';
 import {OutputChordSupervisor} from './io/midi/output_chord_supervisor';
 
@@ -17,10 +17,19 @@ import {AdhocProgressionState, ProgressionState} from './state/progression_state
 import {ApplicationModeManager} from './application_mode_managers/application_mode_manager';
 import AdhocChordCompositionMode from './application_mode_managers/adhoc_chord_mode/achoc_chord_composition_mode';
 import AdhocChordPlaybackMode from './application_mode_managers/adhoc_chord_mode/achoc_chord_playback_mode';
+import {initialState} from './application_mode_managers/adhoc_chord_mode/playback_state';
+import {ApplicationModeName} from 'constants/application_mode_constants';
 
 export default class App {
     private globalStateSubject: Subject<GlobalState>;
     private controlButtonSubscription: Subscription;
+
+    adhocCompositionMode?: AdhocChordCompositionMode;
+    // adhocCompositionMode?: AdhocChordCompositionMode = new AdhocChordCompositionMode(this.midiService, this);
+    adhocPlaybackMode?: AdhocChordPlaybackMode;
+
+    private activeMode: ApplicationModeManager<ProgressionState>;
+    // private activeMode: ApplicationModeManager<AdhocProgressionState>;
 
     constructor(
         private midi: EasyMidi,
@@ -30,6 +39,12 @@ export default class App {
     ) {
         this.globalStateSubject = new BehaviorSubject(this.getState());
         this.controlButtonSubscription = this.midiService.subscribeToControlButtons(this.handleControlButton);
+
+        // this.adhocPlaybackMode = new AdhocChordPlaybackMode(initialState, this.midiService, this);
+        // this.activeMode = this.adhocPlaybackMode!;
+
+        this.progressionMode = new ProgressionModeManager(this.midiService, this.wledService, this.config, this);
+        this.activeMode = this.progressionMode;
     }
 
     handleControlButton = (index: number) => {
@@ -50,12 +65,6 @@ export default class App {
     progressionMode?: ProgressionModeManager;
     // progressionMode = new ProgressionModeManager(this.midiService, this.wledService, this.config, this);
 
-    // adhocCompositionMode?: AdhocChordCompositionMode;
-    adhocCompositionMode?: AdhocChordCompositionMode = new AdhocChordCompositionMode(this.midiService, this);
-    adhocPlaybackMode?: AdhocChordPlaybackMode;
-
-    private activeMode: ApplicationModeManager<AdhocProgressionState> = this.adhocCompositionMode!;
-
     chordSupervisor = new OutputChordSupervisor(this.midiService);
 
     deps = {
@@ -71,7 +80,13 @@ export default class App {
     };
 
     getUserData = () => this.userData;
+
     getConfig = () => this.config;
+    setConfig = async (config: Config) => {
+        this.config = config;
+        this.broadcastState();
+    };
+
     getProgressionState: () => ProgressionState | undefined = () => this.progressionMode?.getState();
     getAdhocState: () => AdhocProgressionState | undefined = () => {
         if (this.adhocCompositionMode) {
@@ -86,7 +101,10 @@ export default class App {
     };
 
     getState = (): GlobalState => {
+        const currentMode = this.activeMode && (this.activeMode as {constructor: {name: string}}).constructor.name as ApplicationModeName;
+
         return {
+            currentMode,
             config: this.config,
             userData: this.userData,
             // progression: this.getProgressionState(),
@@ -160,10 +178,6 @@ export default class App {
 
         nextPreset: () => {
             this.wledService.setRandomPreset();
-        },
-
-        testMidiNote: () => {
-
         },
 
         lockInProgression: () => {

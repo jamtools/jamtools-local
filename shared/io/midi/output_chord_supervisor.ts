@@ -15,8 +15,8 @@ export class OutputChordSupervisor {
         // nextChord = nextChord.slice(0, 4);
 
         const toRelease = this.heldDownNotes.filter((note) => !nextChord.includes(note));
-        const toPress = nextChord;
-        // const toPress = nextChord.filter(note => !this.heldDownNotes.includes(note));
+        // const toPress = nextChord;
+        const toPress = nextChord.filter((note) => !this.heldDownNotes.includes(note));
         this.heldDownNotes = nextChord;
 
         toRelease.forEach((note) => {

@@ -13,7 +13,7 @@ export type Props = {
 const isDrumColorAction = (action: string) => action === ControlPanelActions.TOGGLE_DRUM_COLOR_ACTION;
 const isDrumMusicAction = (action: string) => action === ControlPanelActions.TOGGLE_DRUM_MUSIC_ACTION;
 
-export default function ControlButton(props: Props) {
+export default function ControlButton(props: Props): React.ReactNode {
     const {globalState} = useGlobalState();
 
     const onClick = async () => {

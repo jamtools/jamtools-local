@@ -17,9 +17,9 @@ export default class MidiService {
     private inputs: Input[] = [];
     private outputs: Output[] = [];
 
-    constructor(private midi: EasyMidi, private config: Config) {
+    constructor(private midi: EasyMidi, private config: Pick<Config, 'midi'>) {
         this.midiEventSubject = new Subject();
-        this.setupMidi();
+        // this.setupMidi();
     }
 
     setupMidi = async () => {
