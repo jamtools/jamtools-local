@@ -1,3 +1,5 @@
+import {ApplicationModeName} from 'constants/application_mode_constants';
+
 import {BehaviorSubject, Subject, Subscription} from 'rxjs';
 
 import ProgressionModeManager from './application_mode_managers/progression_mode/progression_mode_manager';
@@ -17,8 +19,7 @@ import {AdhocProgressionState, ProgressionState} from './state/progression_state
 import {ApplicationModeManager} from './application_mode_managers/application_mode_manager';
 import AdhocChordCompositionMode from './application_mode_managers/adhoc_chord_mode/achoc_chord_composition_mode';
 import AdhocChordPlaybackMode from './application_mode_managers/adhoc_chord_mode/achoc_chord_playback_mode';
-import {initialState} from './application_mode_managers/adhoc_chord_mode/playback_state';
-import {ApplicationModeName} from 'constants/application_mode_constants';
+// import {initialState} from './application_mode_managers/adhoc_chord_mode/playback_state';
 
 export default class App {
     private globalStateSubject: Subject<GlobalState>;
