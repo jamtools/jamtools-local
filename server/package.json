@@ -4,14 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/src/index.js",
+    "start": "ts-node -r tsconfig-paths/register --transpile-only src/index.ts",
     "dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --ignore-watch node_modules --no-notify src/index.ts",
     "dev2": "nodemon dist/src/index.js --no-stdin",
     "build": "tsc -p .",
     "build:watch": "tsc -p . --watch",
     "test": "jest",
-    "check": "eslint --ext .js,.jsx,.tsx,.ts ./src --quiet --cache && eslint --ext .js,.jsx,.tsx,.ts ./webapp/src --quiet --cache",
-    "fix": "eslint --ext .js,.jsx,.tsx,.ts ./src --quiet --fix --cache && eslint --ext .js,.jsx,.tsx,.ts ./webapp/src --quiet --fix --cache",
+    "check": "eslint --ext .js,.jsx,.tsx,.ts ./src --quiet --cache && eslint --ext .js,.jsx,.tsx,.ts ./src --quiet --cache",
+    "fix": "eslint --ext .js,.jsx,.tsx,.ts ./src --quiet --fix --cache && eslint --ext .js,.jsx,.tsx,.ts ./src --quiet --fix --cache",
     "check-types": "tsc -b"
   },
   "keywords": [],

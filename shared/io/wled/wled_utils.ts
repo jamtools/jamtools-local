@@ -1,6 +1,6 @@
 import {WLEDClient} from 'wled-client';
 
-import {log} from './utils';
+import {log} from '../../utils';
 
 let previousPalette = 0;
 export const setRandomColor = async (wled: WLEDClient | undefined) => {

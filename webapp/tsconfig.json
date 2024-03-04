@@ -14,9 +14,13 @@
     "skipLibCheck": true, /* Skip type checking all .d.ts files. */
     "baseUrl": "./", /* Specify the base directory to resolve non-relative module names. */
     "resolveJsonModule": true,
+    "moduleResolution": "Bundler",
     "paths": {
       "@shared/*": [
         "../shared/*"
+      ],
+      "src/*": [
+        "./src/*"
       ]
     }
   },

@@ -6,16 +6,11 @@ import {LocalActionHandler} from './actions/action_handler_local';
 import {RemoteActionHandler} from './actions/action_handler_remote';
 
 import Main from './components/main';
-
-type ImportMeta = {
-    env: {
-        LOCAL_MODE?: string;
-    };
-}
+import {GlobalStateProvider} from './hooks/use_global_state';
 
 let actionHandler: ActionHandler;
 
-const localMode = (import.meta as unknown as ImportMeta).env.LOCAL_MODE === 'true';
+const localMode = process.env.LOCAL_MODE === 'true';
 if (localMode) {
     actionHandler = new LocalActionHandler();
 } else {
@@ -25,10 +20,12 @@ if (localMode) {
 window.addEventListener('load', () => {
     const container = document.querySelector('main')!;
     const element = (
-        <Main
+        <GlobalStateProvider
             actionHandler={actionHandler}
-            // localMode={localMode}
-        />
+            localMode={localMode}
+        >
+            <Main/>
+        </GlobalStateProvider>
     );
 
     const root = ReactDOM.createRoot(container);

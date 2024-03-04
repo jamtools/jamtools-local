@@ -11,7 +11,7 @@ type ImportMeta = {
     };
 }
 
-const apiHost = (import.meta as unknown as ImportMeta).env.API_HOST;
+const apiHost = process.env.API_HOST;
 const host = apiHost || `http://${window.location.hostname}:1337`;
 
 export class RemoteActionHandler implements ActionHandler {

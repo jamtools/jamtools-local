@@ -2,8 +2,8 @@ import {Subscription} from 'rxjs';
 
 import {jimmySet1, jimmySet2, michaelSet1} from '../constants/progression_constants';
 
-import MidiService, {MidiSubjectMessage} from '../services/midi_service';
-import WledService from '../services/wled_service';
+import MidiService, {MidiSubjectMessage} from '../io/midi/midi_service';
+import WledService from '../io/wled/wled_service';
 import {Config} from '../types/config_types/config_types';
 
 import {log} from '../utils';
@@ -11,7 +11,7 @@ import {log} from '../utils';
 import type App from '../app';
 import {MidiInstrumentName} from '../constants/midi_instrument_constants';
 import {ProgressionState} from '../state/progression_state';
-import {equalControlButton, equalKeyboard} from '../midi';
+import {equalControlButton, equalKeyboard} from '../io/midi/midi_utls';
 
 import {ApplicationModeManager} from './application_mode_manager';
 

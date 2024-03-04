@@ -1,9 +1,10 @@
 import {Subscription} from 'rxjs';
 
-import MidiService from '../services/midi_service';
+import {MidiInstrumentName} from '../../constants/midi_instrument_constants';
 
-import {MidiInstrumentName} from '../constants/midi_instrument_constants';
-import {isNoteOffEvent, isNoteOnEvent, MidiMessage, MidiMessageType, NoteOnEvent} from '../midi';
+import MidiService from './midi_service';
+
+import {isNoteOffEvent, isNoteOnEvent, MidiMessage, MidiMessageType, NoteOnEvent} from './midi_utls';
 
 export type MidiSubjectMessage = {
     name: MidiInstrumentName;

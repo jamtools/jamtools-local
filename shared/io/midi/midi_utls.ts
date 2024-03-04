@@ -1,10 +1,10 @@
-import {MidiInstrumentName} from 'constants/midi_instrument_constants';
 import type easymidi from 'easymidi';
 import type {Note} from 'easymidi';
 
-import {ControlButtonMapping, KeyboardMapping} from 'types/trigger_types';
+import {ControlButtonMapping, KeyboardMapping} from '../../types/trigger_types';
 
-import {INPUT_EXTENDED_TYPES, INPUT_TYPES, SPAMMY_MIDI_EVENT_TYPES} from './constants/easymidi_constants';
+import {INPUT_EXTENDED_TYPES, INPUT_TYPES, SPAMMY_MIDI_EVENT_TYPES} from '../../constants/easymidi_constants';
+import {MidiInstrumentName} from '../../constants/midi_instrument_constants';
 
 export const sendNoteToPiano = (output) => {
     output.send('noteoff', {
@@ -74,53 +74,6 @@ const isSpammyMidiEvent = (type: string, msg: MidiMessage): boolean => {
     return false;
 };
 
-export const equalControlButton = (button: ControlButtonMapping | undefined, msg: MidiSubjectMessage) => {
-    if (!button) {
-        return false;
-    }
-
-    const noteMsg = msg.msg as easymidi.Note;
-    return button.channel === noteMsg.channel && button.note === noteMsg.note;
-};
-
-export const equalKeyboard = (keyboard: KeyboardMapping | undefined, msg: MidiSubjectMessage) => {
-    if (!keyboard) {
-        return false;
-    }
-
-    const noteMsg = msg.msg as easymidi.Note;
-    return keyboard.channel === noteMsg.channel;
-};
-
-export const isNoteOnEvent = (msg: MidiSubjectMessage): msg is MidiSubjectMessage<NoteOnEvent> => {
-    return msg.type === 'noteon';
-};
-
-export const isNoteOffEvent = (msg: MidiSubjectMessage): msg is MidiSubjectMessage<NoteOffEvent> => {
-    return msg.type === 'noteoff';
-};
-
-export const isControlChangeEvent = (msg: MidiSubjectMessage): msg is MidiSubjectMessage<ControlChangeEvent> => {
-    return msg.type === 'cc';
-};
-
-export const equalChords = (chord1: Note[], chord2: Note[]) => {
-    const set1 = new Set(chord1);
-    const set2 = new Set(chord2);
-
-    if (set1.size !== set2.size) {
-        return false;
-    }
-
-    for (const c of set1.values()) {
-        if (!set2.has(c)) {
-            return false;
-        }
-    }
-
-    return true;
-};
-
 export type MidiSubjectMessage<T extends MidiMessage = MidiMessage> = {
     name: MidiInstrumentName;
     type: MidiMessageType;
@@ -147,15 +100,15 @@ export const equalKeyboard = (keyboard: KeyboardMapping | undefined, msg: MidiSu
 
 export const isNoteOnEvent = (msg: MidiSubjectMessage): msg is MidiSubjectMessage<NoteOnEvent> => {
     return msg.type === 'noteon';
-}
+};
 
 export const isNoteOffEvent = (msg: MidiSubjectMessage): msg is MidiSubjectMessage<NoteOffEvent> => {
     return msg.type === 'noteoff';
-}
+};
 
 export const isControlChangeEvent = (msg: MidiSubjectMessage): msg is MidiSubjectMessage<ControlChangeEvent> => {
     return msg.type === 'cc';
-}
+};
 
 export const equalChords = (chord1: Note[], chord2: Note[]) => {
     const set1 = new Set(chord1);
@@ -172,10 +125,4 @@ export const equalChords = (chord1: Note[], chord2: Note[]) => {
     }
 
     return true;
-}
-
-export type MidiSubjectMessage<T extends MidiMessage = MidiMessage> = {
-    name: MidiInstrumentName;
-    type: MidiMessageType
-    msg: T;
-}
+};

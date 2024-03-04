@@ -1,14 +1,16 @@
 import type {Input, Note, Output} from 'easymidi';
 import {Subject} from 'rxjs';
 
-import {MidiTriggerMappings} from '../types/trigger_types';
+import {MidiTriggerMappings} from '../../types/trigger_types';
 
-import {MidiInstrumentName} from '../constants/midi_instrument_constants';
-import {ControlChangeEvent, equalControlButton, equalKeyboard, isControlChangeEvent, isNoteOffEvent, isNoteOnEvent, MidiMessage, MidiMessageType, MidiSubjectMessage, NoteOffEvent, NoteOnEvent} from '../midi';
-import {Config} from '../types/config_types/config_types';
-import {EasyMidi} from '../types/easy_midi_types';
+import {MidiInstrumentName} from '../../constants/midi_instrument_constants';
 
-export type {MidiSubjectMessage} from '../midi';
+import {Config} from '../../types/config_types/config_types';
+import {EasyMidi} from '../../types/easy_midi_types';
+
+import {ControlChangeEvent, equalControlButton, equalKeyboard, isControlChangeEvent, isNoteOffEvent, isNoteOnEvent, MidiMessage, MidiMessageType, MidiSubjectMessage, NoteOffEvent, NoteOnEvent} from './midi_utls';
+
+export type {MidiSubjectMessage} from './midi_utls';
 
 export default class MidiService {
     private midiEventSubject: Subject<MidiSubjectMessage>;
@@ -212,23 +214,6 @@ export default class MidiService {
         }
     };
 
-    notesOffExceptFor = (keepHolding: Note[]) => {
-        for (let i = 0; i < 100; i++) {
-            const note = 24 + i;
-            if (keepHolding.find(n => n.note === note)) {
-                continue;
-            }
-
-            for (const output of this.outputs) {
-                output.send('noteoff', {
-                    channel: 0,
-                    note,
-                    velocity: 0,
-                });
-            }
-        }
-    }
-
     notesOffAll = () => {
         this.outputs.forEach(this.notesOff);
     };
@@ -237,7 +222,7 @@ export default class MidiService {
     getOutputs = () => this.outputs;
 
     private registerInput = (midiName: MidiInstrumentName, inputConfig: MidiTriggerMappings) => {
-        const input = new this.midi.Input(midiName);
+        const input = this.midi.createInput(midiName);
 
         input.on('noteon', (msg) => {
             // console.log('onnyy')
@@ -279,7 +264,7 @@ export default class MidiService {
         });
 
         if (inputConfig.clock) {
-            input.on('clock', (msg) => {
+            input.on('clock' as unknown as 'noteon', (msg) => { // TODO: incorrect type here
                 this.midiEventSubject.next({
                     name: midiName,
                     type: 'clock',
@@ -292,7 +277,7 @@ export default class MidiService {
     };
 
     private registerOutput = (midiName: MidiInstrumentName) => {
-        const output = new this.midi.Output(midiName);
+        const output = this.midi.createOutput(midiName);
         this.outputs.push(output);
     };
 }

@@ -1,8 +1,9 @@
-import App from 'app';
-import type {Stdin} from 'services/qwerty_service';
-import {UserDataState} from 'state/user_data_state';
-import {Config} from 'types/config_types/config_types';
-import {EasyMidi} from 'types/easy_midi_types';
+import type {Stdin} from '../io/qwerty/qwerty_service';
+import {UserDataState} from '../state/user_data_state';
+import {Config} from '../types/config_types/config_types';
+import {EasyMidi} from '../types/easy_midi_types';
+
+import App from '../app';
 
 import {MidiMock} from './mocks/midi_mock';
 

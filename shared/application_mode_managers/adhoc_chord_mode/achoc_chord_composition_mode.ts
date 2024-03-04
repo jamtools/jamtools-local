@@ -2,14 +2,14 @@ import {Subscription} from 'rxjs';
 
 import type {Note} from 'easymidi';
 
-import MidiService, {MidiSubjectMessage} from '../../services/midi_service';
+import MidiService, {MidiSubjectMessage} from '../../io/midi/midi_service';
 
 import {ApplicationModeManager} from '../application_mode_manager';
 
 import type App from '../../app';
 import {AdhocProgressionState} from '../../state/progression_state';
-import InputChordSupervisor from '../../music/input_chord_supervisor';
-import {ControlChangeEvent, equalChords, isNoteOnEvent, NoteOffEvent, NoteOnEvent} from '../../midi';
+import InputChordSupervisor from '../../io/midi/input_chord_supervisor';
+import {ControlChangeEvent, equalChords, isNoteOnEvent, NoteOffEvent, NoteOnEvent} from '../../io/midi/midi_utls';
 
 export default class AdhocChordCompositionMode implements ApplicationModeManager<AdhocProgressionState> {
     private state: AdhocProgressionState = {

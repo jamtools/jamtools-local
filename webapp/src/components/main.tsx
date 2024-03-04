@@ -1,48 +1,41 @@
 import React from 'react';
 
-import {ActionHandler} from '../actions/app_actions';
+import {
+    BrowserRouter,
+    Routes,
+    Route,
+    Link,
+} from 'react-router-dom';
 
-import {useGlobalState} from '../hooks/use_global_state';
+import PerformancePage from '../pages/performance_page';
+import MidiConfigPage from '../pages/midi_config_page';
 
-import ControlPanel from './control_panel/control_panel';
-
-type Props = {
-    actionHandler: ActionHandler;
-    // localMode: boolean;
-}
-
-export default function Main(props: Props) {
-    const {
-        messages,
-        globalState,
-        // setGlobalState,
-    } = useGlobalState(props.actionHandler);
-
-    const content = (
-        <ControlPanel
-            globalState={globalState}
-            actionHandler={props.actionHandler}
-        />
-    );
-
-    // return (
-    //     <WledView/>
-    // );
-
-    // return (
-    //     <MidiView
-    //          webMidi={webMidi}
-    //     />
-    // );
-
+export default function Main() {
     return (
-        <div>
+        <BrowserRouter>
             <div>
-                <pre>
-                    {messages.length}
-                </pre>
+                <nav>
+                    <ul>
+                        <li>
+                            <Link to='/'>Home</Link>
+                        </li>
+                        <li>
+                            <Link to='/midi_config'>Midi Config</Link>
+                        </li>
+                    </ul>
+                </nav>
+
+                <Routes>
+                    <Route
+                        path='/'
+                        element={<PerformancePage/>}
+                    />
+                    <Route
+                        path='/midi_config'
+                        element={<MidiConfigPage/>}
+                    />
+                </Routes>
             </div>
-            {content}
-        </div>
+        </BrowserRouter>
     );
 }
