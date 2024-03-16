@@ -1,0 +1,136 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$ref": "#/definitions/SetConfig",
+    "definitions": {
+        "SetConfig": {
+            "type": "object",
+            "properties": {
+                "chords": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "type": "number"
+                        }
+                    }
+                },
+                "wled": {
+                    "type": "object",
+                    "properties": {
+                        "presets": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "palettes": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": [
+                        "presets",
+                        "palettes"
+                    ],
+                    "additionalProperties": false
+                },
+                "mappings": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "const": "wled"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "action": {
+                                            "type": "string",
+                                            "enum": [
+                                                "next palette",
+                                                "next preset"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "type",
+                                        "name",
+                                        "action"
+                                    ],
+                                    "additionalProperties": false
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "const": "midi"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "action": {
+                                            "type": "string",
+                                            "enum": [
+                                                "next chord",
+                                                "next progression"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "type",
+                                        "name",
+                                        "action"
+                                    ],
+                                    "additionalProperties": false
+                                }
+                            ]
+                        }
+                    }
+                },
+                "sections": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "steps": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "chord": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "chord"
+                                    ],
+                                    "additionalProperties": false
+                                }
+                            }
+                        },
+                        "required": [
+                            "steps"
+                        ],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "required": [
+                "chords",
+                "wled",
+                "mappings",
+                "sections"
+            ],
+            "additionalProperties": false
+        }
+    }
+}

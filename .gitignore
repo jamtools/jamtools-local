@@ -1,0 +1,11 @@
+constants.py
+dist
+wled_states
+micropython
+
+.cache
+node_modules
+.vscode
+.parcel-cache
+build
+.eslintcache
